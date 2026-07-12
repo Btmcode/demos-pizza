@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, ShoppingBag, Plus, Minus, Flame, Leaf, Sparkles, Star,
@@ -59,13 +58,25 @@ const EXTRA_CAT_LABELS: Record<string, string> = {
   CRUST: "Kenar",
 };
 
-export default function ProductDetailPageWrapper() {
-  const params = useParams();
-  const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
-  return <ProductDetailPage slug={slug as string} />;
+export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const [slug, setSlug] = React.useState<string>("");
+
+  React.useEffect(() => {
+    params.then((p) => setSlug(p.slug));
+  }, [params]);
+
+  if (!slug) {
+    return (
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-pink" />
+      </div>
+    );
+  }
+
+  return <ProductDetailContent slug={slug} />;
 }
 
-function ProductDetailPage({ slug }: { slug: string }) {
+function ProductDetailContent({ slug }: { slug: string }) {
   const { addItem } = useCart();
 
   const [item, setItem] = React.useState<MenuItemDetail | null>(null);
