@@ -6,8 +6,8 @@ Disallow: /kvkk
 Disallow: /gizlilik
 Disallow: /cerez
 
-# Local SEO - servis bölgeleri
-# Demos Pizza - Haseki, Fatih, İstanbul
+# Local SEO - Demos Pizza - Haseki, Fatih, İstanbul
 # Servis: Aksaray, Fındıkzade, Çapa, Şehremini, Molla Gürani, vb.
 
 Sitemap: https://demospizza.com.tr/sitemap.xml
+Host: https://demospizza.com.tr

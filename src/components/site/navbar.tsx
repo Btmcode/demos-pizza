@@ -59,13 +59,13 @@ export function Navbar() {
         }`}
       >
         <div className="container mx-auto px-2 md:px-6">
-          <div className="flex items-center justify-between h-[72px] md:h-22">
-            {/* Logo — ŞEFFAF, büyük, konteyner yok */}
+          <div className="flex items-center justify-between h-[80px] md:h-24">
+            {/* Logo — ŞEFFAF, ÇOK BÜYÜK, net okunur */}
             <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Demos Pizza ana sayfa">
               <img
                 src="/logo.png"
                 alt={`${BRAND.name}`}
-                className="h-12 md:h-16 w-auto"
+                className="h-16 md:h-20 w-auto"
               />
             </Link>
 

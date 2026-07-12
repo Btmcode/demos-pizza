@@ -4,10 +4,10 @@ import * as React from "react";
 import { Navbar } from "@/components/site/navbar";
 import { Hero } from "@/components/site/hero";
 import { MenuSection } from "@/components/site/menu-section";
+import { Campaigns } from "@/components/site/campaigns";
 import { StoneOven } from "@/components/site/stone-oven";
 import { Stats } from "@/components/site/stats";
 import { About } from "@/components/site/about";
-import { Gallery } from "@/components/site/gallery";
 import { Contact } from "@/components/site/contact";
 import { Footer } from "@/components/site/footer";
 import { CartDrawer } from "@/components/site/cart-drawer";
@@ -65,10 +65,10 @@ export function HomePage() {
         <main className="flex-1 pb-16 md:pb-0">
           <Hero />
           <MenuSection />
+          <Campaigns />
           <StoneOven />
           <Stats />
           <About />
-          <Gallery />
           <Contact />
         </main>
         <Footer />

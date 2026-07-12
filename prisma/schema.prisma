@@ -172,3 +172,26 @@ model ActivityLog {
   @@index([entityType, createdAt])
   @@index([adminId])
 }
+
+// =====================
+//  Campaigns (Kampanyalar)
+// =====================
+
+model Campaign {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  code        String?  @unique
+  discountPct Int?     // % indirim (örn: 15 = %15)
+  discountCents Int?   // Sabit indirim (kuruş)
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, endsAt])
+  @@index([code])
+}

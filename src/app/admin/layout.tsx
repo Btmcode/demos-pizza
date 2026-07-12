@@ -17,6 +17,8 @@ import {
   X,
   Printer,
   Flame,
+  Tag,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/constants";
@@ -24,8 +26,10 @@ import { BRAND } from "@/lib/constants";
 const NAV = [
   { href: "/admin", label: "Panel", icon: LayoutDashboard, exact: true },
   { href: "/admin/siparisler", label: "Siparişler", icon: ShoppingBag },
-  { href: "/admin/menu", label: "Menü", icon: UtensilsCrossed },
+  { href: "/admin/menu", label: "Ürünler", icon: UtensilsCrossed },
+  { href: "/admin/kampanyalar", label: "Kampanyalar", icon: Tag },
   { href: "/admin/yazici", label: "Yazıcı", icon: Printer },
+  { href: "/admin/raporlar", label: "Raporlar", icon: BarChart3 },
   { href: "/admin/mesajlar", label: "Mesajlar", icon: MessageSquare },
   { href: "/admin/ayarlar", label: "Ayarlar", icon: Settings },
   { href: "/admin/aktivite", label: "Aktivite", icon: Activity },
