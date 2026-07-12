@@ -97,28 +97,28 @@ export default function AdminDashboard() {
         <KpiCard
           title="Bugünkü Sipariş"
           value={loading ? "—" : String(stats?.counts.todayOrders ?? 0)}
-          sub={`${stats?.counts.pendingOrders ?? 0} bekleyen`}
+          sub={loading ? "..." : `${stats?.counts.pendingOrders ?? 0} bekleyen`}
           icon={<ShoppingBag className="h-5 w-5" />}
           color="ember"
         />
         <KpiCard
           title="Bugünkü Ciro"
           value={loading ? "—" : stats?.revenue.todayDisplay ?? "0 ₺"}
-          sub={`30 gün: ${stats?.revenue.last30Display ?? "0 ₺"}`}
+          sub={loading ? "..." : `30 gün: ${stats?.revenue.last30Display ?? "0 ₺"}`}
           icon={<TrendingUp className="h-5 w-5" />}
           color="saffron"
         />
         <KpiCard
           title="Yazdırılmamış"
           value={loading ? "—" : String(stats?.counts.unprintedOrders ?? 0)}
-          sub="yeni sipariş"
+          sub={loading ? "..." : "yeni sipariş"}
           icon={<Printer className="h-5 w-5" />}
           color="basil"
         />
         <KpiCard
           title="Okunmamış Mesaj"
           value={loading ? "—" : String(stats?.counts.unreadMessages ?? 0)}
-          sub={`Toplam menü: ${stats?.counts.totalMenuItems ?? 0}`}
+          sub={loading ? "..." : `Toplam menü: ${stats?.counts.totalMenuItems ?? 0}`}
           icon={<MessageSquare className="h-5 w-5" />}
           color="charcoal"
         />
@@ -211,13 +211,13 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick actions */}
-      <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
-        <h3 className="font-display font-bold text-charcoal mb-3">Hızlı Erişim</h3>
+      <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
+        <h3 className="font-display font-bold text-ink mb-3">Hızlı Erişim</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-          <QuickAction href="/admin/siparisler" icon={<ShoppingBag className="h-4 w-4" />} label="Siparişler" sub={`${stats?.counts.pendingOrders ?? 0} bekleyen`} />
-          <QuickAction href="/admin/yazici" icon={<Printer className="h-4 w-4" />} label="Yazıcı" sub={`${stats?.counts.unprintedOrders ?? 0} yazdırılacak`} />
-          <QuickAction href="/admin/mesajlar" icon={<MessageSquare className="h-4 w-4" />} label="Mesajlar" sub={`${stats?.counts.unreadMessages ?? 0} okunmamış`} />
-          <QuickAction href="/admin/menu" icon={<UtensilsCrossed className="h-4 w-4" />} label="Menü" sub={`${stats?.counts.availableMenuItems ?? 0} aktif`} />
+          <QuickAction href="/admin/siparisler" icon={<ShoppingBag className="h-4 w-4" />} label="Siparişler" sub={loading ? "..." : `${stats?.counts.pendingOrders ?? 0} bekleyen`} />
+          <QuickAction href="/admin/yazici" icon={<Printer className="h-4 w-4" />} label="Yazıcı" sub={loading ? "..." : `${stats?.counts.unprintedOrders ?? 0} yazdırılacak`} />
+          <QuickAction href="/admin/mesajlar" icon={<MessageSquare className="h-4 w-4" />} label="Mesajlar" sub={loading ? "..." : `${stats?.counts.unreadMessages ?? 0} okunmamış`} />
+          <QuickAction href="/admin/menu" icon={<UtensilsCrossed className="h-4 w-4" />} label="Menü" sub={loading ? "..." : `${stats?.counts.availableMenuItems ?? 0} aktif`} />
         </div>
       </Card>
     </div>

@@ -137,7 +137,7 @@ export function Hero() {
               </div>
 
               {/* Floating badge — delivery */}
-              <div className="absolute -bottom-4 -left-4 md:-left-6 glass-dark rounded-2xl p-4 max-w-[200px] shadow-premium-lg">
+              <div className="hidden md:block absolute -bottom-4 -left-6 glass-dark rounded-2xl p-4 max-w-[200px] shadow-premium-lg">
                 <div className="flex items-center gap-2.5 mb-1">
                   <div className="w-9 h-9 rounded-full bg-yellow/20 flex items-center justify-center">
                     <Truck className="h-4 w-4 text-yellow" />
@@ -155,7 +155,7 @@ export function Hero() {
               </div>
 
               {/* Floating badge — rating */}
-              <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 glass-dark rounded-2xl p-3 shadow-premium-lg">
+              <div className="hidden md:block absolute -top-4 -right-4 glass-dark rounded-2xl p-3 shadow-premium-lg">
                 <div className="flex items-center gap-2">
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((i) => (

@@ -118,7 +118,7 @@ function AdminOrdersContent() {
   }, [statusFilter, page, q]);
 
   React.useEffect(() => {
-    const t = setTimeout(load, 250);
+    const t = setTimeout(load, 100);
     return () => clearTimeout(t);
   }, [load]);
 

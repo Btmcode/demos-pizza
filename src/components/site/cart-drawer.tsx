@@ -293,18 +293,21 @@ export function CartDrawer() {
             {items.length > 0 && (
               <div className="border-t border-charcoal/8 p-4 bg-white space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-charcoal/70">Ara toplam</span>
+                  <span className="text-ink/70">Ara toplam</span>
                   <span className="font-medium">{CURRENCY.formatShort(totalCents)}</span>
                 </div>
                 {!minMet && orderType === "DELIVERY" && (
-                  <div className="text-xs text-ember bg-ember/5 p-2 rounded">
-                    Min. sipariş {CONTACT.delivery.minOrder} ₺.{" "}
-                    {CURRENCY.formatShort(CONTACT.delivery.minOrder * 100 - totalCents)} daha ekleyin.
+                  <div className="text-xs text-pink bg-pink/5 p-3 rounded-lg border border-pink/20 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span>
+                      Min. sipariş <strong>{CONTACT.delivery.minOrder} ₺</strong>.{" "}
+                      <strong>{CURRENCY.formatShort(CONTACT.delivery.minOrder * 100 - totalCents)}</strong> daha ekle.
+                    </span>
                   </div>
                 )}
                 <Button
                   onClick={() => setStep("checkout")}
-                  className="w-full bg-ember hover:bg-ember/90 text-cream"
+                  className="w-full bg-pink hover:bg-pink-hover text-white h-12 font-semibold shadow-pink-glow"
                   disabled={!minMet && orderType === "DELIVERY"}
                 >
                   Siparişe Geç
