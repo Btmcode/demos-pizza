@@ -212,6 +212,13 @@
 .text-pink { color: var(--pink); }
 .text-pink-hover { color: var(--pink-hover); }
 .text-mist { color: var(--mist); }
+/* Legacy aliases (eski class isimleri → yeni renkler) */
+.text-cream { color: var(--paper); }
+.text-charcoal { color: var(--ink); }
+.text-ember { color: var(--pink); }
+.text-saffron { color: var(--yellow); }
+.text-smoke { color: var(--ink-2); }
+.text-basil { color: #16A34A; }
 
 .bg-ink { background-color: var(--ink); }
 .bg-ink-2 { background-color: var(--ink-2); }
@@ -221,11 +228,23 @@
 .bg-pink-hover { background-color: var(--pink-hover); }
 .bg-paper { background-color: var(--paper); }
 .bg-mist { background-color: var(--mist); }
+/* Legacy aliases */
+.bg-cream { background-color: var(--paper); }
+.bg-charcoal { background-color: var(--ink); }
+.bg-ember { background-color: var(--pink); }
+.bg-saffron { background-color: var(--yellow); }
+.bg-smoke { background-color: var(--ink-2); }
+.bg-basil { background-color: #16A34A; }
 
 .border-ink { border-color: var(--ink); }
 .border-yellow { border-color: var(--yellow); }
 .border-pink { border-color: var(--pink); }
 .border-mist { border-color: var(--mist); }
+/* Legacy aliases */
+.border-charcoal { border-color: var(--ink); }
+.border-ember { border-color: var(--pink); }
+.border-saffron { border-color: var(--yellow); }
+.border-cream { border-color: var(--paper); }
 
 .from-pink { --tw-gradient-from: var(--pink); }
 .to-yellow { --tw-gradient-to: var(--yellow); }

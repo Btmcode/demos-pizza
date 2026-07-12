@@ -14,8 +14,6 @@ import { Footer } from "@/components/site/footer";
 import { CartDrawer } from "@/components/site/cart-drawer";
 import { CartProvider } from "@/components/site/cart-context";
 import { CookieBanner } from "@/components/site/cookie-banner";
-import { AIRecommendation } from "@/components/site/ai-recommendation";
-import { AIChatAssistant } from "@/components/site/ai-chat-assistant";
 import { FloatingActions } from "@/components/site/floating-actions";
 import { MobileBottomBar, FloatingCallButton } from "@/components/site/mobile-bottom-bar";
 
@@ -69,7 +67,6 @@ export function HomePage() {
           <Hero />
           <ToppingsMarquee />
           <MenuSection />
-          <AIRecommendation />
           <StoneOven />
           <Stats />
           <About />
@@ -79,9 +76,7 @@ export function HomePage() {
         <Footer />
         <CartDrawer />
         <CookieBanner />
-        <AIChatAssistant />
         <FloatingActions />
-        {/* Mobil alt bar — Domino's tarzı */}
         <MobileBottomBar />
         <FloatingCallButton />
       </div>

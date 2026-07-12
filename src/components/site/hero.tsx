@@ -33,18 +33,18 @@ export function Hero() {
           <div className="lg:col-span-7 max-w-2xl">
             {/* Badge row */}
             <div className="flex flex-wrap items-center gap-2 mb-5">
-              <Badge
-                variant="outline"
-                className="glass-dark border-yellow/40 text-yellow text-xs font-semibold"
-              >
-                <Sparkles className="h-3 w-3 mr-1" />
-                AI Destekli Sipariş
-              </Badge>
               {CONTACT.promo.active && (
                 <Badge className="bg-pink text-white border-0 text-xs font-bold shadow-pink-glow">
                   🔥 {CONTACT.promo.text}
                 </Badge>
               )}
+              <Badge
+                variant="outline"
+                className="glass-dark border-yellow/40 text-yellow text-xs font-semibold"
+              >
+                <Flame className="h-3 w-3 mr-1" />
+                {BRAND.tagline}
+              </Badge>
             </div>
 
             {/* Headline */}
@@ -57,8 +57,7 @@ export function Hero() {
             {/* Sub */}
             <p className="mt-5 md:mt-6 text-base md:text-xl text-white/85 max-w-xl leading-relaxed">
               Haseki'de her gün taze hazırlanan hamurumuz, endüstriyel fırınımızda mükemmel
-              kıvamında pişer.{" "}
-              <span className="text-yellow font-semibold">AI ile öneriler al</span>, kurye ile{" "}
+              kıvamında pişer. Kurye ile{" "}
               <span className="text-yellow font-semibold">30-45 dakikada</span> kapında.
             </p>
 
@@ -73,14 +72,14 @@ export function Hero() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </a>
-              <a href="#ai-recommendation">
+              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
                 <Button
                   size="lg"
                   variant="outline"
                   className="text-base px-7 h-13 glass-dark border-white/20 text-white hover:bg-white hover:text-ink btn-premium"
                 >
-                  <Sparkles className="mr-2 h-4 w-4 text-yellow" />
-                  AI Pizza Öner
+                  <Truck className="mr-2 h-4 w-4 text-yellow" />
+                  {CONTACT.delivery.deliveryTime} teslimat
                 </Button>
               </a>
             </div>

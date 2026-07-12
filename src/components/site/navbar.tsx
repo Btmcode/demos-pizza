@@ -63,7 +63,7 @@ export function Navbar() {
               {/* Logo — koyu arka planda, büyük ve net okunur */}
               <div className="bg-ink rounded-xl px-2 py-1 md:px-3.5 md:py-2.5 shadow-premium flex items-center">
                 <img
-                  src="/logo.svg"
+                  src="/logo.png"
                   alt={`${BRAND.name}`}
                   className="h-9 md:h-14 w-auto"
                 />
@@ -143,7 +143,7 @@ export function Navbar() {
           />
           <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-paper shadow-premium-lg flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-ink/10">
-              <img src="/logo.svg" alt="Demos Pizza" className="h-8" />
+              <img src="/logo.png" alt="Demos Pizza" className="h-8" />
               <Button
                 size="icon"
                 variant="ghost"
