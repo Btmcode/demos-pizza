@@ -16,7 +16,7 @@ export default function DeliveryPage() {
       <LegalSection title="1. Taraflar">
         <LegalP>
           İşbu Teslimat Sözleşmesi ("Sözleşme"), {BRAND.legalName} ("Satıcı") ile web sitemiz
-          (https://demos.pizza.com.tr) üzerinden sipariş veren müşteri ("Alıcı") arasında akdedilmiştir.
+          (https://demospizza.com.tr) üzerinden sipariş veren müşteri ("Alıcı") arasında akdedilmiştir.
         </LegalP>
         <LegalP>
           <strong>Satıcı:</strong> {BRAND.legalName}

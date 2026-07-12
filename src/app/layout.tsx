@@ -24,7 +24,7 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE_URL = "https://demos.pizza.com.tr";
+const SITE_URL = "https://demospizza.com.tr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       <LegalSection title="1. Genel">
         <LegalP>
           {BRAND.legalName} olarak, gizliliğinize saygı duyuyor ve kişisel verilerinizi korumayı
-          taahhüt ediyoruz. Bu Gizlilik Politikası, web sitemiz (https://demos.pizza.com.tr)
+          taahhüt ediyoruz. Bu Gizlilik Politikası, web sitemiz (https://demospizza.com.tr)
           üzerinden topladığımız bilgilerin nasıl kullanıldığını açıklamaktadır.
         </LegalP>
       </LegalSection>

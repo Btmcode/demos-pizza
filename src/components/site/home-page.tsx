@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Navbar } from "@/components/site/navbar";
 import { Hero } from "@/components/site/hero";
-import { ToppingsMarquee } from "@/components/site/toppings-marquee";
 import { MenuSection } from "@/components/site/menu-section";
 import { StoneOven } from "@/components/site/stone-oven";
 import { Stats } from "@/components/site/stats";
@@ -65,7 +64,6 @@ export function HomePage() {
         <Navbar />
         <main className="flex-1 pb-16 md:pb-0">
           <Hero />
-          <ToppingsMarquee />
           <MenuSection />
           <StoneOven />
           <Stats />

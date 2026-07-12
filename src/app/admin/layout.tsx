@@ -52,8 +52,8 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <div className="text-charcoal/60 text-sm">Yükleniyor...</div>
+      <div className="min-h-screen flex items-center justify-center bg-paper">
+        <div className="text-ink/60 text-sm">Yükleniyor...</div>
       </div>
     );
   }
@@ -63,17 +63,17 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex">
+    <div className="min-h-screen bg-paper flex">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 bg-charcoal text-cream/80 fixed inset-y-0 left-0 z-30">
+      <aside className="hidden lg:flex flex-col w-60 bg-ink text-white/80 fixed inset-y-0 left-0 z-30">
         <SidebarContent pathname={pathname} session={session} />
       </aside>
 
       {/* Mobile drawer */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
-          <div className="absolute inset-0 bg-charcoal/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="absolute left-0 inset-y-0 w-60 bg-charcoal text-cream/80 flex flex-col">
+          <div className="absolute inset-0 bg-ink/50" onClick={() => setSidebarOpen(false)} />
+          <aside className="absolute left-0 inset-y-0 w-60 bg-ink text-white/80 flex flex-col">
             <SidebarContent pathname={pathname} session={session} onNavigate={() => setSidebarOpen(false)} />
           </aside>
         </div>
@@ -81,8 +81,8 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
       {/* Main */}
       <div className="flex-1 lg:ml-60 flex flex-col min-h-screen">
-        {/* Top bar — solid, no blur */}
-        <header className="sticky top-0 z-20 bg-cream border-b border-charcoal/10">
+        {/* Top bar */}
+        <header className="sticky top-0 z-20 bg-paper border-b border-ink/10">
           <div className="flex items-center justify-between px-4 md:px-6 h-14 md:h-16">
             <div className="flex items-center gap-3">
               <Button
@@ -94,7 +94,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
               >
                 <MenuIcon className="h-5 w-5" />
               </Button>
-              <div className="font-display font-bold text-charcoal text-base md:text-lg">
+              <div className="font-display font-bold text-ink text-base md:text-lg">
                 {NAV.find((n) => (n.exact ? pathname === n.href : pathname.startsWith(n.href) && !n.exact))?.label || "Panel"}
               </div>
             </div>
@@ -109,7 +109,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                 size="sm"
                 variant="ghost"
                 onClick={() => signOut({ callbackUrl: "/admin/giris" })}
-                className="text-charcoal/70 hover:text-ember"
+                className="text-ink/70 hover:text-pink"
               >
                 <LogOut className="h-3.5 w-3.5 mr-1.5" />
                 <span className="hidden sm:inline">Çıkış</span>
@@ -135,12 +135,14 @@ function SidebarContent({
 }) {
   return (
     <>
-      <div className="p-4 border-b border-cream/10 flex items-center justify-between">
+      <div className="p-4 border-b border-white/10 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-2" onClick={onNavigate}>
-          <img src="/logo.png" alt="Demos" className="h-9" />
+          <div className="bg-ink-2 rounded-lg px-2 py-1">
+            <img src="/logo.png" alt="Demos" className="h-9 w-auto" />
+          </div>
         </Link>
         {onNavigate && (
-          <Button size="icon" variant="ghost" className="text-cream lg:hidden" onClick={onNavigate}>
+          <Button size="icon" variant="ghost" className="text-white lg:hidden" onClick={onNavigate}>
             <X className="h-5 w-5" />
           </Button>
         )}
@@ -157,8 +159,8 @@ function SidebarContent({
               onClick={onNavigate}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 active
-                  ? "bg-saffron text-charcoal"
-                  : "text-cream/70 hover:bg-cream/5 hover:text-cream"
+                  ? "bg-yellow text-ink shadow-sm"
+                  : "text-white/70 hover:bg-white/5 hover:text-white"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -168,22 +170,22 @@ function SidebarContent({
         })}
       </nav>
 
-      <div className="p-3 border-t border-cream/10">
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-cream/5">
-          <div className="w-9 h-9 rounded-full bg-saffron flex items-center justify-center text-charcoal font-bold text-sm">
+      <div className="p-3 border-t border-white/10">
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+          <div className="w-9 h-9 rounded-full bg-yellow flex items-center justify-center text-ink font-bold text-sm">
             {session?.user?.name?.charAt(0).toUpperCase() || "A"}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-cream truncate">
+            <div className="text-sm font-medium text-white truncate">
               {session?.user?.name || "Admin"}
             </div>
-            <div className="text-[10px] text-cream/50 truncate">
+            <div className="text-[10px] text-white/50 truncate">
               {session?.user?.email}
             </div>
           </div>
-          <Flame className="h-4 w-4 text-saffron" />
+          <Flame className="h-4 w-4 text-yellow" />
         </div>
-        <div className="mt-2 text-[10px] text-cream/40 px-3">
+        <div className="mt-2 text-[10px] text-white/40 px-3">
           © {new Date().getFullYear()} {BRAND.name}
         </div>
       </div>

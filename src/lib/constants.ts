@@ -5,7 +5,7 @@
  * SON GÜNCELLEME: 2026-07-12
  * - Endüstriyel fırın (taş fırın değil)
  * - Günlük taze hamur (dondurulmuş değil)
- * - demos.pizza.com.tr domain
+ * - demospizza.com.tr domain
  * - Rezervasyon yok (sadece online sipariş)
  * - Kurye ile bölgesel teslimat
  */
@@ -20,8 +20,8 @@ export const BRAND = {
   cuisine: "Pizza · İtalyan · Fast Food",
   logo: "/logo.png",
   favicon: "/favicon.svg",
-  domain: "demos.pizza.com.tr",
-  siteUrl: "https://demos.pizza.com.tr",
+  domain: "demospizza.com.tr",
+  siteUrl: "https://demospizza.com.tr",
 } as const;
 
 export const CONTACT = {
@@ -44,8 +44,8 @@ export const CONTACT = {
   whatsapp: "+90 555 000 00 00",
   whatsappHref: "https://wa.me/905550000000",
   whatsappBusinessId: "", // WhatsApp Business API için (ileri seviye)
-  email: "siparis@demos.pizza.com.tr",
-  emailHref: "mailto:siparis@demos.pizza.com.tr",
+  email: "siparis@demospizza.com.tr",
+  emailHref: "mailto:siparis@demospizza.com.tr",
   hours: [
     { day: "Pazartesi", open: "10:00", close: "00:00" },
     { day: "Salı", open: "10:00", close: "00:00" },

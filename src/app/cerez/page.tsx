@@ -113,7 +113,7 @@ export default function CookiePage() {
 
       <LegalSection title="6. İletişim">
         <LegalP>
-          Çerez politikası ile ilgili sorularınız için: siparis@demos.pizza.com.tr
+          Çerez politikası ile ilgili sorularınız için: siparis@demospizza.com.tr
         </LegalP>
       </LegalSection>
     </LegalLayout>

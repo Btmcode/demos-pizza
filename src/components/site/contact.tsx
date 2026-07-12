@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CONTACT } from "@/lib/constants";
 import { toast } from "sonner";
+import { OpenStreetMap } from "./openstreetmap";
 
 export function Contact() {
   const [form, setForm] = React.useState({ name: "", email: "", phone: "", subject: "", message: "", website: "" });
@@ -206,17 +207,7 @@ export function Contact() {
               </Button>
             </form>
 
-            <div className="rounded-2xl overflow-hidden border border-charcoal/8 shadow-sm h-72">
-              <iframe
-                src={CONTACT.address.mapEmbed}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Demos Pizza Konum"
-              />
-            </div>
+            <OpenStreetMap />
           </div>
         </div>
       </div>

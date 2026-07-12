@@ -27,7 +27,7 @@ export default function KVKKPage() {
 
       <LegalSection title="2. İşlenen Kişisel Veriler">
         <LegalP>
-          Şirketimiz, web sitemiz (https://demos.pizza.com.tr) ve mobil uygulamalarımız üzerinden
+          Şirketimiz, web sitemiz (https://demospizza.com.tr) ve mobil uygulamalarımız üzerinden
           sunduğumuz hizmetlerin ifası kapsamında aşağıdaki kişisel verilerinizi işlemektedir:
         </LegalP>
         <LegalUl>

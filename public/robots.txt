@@ -10,4 +10,4 @@ Disallow: /cerez
 # Demos Pizza - Haseki, Fatih, İstanbul
 # Servis: Aksaray, Fındıkzade, Çapa, Şehremini, Molla Gürani, vb.
 
-Sitemap: https://demos.pizza.com.tr/sitemap.xml
+Sitemap: https://demospizza.com.tr/sitemap.xml

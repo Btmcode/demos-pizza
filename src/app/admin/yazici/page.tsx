@@ -659,7 +659,7 @@ function buildOrderHTML(order: any): string {
     ${order.notes ? `<p><b>Not:</b> ${order.notes}</p>` : ""}
     <div class="sep"></div>
     <p class="center">Teşekkür ederiz!</p>
-    <p class="center">demos.pizza.com.tr</p>
+    <p class="center">demospizza.com.tr</p>
     <script>window.onload = () => setTimeout(() => window.print(), 300);</script>
   </body></html>`;
 }
