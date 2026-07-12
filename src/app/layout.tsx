@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     locale: "tr_TR",
     type: "website",
     images: [{
-      url: "/images/demos-storefront.png",
+      url: "/images/hero-pizza-main.png",
       width: 1024,
       height: 1024,
       alt: "Demos Pizza — Fatih Haseki",
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Demos Pizza · Premium Pizza Platformu",
     description: "Fatih Haseki'de günlük taze hamur, AI destekli sipariş.",
-    images: ["/images/demos-storefront.png"],
+    images: ["/images/hero-pizza-main.png"],
   },
   category: "food",
   other: {
@@ -126,8 +126,8 @@ const jsonLd = {
     "@id": `${SITE_URL}/#restaurant`,
     "name": "Demos Pizza",
     "alternateName": "Demos Pizza Haseki",
-    "image": `${SITE_URL}/images/demos-storefront.png`,
-    "logo": `${SITE_URL}/logo.svg`,
+    "image": `${SITE_URL}/images/hero-pizza-main.png`,
+    "logo": `${SITE_URL}/logo.png`,
     "url": SITE_URL,
     "telephone": "+90444000000",
     "servesCuisine": ["Pizza", "Italian", "Fast Food"],
@@ -280,7 +280,7 @@ const jsonLd = {
     "@type": "Organization",
     "name": "Demos Pizza",
     "url": SITE_URL,
-    "logo": `${SITE_URL}/logo.svg`,
+    "logo": `${SITE_URL}/logo.png`,
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+90444000000",

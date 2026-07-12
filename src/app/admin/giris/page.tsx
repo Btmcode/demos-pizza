@@ -73,7 +73,7 @@ function LoginContent() {
           {/* Logo */}
           <div className="text-center mb-7">
             <img
-              src="/logo.svg"
+              src="/logo.png"
               alt="Demos Pizza"
               className="h-12 mx-auto mb-3"
             />

@@ -3,8 +3,8 @@
 import { Camera } from "lucide-react";
 
 const GALLERY = [
-  { src: "/images/demos-storefront.png", alt: "Demos Pizza — Fatih Haseki'de dükkanımız", span: "md:col-span-2 md:row-span-2" },
-  { src: "/images/hero-pizza.png", alt: "Margherita pizza overhead", span: "" },
+  { src: "/images/hero-pizza-main.png", alt: "Eryen mozzarella, çıtır kenar — taze pizza", span: "md:col-span-2 md:row-span-2" },
+  { src: "/images/hero-pizza-overhead.png", alt: "Margherita pizza overhead", span: "" },
   { src: "/images/pizza-prosciutto.png", alt: "Prosciutto e burrata pizza", span: "" },
   { src: "/images/ingredients.png", alt: "Taze pizza malzemeleri", span: "md:col-span-2" },
   { src: "/images/pizza-pepperoni.png", alt: "Pepperoni pizza", span: "" },

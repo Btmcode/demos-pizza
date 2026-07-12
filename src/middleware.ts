@@ -73,6 +73,6 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Admin + API admin hariç her şey
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|logo.svg|images/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|logo.svg|logo.png|images/).*)",
   ],
 };

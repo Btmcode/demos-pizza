@@ -137,7 +137,7 @@ function SidebarContent({
     <>
       <div className="p-4 border-b border-cream/10 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-2" onClick={onNavigate}>
-          <img src="/logo.svg" alt="Demos" className="h-8" />
+          <img src="/logo.png" alt="Demos" className="h-8" />
         </Link>
         {onNavigate && (
           <Button size="icon" variant="ghost" className="text-cream lg:hidden" onClick={onNavigate}>

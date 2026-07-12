@@ -20,8 +20,8 @@ export function About() {
           <div className="relative order-2 lg:order-1">
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-ink-2 shadow-premium-lg">
               <img
-                src="/images/demos-storefront.png"
-                alt="Demos Pizza — Fatih Haseki'de taze pizza"
+                src="/images/hero-pizza-overhead.png"
+                alt="Demos Pizza — taze Margherita, overhead"
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
