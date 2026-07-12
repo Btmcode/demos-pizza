@@ -191,11 +191,11 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(o) => !o && closeCart()}>
-      <SheetContent className="w-full sm:max-w-md p-0 flex flex-col bg-cream">
-        <SheetHeader className="px-5 py-4 border-b border-charcoal/8 bg-charcoal text-cream">
+      <SheetContent className="w-full sm:max-w-lg p-0 flex flex-col bg-paper">
+        <SheetHeader className="px-5 py-4 border-b border-ink/10 bg-ink text-white">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-cream flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4 text-saffron" />
+            <SheetTitle className="text-white flex items-center gap-2">
+              <ShoppingBag className="h-4 w-4 text-yellow" />
               {step === "cart" && "Sepetim"}
               {step === "checkout" && "Sipariş Bilgileri"}
               {step === "success" && "Sipariş Onayı"}
@@ -224,24 +224,29 @@ export function CartDrawer() {
               ) : (
                 <div className="space-y-3">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-3 p-3 bg-white rounded-xl border border-charcoal/8">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-charcoal/5 shrink-0">
+                    <div key={item.id} className="flex gap-3 p-3 md:p-4 bg-white rounded-xl border border-ink/8 shadow-sm">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-ink/5 shrink-0">
                         {item.imageUrl ? (
                           <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-charcoal/20">
-                            <ShoppingBag className="h-5 w-5" />
+                          <div className="w-full h-full flex items-center justify-center text-ink/20">
+                            <ShoppingBag className="h-6 w-6" />
                           </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <h4 className="font-medium text-sm text-charcoal">{item.name}</h4>
-                            {item.size && <p className="text-[11px] text-charcoal/55">{item.size}</p>}
+                          <div className="min-w-0">
+                            <h4 className="font-display font-bold text-sm md:text-base text-ink">{item.name}</h4>
+                            {item.size && <p className="text-[11px] text-ink/55 mt-0.5">{item.size}</p>}
                             {item.extras.length > 0 && (
-                              <p className="text-[10px] text-charcoal/50 mt-0.5">
+                              <p className="text-[10px] text-ink/50 mt-0.5">
                                 + {item.extras.map((e) => e.name).join(", ")}
+                              </p>
+                            )}
+                            {item.notes && (
+                              <p className="text-[10px] text-pink mt-0.5 italic">
+                                {item.notes}
                               </p>
                             )}
                           </div>

@@ -57,15 +57,15 @@ export function Navbar() {
             : "bg-paper border-transparent"
         }`}
       >
-        <div className="container mx-auto px-3 md:px-6">
-          <div className="flex items-center justify-between h-14 md:h-20">
+        <div className="container mx-auto px-2 md:px-6">
+          <div className="flex items-center justify-between h-[72px] md:h-22">
             <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Demos Pizza ana sayfa">
-              {/* Logo — koyu arka planda, büyük ve net okunur */}
-              <div className="bg-ink rounded-xl px-2 py-1 md:px-3.5 md:py-2.5 shadow-premium flex items-center">
+              {/* Logo — mobilde ÇOK büyük, net okunur (Domino's tarzı) */}
+              <div className="bg-ink rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-premium flex items-center">
                 <img
                   src="/logo.png"
                   alt={`${BRAND.name}`}
-                  className="h-9 md:h-14 w-auto"
+                  className="h-14 md:h-16 w-auto"
                 />
               </div>
             </Link>
@@ -106,10 +106,10 @@ export function Navbar() {
                 onClick={toggleCart}
                 size="icon"
                 variant="outline"
-                className="relative border-ink/15 text-ink hover:bg-pink hover:text-white hover:border-pink btn-premium h-10 w-10 md:h-9 md:w-9"
+                className="relative border-ink/15 text-ink hover:bg-pink hover:text-white hover:border-pink btn-premium h-12 w-12 md:h-9 md:w-9"
                 aria-label={`Sepetim, ${itemCount} ürün`}
               >
-                <ShoppingBag className="h-5 w-5 md:h-4 md:w-4" />
+                <ShoppingBag className="h-6 w-6 md:h-4 md:w-4" />
                 {itemCount > 0 && (
                   <span
                     className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 flex items-center justify-center bg-yellow text-ink text-[10px] font-bold rounded-full border-2 border-white"
@@ -123,10 +123,10 @@ export function Navbar() {
                 onClick={() => setMobileOpen(true)}
                 size="icon"
                 variant="ghost"
-                className="md:hidden text-ink"
+                className="md:hidden text-ink h-12 w-12"
                 aria-label="Menüyü aç"
               >
-                <Menu className="h-5 w-5" />
+                <Menu className="h-6 w-6" />
               </Button>
             </div>
           </div>

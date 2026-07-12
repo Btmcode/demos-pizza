@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://medium.com/design-bootcamp/improving-the-ordering-experience-on-dominos-pizza-mobile-app-a-case-study-4d3a3648d94f",
+    "name": "Case Study: Improving the ordering experience on Domino's Pizza",
+    "snippet": "I added the favorites in the bottom navigation bar to provide discoverability and easy access for the users. Press enter or click to view ...",
+    "host_name": "medium.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linkedin.com/posts/atharva-kumbhar-9ba776223_dominos-pizza-mobile-app-redesign-a-activity-7297191392156565505-dwfU",
+    "name": "ATHARVA KUMBHAR's Post - LinkedIn",
+    "snippet": "Domino's Pizza Mobile App Redesign: A UI/UX Case Study In this case study, I redesigned the Domino's Pizza mobile menu interface to ...",
+    "host_name": "www.linkedin.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ux.stackexchange.com/questions/114656/best-bottom-navigation-elements-order",
+    "name": "Best bottom navigation elements order? - User Experience Stack Exchange",
+    "snippet": "I'm trying to figure out what is the best order for the elements on the bar (in my case: home, favourites, search, checklists).",
+    "host_name": "ux.stackexchange.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.figma.com/community/file/1612834802122275459/dominos-app-redesign-ux-case-study",
+    "name": "Dominos App Redesign — UX Case Study - Figma",
+    "snippet": "The redesign focuses on simplifying the ordering process, improving menu navigation, and creating a faster and more intuitive checkout experience. Through user ...\nThis project explores a complete UX redesign of the Dominos mobile app with the goal of improving the pizza ordering experience.",
+    "host_name": "www.figma.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://uxplanet.org/dominos-pizza-mobile-app-redesign-ui-ux-case-study-2174ada48876",
+    "name": "Domino's Pizza Mobile App Redesign— UI/UX Case Study - UX Planet",
+    "snippet": "This case study was done to enhance my learning experience and challenge myself to redesign it. What is Dominos Pizza?",
+    "host_name": "uxplanet.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

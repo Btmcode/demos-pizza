@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import {
   ArrowLeft, ShoppingBag, Plus, Minus, Flame, Leaf, Sparkles, Star,
-  Check, Loader2, ChevronRight, AlertCircle
+  Check, Loader2, ChevronRight, AlertCircle, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,6 +92,7 @@ function ProductDetailContent({ slug }: { slug: string }) {
   const [selectedSize, setSelectedSize] = React.useState(0);
   const [selectedCrust, setSelectedCrust] = React.useState(0);
   const [selectedExtras, setSelectedExtras] = React.useState<string[]>([]);
+  const [removedIngredients, setRemovedIngredients] = React.useState<string[]>([]);
   const [quantity, setQuantity] = React.useState(1);
 
   React.useEffect(() => {
@@ -133,6 +134,13 @@ function ProductDetailContent({ slug }: { slug: string }) {
     const crustLabel = item.crustTypes?.length ? item.crustTypes[selectedCrust]?.type : undefined;
     const extras = item.extras?.filter((e) => selectedExtras.includes(e.name)) || [];
 
+    // Çıkarılan malzemeleri not olarak ekle
+    const removedNote = removedIngredients.length > 0
+      ? `Çıkarılan malzemeler: ${removedIngredients.join(", ")}`
+      : undefined;
+    const crustNote = crustLabel ? `Hamur: ${crustLabel}` : undefined;
+    const notes = [crustNote, removedNote].filter(Boolean).join(" · ") || undefined;
+
     addItem({
       slug: item.slug,
       menuItemId: item.id,
@@ -142,6 +150,7 @@ function ProductDetailContent({ slug }: { slug: string }) {
       extras: extras.map((e) => ({ name: e.name, priceCents: e.priceCents })),
       imageUrl: item.imageUrl,
       quantity,
+      notes,
     });
     toast.success(`${item.name} sepete eklendi!`, {
       description: `${quantity} adet · ${CURRENCY.formatShort(totalPrice)}`,
@@ -268,17 +277,45 @@ function ProductDetailContent({ slug }: { slug: string }) {
               )}
             </div>
 
-            {/* Ingredients */}
+            {/* Ingredients — çıkartılabilir */}
             {item.ingredients.length > 0 && (
               <div className="mt-6">
-                <h3 className="font-display font-bold text-ink text-sm mb-2">İçindekiler</h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {item.ingredients.map((ing, i) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-full bg-ink/5 text-ink/70">
-                      {ing}
-                    </span>
-                  ))}
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-display font-bold text-ink text-sm">İçindekiler</h3>
+                  <span className="text-[11px] text-ink/50">İstemediğini çıkar</span>
                 </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {item.ingredients.map((ing, i) => {
+                    const removed = removedIngredients.includes(ing);
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          setRemovedIngredients((prev) =>
+                            prev.includes(ing)
+                              ? prev.filter((x) => x !== ing)
+                              : [...prev, ing]
+                          );
+                        }}
+                        className={`text-xs px-2.5 py-1 rounded-full border transition-all flex items-center gap-1 ${
+                          removed
+                            ? "bg-ink/5 text-ink/40 line-through border-ink/10"
+                            : "bg-pink/5 text-ink border-pink/20 hover:bg-pink/10"
+                        }`}
+                        aria-pressed={removed}
+                      >
+                        {removed && <X className="h-3 w-3" />}
+                        {ing}
+                      </button>
+                    );
+                  })}
+                </div>
+                {removedIngredients.length > 0 && (
+                  <p className="text-[11px] text-pink mt-2 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {removedIngredients.length} malzeme çıkarıldı: {removedIngredients.join(", ")}
+                  </p>
+                )}
               </div>
             )}
 
