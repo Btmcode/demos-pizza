@@ -1,0 +1,7 @@
+# Allow all crawlers except /admin
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://demospizza.vercel.app/sitemap.xml

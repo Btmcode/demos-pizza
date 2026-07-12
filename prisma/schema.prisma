@@ -1,0 +1,186 @@
+// Demos Pizza · Prisma Schema
+// PostgreSQL (Neon) uyumlu. Local development SQLite kullanır.
+// Production'a deploy ederken: provider = "postgresql" + DATABASE_URL = Neon connection string
+// Daha fazla bilgi için README.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Local dev: sqlite · Production (Vercel+Neon): postgresql
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// =====================
+//  Admin & Auth
+// =====================
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // ADMIN | EDITOR
+  lastLoginAt  DateTime?
+  lastLoginIp  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  activityLogs ActivityLog[]
+
+  @@index([email])
+}
+
+// =====================
+//  Menu
+// =====================
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String
+  priceCents  Int
+  category    String   // PIZZA | SIGNATURE | SIDES | DRINKS | DESSERTS
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  // PostgreSQL'de dizi olur, SQLite'te Json saklanır
+  ingredients String   @default("[]")
+  tags        String   @default("[]") // vegetarian, spicy, new, halal, vegan
+  allergens   String   @default("[]") // gluten, dairy, etc.
+  // Pizza seçenekleri (sadece PIZZA kategorisi için)
+  sizes       String   @default("[]") // [{size: "Orta", diameter: 30, priceCents: 0}]
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems  OrderItem[]
+
+  @@index([category, isAvailable])
+  @@index([isFeatured])
+}
+
+// =====================
+//  Orders
+// =====================
+
+model Order {
+  id             String   @id @default(cuid())
+  orderNumber    String   @unique
+  customerName   String
+  customerPhone  String
+  customerEmail  String?
+  orderType      String   // DELIVERY | PICKUP | DINE_IN
+  status         String   @default("PENDING") // PENDING | CONFIRMED | PREPARING | OUT_FOR_DELIVERY | DELIVERED | CANCELLED
+  paymentMethod  String   @default("CASH_ON_DELIVERY") // CASH_ON_DELIVERY | CARD_ON_DELIVERY | ONLINE
+  paymentStatus  String   @default("PENDING") // PENDING | PAID | FAILED | REFUNDED
+  subtotalCents  Int
+  deliveryCents  Int      @default(0)
+  totalCents     Int
+  deliveryAddress String?
+  notes          String?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  items OrderItem[]
+
+  @@index([status, createdAt])
+  @@index([customerPhone])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  menuItemId  String?
+  name        String
+  quantity    Int
+  unitPriceCents Int
+  extras      String  @default("[]") // [{name, priceCents}]
+  notes       String?
+
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem    MenuItem? @relation(fields: [menuItemId], references: [id])
+
+  @@index([orderId])
+}
+
+// =====================
+//  Reservations
+// =====================
+
+model Reservation {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  date        DateTime
+  time        String
+  partySize   Int
+  service     String   // LUNCH | DINNER
+  status      String   @default("PENDING") // PENDING | CONFIRMED | CANCELLED | COMPLETED
+  notes       String?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([date, status])
+  @@index([status])
+}
+
+// =====================
+//  Contact Messages
+// =====================
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  isReplied Boolean  @default(false)
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([isRead, createdAt])
+}
+
+// =====================
+//  Site Settings (key-value)
+// =====================
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// =====================
+//  Activity Log (audit trail)
+// =====================
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  adminId    String?
+  adminEmail String?
+  action     String   // CREATE | UPDATE | DELETE | LOGIN | LOGOUT
+  entityType String   // MenuItem | Order | Reservation | ...
+  entityId   String?
+  details    String?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  admin      AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, createdAt])
+  @@index([adminId])
+}
