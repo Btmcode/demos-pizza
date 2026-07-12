@@ -19,11 +19,11 @@ function LoginContent() {
 
   React.useEffect(() => {
     getSession().then((s) => {
-      if (s) router.replace("/admin");
+      if (s) router.replace("/demos");
     });
   }, [router]);
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/admin";
+  const callbackUrl = searchParams.get("callbackUrl") || "/demos";
   const urlError = searchParams.get("error");
 
   React.useEffect(() => {

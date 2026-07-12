@@ -24,15 +24,15 @@ import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/constants";
 
 const NAV = [
-  { href: "/admin", label: "Panel", icon: LayoutDashboard, exact: true },
-  { href: "/admin/siparisler", label: "Siparişler", icon: ShoppingBag },
-  { href: "/admin/menu", label: "Ürünler", icon: UtensilsCrossed },
-  { href: "/admin/kampanyalar", label: "Kampanyalar", icon: Tag },
-  { href: "/admin/yazici", label: "Yazıcı", icon: Printer },
-  { href: "/admin/raporlar", label: "Raporlar", icon: BarChart3 },
-  { href: "/admin/mesajlar", label: "Mesajlar", icon: MessageSquare },
-  { href: "/admin/ayarlar", label: "Ayarlar", icon: Settings },
-  { href: "/admin/aktivite", label: "Aktivite", icon: Activity },
+  { href: "/demos", label: "Panel", icon: LayoutDashboard, exact: true },
+  { href: "/demos/siparisler", label: "Siparişler", icon: ShoppingBag },
+  { href: "/demos/menu", label: "Ürünler", icon: UtensilsCrossed },
+  { href: "/demos/kampanyalar", label: "Kampanyalar", icon: Tag },
+  { href: "/demos/yazici", label: "Yazıcı", icon: Printer },
+  { href: "/demos/raporlar", label: "Raporlar", icon: BarChart3 },
+  { href: "/demos/mesajlar", label: "Mesajlar", icon: MessageSquare },
+  { href: "/demos/ayarlar", label: "Ayarlar", icon: Settings },
+  { href: "/demos/aktivite", label: "Aktivite", icon: Activity },
 ];
 
 function AdminShell({ children }: { children: React.ReactNode }) {
@@ -41,12 +41,12 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
-  const isLogin = pathname === "/admin/giris";
+  const isLogin = pathname === "/demos/giris";
 
   React.useEffect(() => {
     if (status === "loading") return;
     if (!session && !isLogin) {
-      router.replace("/admin/giris");
+      router.replace("/demos/giris");
     }
   }, [session, status, isLogin, router]);
 
@@ -112,7 +112,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => signOut({ callbackUrl: "/admin/giris" })}
+                onClick={() => signOut({ callbackUrl: "/demos/giris" })}
                 className="text-ink/70 hover:text-pink"
               >
                 <LogOut className="h-3.5 w-3.5 mr-1.5" />
@@ -140,7 +140,7 @@ function SidebarContent({
   return (
     <>
       <div className="p-4 border-b border-white/10 flex items-center justify-between">
-        <Link href="/admin" className="flex items-center gap-2" onClick={onNavigate}>
+        <Link href="/demos" className="flex items-center gap-2" onClick={onNavigate}>
           <div className="bg-ink-2 rounded-lg px-2 py-1">
             <img src="/logo.png" alt="Demos" className="h-9 w-auto" />
           </div>

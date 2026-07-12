@@ -47,13 +47,13 @@ export const CONTACT = {
   email: "siparis@demospizza.com.tr",
   emailHref: "mailto:siparis@demospizza.com.tr",
   hours: [
-    { day: "Pazartesi", open: "10:00", close: "00:00" },
-    { day: "Salı", open: "10:00", close: "00:00" },
-    { day: "Çarşamba", open: "10:00", close: "00:00" },
-    { day: "Perşembe", open: "10:00", close: "00:00" },
-    { day: "Cuma", open: "10:00", close: "01:00" },
-    { day: "Cumartesi", open: "10:00", close: "01:00" },
-    { day: "Pazar", open: "10:00", close: "00:00" },
+    { day: "Pazartesi", open: "10:30", close: "02:00" },
+    { day: "Salı", open: "10:30", close: "02:00" },
+    { day: "Çarşamba", open: "10:30", close: "02:00" },
+    { day: "Perşembe", open: "10:30", close: "02:00" },
+    { day: "Cuma", open: "10:30", close: "02:00" },
+    { day: "Cumartesi", open: "10:30", close: "02:00" },
+    { day: "Pazar", open: "10:30", close: "02:00" },
   ],
   social: {
     instagram: "https://instagram.com/demospizza",
@@ -99,7 +99,7 @@ export const STATS = [
   { value: 350, suffix: "+", label: "Günlük Sipariş", sub: "Hedef: 350+ sipariş/gün" },
   { value: 30, suffix: " dk", label: "Hızlı Teslimat", sub: "Kurye ile kapınızda" },
   { value: 10, suffix: "+", label: "Servis Bölgesi", sub: "Fatih ve çevresi" },
-  { value: 24, suffix: "/7", label: "Açık", sub: "Her gün 10:00-00:00" },
+  { value: 10, suffix: ":30", label: "Açılış", sub: "Her gün 10:30 - 02:00" },
 ] as const;
 
 export const NAV_LINKS = [

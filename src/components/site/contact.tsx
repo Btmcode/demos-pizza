@@ -85,9 +85,9 @@ export function Contact() {
               icon={<Clock className="h-5 w-5" />}
               title="Çalışma Saatleri"
               lines={[
-                "Pzt-Per: 10:00 - 00:00",
-                "Cuma-Cmt: 10:00 - 01:00",
-                "Pazar: 10:00 - 00:00",
+                "Pzt-Per: 10:30 - 02:00",
+                "Cuma-Cmt: 10:30 - 02:00",
+                "Pazar: 10:30 - 02:00",
               ]}
             />
 

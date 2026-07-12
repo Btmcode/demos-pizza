@@ -239,7 +239,7 @@ export function Hero() {
             <span className="text-white/30">·</span>
             <div className="flex items-center gap-1.5 text-white/80">
               <Clock className="h-4 w-4 text-yellow" />
-              10:00 - 00:00 açık
+              10:30 - 02:00 açık
             </div>
             <span className="text-white/30">·</span>
             <div className="flex items-center gap-1.5 text-white/80">

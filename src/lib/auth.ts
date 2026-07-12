@@ -96,8 +96,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/admin/giris",
-    error: "/admin/giris",
+    signIn: "/demos/giris",
+    error: "/demos/giris",
   },
   callbacks: {
     async jwt({ token, user }) {

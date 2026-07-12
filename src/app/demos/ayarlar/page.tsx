@@ -49,7 +49,7 @@ export default function AdminSettingsPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/settings", { cache: "no-store" });
+      const res = await fetch("/api/demos/settings", { cache: "no-store" });
       const data = await res.json();
       if (data.settings) setSettings(data.settings);
     } catch {
@@ -66,7 +66,7 @@ export default function AdminSettingsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/admin/settings", {
+      const res = await fetch("/api/demos/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings }),

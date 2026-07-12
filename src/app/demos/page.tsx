@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = React.useState(true);
 
   const load = React.useCallback(() => {
-    fetch("/api/admin/stats", { cache: "no-store" })
+    fetch("/api/demos/stats", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
       .then((d) => setStats(d))
       .catch(() => {})
@@ -214,10 +214,10 @@ export default function AdminDashboard() {
       <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
         <h3 className="font-display font-bold text-ink mb-3">Hızlı Erişim</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-          <QuickAction href="/admin/siparisler" icon={<ShoppingBag className="h-4 w-4" />} label="Siparişler" sub={loading ? "..." : `${stats?.counts.pendingOrders ?? 0} bekleyen`} />
-          <QuickAction href="/admin/yazici" icon={<Printer className="h-4 w-4" />} label="Yazıcı" sub={loading ? "..." : `${stats?.counts.unprintedOrders ?? 0} yazdırılacak`} />
-          <QuickAction href="/admin/mesajlar" icon={<MessageSquare className="h-4 w-4" />} label="Mesajlar" sub={loading ? "..." : `${stats?.counts.unreadMessages ?? 0} okunmamış`} />
-          <QuickAction href="/admin/menu" icon={<UtensilsCrossed className="h-4 w-4" />} label="Menü" sub={loading ? "..." : `${stats?.counts.availableMenuItems ?? 0} aktif`} />
+          <QuickAction href="/demos/siparisler" icon={<ShoppingBag className="h-4 w-4" />} label="Siparişler" sub={loading ? "..." : `${stats?.counts.pendingOrders ?? 0} bekleyen`} />
+          <QuickAction href="/demos/yazici" icon={<Printer className="h-4 w-4" />} label="Yazıcı" sub={loading ? "..." : `${stats?.counts.unprintedOrders ?? 0} yazdırılacak`} />
+          <QuickAction href="/demos/mesajlar" icon={<MessageSquare className="h-4 w-4" />} label="Mesajlar" sub={loading ? "..." : `${stats?.counts.unreadMessages ?? 0} okunmamış`} />
+          <QuickAction href="/demos/menu" icon={<UtensilsCrossed className="h-4 w-4" />} label="Menü" sub={loading ? "..." : `${stats?.counts.availableMenuItems ?? 0} aktif`} />
         </div>
       </Card>
     </div>

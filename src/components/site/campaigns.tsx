@@ -62,51 +62,59 @@ export function Campaigns() {
             {campaigns.map((c) => (
               <div
                 key={c.id}
-                className="group relative overflow-hidden rounded-2xl bg-ink text-white card-premium p-6 flex flex-col"
+                className="group relative overflow-hidden rounded-2xl bg-ink text-white card-premium flex flex-col"
               >
-                {/* Glow accent */}
-                <div
-                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-20"
-                  style={{ background: "radial-gradient(circle, #FF2D8D 0%, transparent 70%)" }}
-                />
-
-                {/* Discount badge */}
-                {c.discountPct && (
-                  <div className="absolute top-4 right-4">
-                    <div className="bg-yellow text-ink font-display font-bold text-2xl px-3 py-1 rounded-lg shadow-premium">
-                      %{c.discountPct}
-                    </div>
+                {/* Campaign image */}
+                {c.imageUrl && (
+                  <div className="relative aspect-[16/9] overflow-hidden bg-ink-2">
+                    <img
+                      src={c.imageUrl}
+                      alt={c.title}
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
+                    {/* Discount badge on image */}
+                    {c.discountPct && (
+                      <div className="absolute top-3 right-3">
+                        <div className="bg-yellow text-ink font-display font-bold text-xl px-3 py-1 rounded-lg shadow-premium">
+                          %{c.discountPct}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Content */}
-                <div className="relative z-10 flex-1">
-                  <div className="w-10 h-10 rounded-lg bg-pink/20 flex items-center justify-center mb-4">
-                    <Tag className="h-5 w-5 text-pink" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold mb-2">{c.title}</h3>
-                  <p className="text-white/70 text-sm leading-relaxed">{c.description}</p>
-                </div>
-
-                {/* Code */}
-                {c.code && (
-                  <div className="relative z-10 mt-4 pt-4 border-t border-white/10">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-white/50">Kampanya Kodu:</span>
-                      <code className="px-3 py-1 rounded-lg bg-yellow/10 text-yellow font-mono font-bold text-sm border border-yellow/20">
-                        {c.code}
-                      </code>
+                <div className="p-5 flex flex-col flex-1 relative">
+                  <div className="flex items-start gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-pink/20 flex items-center justify-center shrink-0">
+                      <Tag className="h-4 w-4 text-pink" />
                     </div>
+                    <h3 className="font-display text-lg font-bold leading-tight">{c.title}</h3>
                   </div>
-                )}
+                  <p className="text-white/70 text-sm leading-relaxed flex-1">{c.description}</p>
 
-                {/* CTA */}
-                <a href="#menu" className="relative z-10 mt-4">
-                  <Button size="sm" className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow btn-premium">
-                    Sipariş Ver
-                    <ArrowRight className="ml-2 h-3.5 w-3.5" />
-                  </Button>
-                </a>
+                  {/* Code */}
+                  {c.code && (
+                    <div className="mt-3 pt-3 border-t border-white/10">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-white/50">Kampanya Kodu:</span>
+                        <code className="px-2.5 py-1 rounded-lg bg-yellow/10 text-yellow font-mono font-bold text-xs border border-yellow/20">
+                          {c.code}
+                        </code>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* CTA */}
+                  <a href="#menu" className="mt-3">
+                    <Button size="sm" className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow btn-premium">
+                      Sipariş Ver
+                      <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                    </Button>
+                  </a>
+                </div>
               </div>
             ))}
           </div>

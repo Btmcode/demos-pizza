@@ -80,7 +80,7 @@ export default function PrinterSettingsPage() {
   const loadOrders = React.useCallback(async () => {
     setLoadingOrders(true);
     try {
-      const res = await fetch("/api/admin/orders?limit=10", { cache: "no-store" });
+      const res = await fetch("/api/demos/orders?limit=10", { cache: "no-store" });
       const data = await res.json();
       setRecentOrders(data.orders || []);
     } catch {}

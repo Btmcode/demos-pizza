@@ -106,7 +106,7 @@ function AdminOrdersContent() {
       params.set("page", String(page));
       params.set("limit", "20");
       if (q) params.set("q", q);
-      const res = await fetch(`/api/admin/orders?${params}`, { cache: "no-store" });
+      const res = await fetch(`/api/demos/orders?${params}`, { cache: "no-store" });
       const data = await res.json();
       if (data.orders) setOrders(data.orders);
       if (data.pagination) setTotal(data.pagination.total);
@@ -125,7 +125,7 @@ function AdminOrdersContent() {
   const updateStatus = async (id: string, status: string) => {
     setUpdating(id);
     try {
-      const res = await fetch(`/api/admin/orders/${id}`, {
+      const res = await fetch(`/api/demos/orders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),

@@ -155,7 +155,7 @@ export default async function DistrictPage({ params }: PageProps) {
                 <Clock className="h-5 w-5" />
               </div>
               <div className="font-display font-bold text-ink">Açık</div>
-              <div className="text-sm text-ink/60 mt-1">10:00 - 00:00</div>
+              <div className="text-sm text-ink/60 mt-1">10:30 - 02:00</div>
               <div className="text-xs text-ink/40 mt-1">Her gün açık</div>
             </div>
 

@@ -47,7 +47,7 @@ export default function AdminActivityPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/activity?page=${page}&limit=50`, { cache: "no-store" });
+      const res = await fetch(`/api/demos/activity?page=${page}&limit=50`, { cache: "no-store" });
       const data = await res.json();
       if (data.logs) setLogs(data.logs);
       if (data.pagination) setTotal(data.pagination.total);

@@ -85,21 +85,26 @@ export function middleware(req: NextRequest) {
   res.headers.set("Cross-Origin-Resource-Policy", "same-site");
   res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
 
-  // 4. Admin route koruması
-  if (pathname.startsWith("/admin") && pathname !== "/admin/giris") {
+  // 4. Eski /admin yollarını 404'e yönlendir (güvenlik — admin yolu gizli)
+  if (pathname.startsWith("/admin")) {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
+  // 5. /demos route koruması (admin panel — gizli yol)
+  if (pathname.startsWith("/demos") && pathname !== "/demos/giris") {
     const sessionToken =
       req.cookies.get("next-auth.session-token")?.value ||
       req.cookies.get("__Secure-next-auth.session-token")?.value;
 
     if (!sessionToken) {
       const loginUrl = req.nextUrl.clone();
-      loginUrl.pathname = "/admin/giris";
+      loginUrl.pathname = "/demos/giris";
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
     }
   }
 
-  // 5. /api/admin koruması
+  // 6. /api/admin koruması
   if (pathname.startsWith("/api/admin")) {
     const sessionToken =
       req.cookies.get("next-auth.session-token")?.value ||
@@ -114,8 +119,8 @@ export function middleware(req: NextRequest) {
     res.headers.set("Pragma", "no-cache");
   }
 
-  // 6. Admin sayfalarını indexleme
-  if (pathname === "/admin/giris" || pathname.startsWith("/admin")) {
+  // 7. /demos sayfalarını indexleme
+  if (pathname === "/demos/giris" || pathname.startsWith("/demos")) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive");
   }
 

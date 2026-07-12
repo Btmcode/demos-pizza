@@ -77,7 +77,7 @@ export default function AdminMenuPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/menu", { cache: "no-store" });
+      const res = await fetch("/api/demos/menu", { cache: "no-store" });
       const data = await res.json();
       if (data.items) setItems(data.items);
     } catch {
@@ -103,7 +103,7 @@ export default function AdminMenuPage() {
       prev.map((i) => (i.id === item.id ? { ...i, [field]: !i[field] } : i))
     );
     try {
-      const res = await fetch(`/api/admin/menu/${item.id}`, {
+      const res = await fetch(`/api/demos/menu/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: !item[field] }),
@@ -119,7 +119,7 @@ export default function AdminMenuPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/menu/${deleteTarget.id}`, { method: "DELETE" });
+      const res = await fetch(`/api/demos/menu/${deleteTarget.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       const data = await res.json().catch(() => ({}));
       toast.success(data.archived ? "Ürün arşivlendi (geçmiş siparişlerde var)" : "Ürün silindi");
@@ -381,7 +381,7 @@ function MenuItemForm({
         })),
         sortOrder: Number(form.sortOrder) || 0,
       };
-      const url = item ? `/api/admin/menu/${item.id}` : "/api/admin/menu";
+      const url = item ? `/api/demos/menu/${item.id}` : "/api/demos/menu";
       const res = await fetch(url, {
         method: item ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },

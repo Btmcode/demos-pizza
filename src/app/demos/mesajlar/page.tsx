@@ -28,7 +28,7 @@ export default function AdminMessagesPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const url = filter === "unread" ? "/api/admin/messages?unread=true&limit=100" : "/api/admin/messages?limit=100";
+      const url = filter === "unread" ? "/api/demos/messages?unread=true&limit=100" : "/api/demos/messages?limit=100";
       const res = await fetch(url, { cache: "no-store" });
       const data = await res.json();
       if (data.messages) setMessages(data.messages);
@@ -45,7 +45,7 @@ export default function AdminMessagesPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/messages/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/demos/messages/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       toast.success("Mesaj silindi");
       setMessages((prev) => prev.filter((m) => m.id !== id));
@@ -56,7 +56,7 @@ export default function AdminMessagesPage() {
 
   const markReplied = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/messages/${id}`, {
+      const res = await fetch(`/api/demos/messages/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isReplied: true }),
