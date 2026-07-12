@@ -11,7 +11,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <img src="/logo.png" alt="Demos Pizza" className="h-10 md:h-11 mb-4" />
+            <div className="bg-ink rounded-xl px-3 py-2 inline-block mb-4">
+              <img src="/logo.png" alt="Demos Pizza" className="h-9 md:h-10 w-auto" />
+            </div>
             <p className="text-sm text-white/65 leading-relaxed max-w-xs">
               {BRAND.description}
             </p>

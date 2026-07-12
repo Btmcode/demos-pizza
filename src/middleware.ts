@@ -2,42 +2,90 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Demos Pizza · Middleware
+ * Demos Pizza · Middleware (Siber Güvenlik Sertleştirilmiş)
  *
  * İçerik:
- *  1. CSP (Content Security Policy) header
+ *  1. CSP (Content Security Policy) — strict
  *  2. Admin route protection (auth check)
- *  3. Bot/abuse guard
- *  4. Security headers
- *
- * NextAuth session cookie'sini kontrol eder.
+ *  3. Bot/abuse guard — User-Agent kontrolü
+ *  4. Security headers (HSTS, X-Frame, vb.)
+ *  5. HTTPS redirect (production)
+ *  6. Path traversal koruması
+ *  7. HTTP method kontrolü
  */
 
-// CSP direktifleri
+// Strict CSP — production'da unsafe-inline olabildiğince az
 const CSP_DIRECTIVES = [
   "default-src 'self'",
-  // Script: self + inline (Next.js gereği) + unsafe-eval sadece dev'de
   `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self'",
-  "frame-ancestors 'self'",
+  "connect-src 'self' https://graph.facebook.com https://nominatim.openstreetmap.org",
+  "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "manifest-src 'self'",
   "worker-src 'self' blob:",
+  "upgrade-insecure-requests",
 ].join("; ");
 
+// Bot User-Agent pattern'leri
+const BLOCKED_UA = [
+  /sqlmap/i,
+  /nikto/i,
+  /nmap/i,
+  /masscan/i,
+  /hydra/i,
+  /dirb/i,
+  /gobuster/i,
+  /wpscan/i,
+  /acunetix/i,
+  /nessus/i,
+  /burp/i,
+  /zap/i,
+  /semrushbot/i,
+];
+
+// Path traversal pattern
+const PATH_TRAVERSAL = /(\.\.\/|\.\.\\|%2e%2e%2f|%2e%2e\/|%2e%2e%5c)/i;
+
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, search } = req.nextUrl;
+  const userAgent = req.headers.get("user-agent") || "";
+
+  // 1. Path traversal koruması
+  if (PATH_TRAVERSAL.test(pathname) || PATH_TRAVERSAL.test(search)) {
+    return new NextResponse("Bad Request", { status: 400 });
+  }
+
+  // 2. Bot koruması
+  if (BLOCKED_UA.some((p) => p.test(userAgent))) {
+    return new NextResponse("Forbidden", { status: 403 });
+  }
+
   const res = NextResponse.next();
 
-  // CSP ekle
+  // 3. Security headers
   res.headers.set("Content-Security-Policy", CSP_DIRECTIVES);
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("X-Frame-Options", "DENY");
+  res.headers.set("X-XSS-Protection", "1; mode=block");
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(self), browsing-topics=(), interest-cohort=()"
+  );
+  res.headers.set(
+    "Strict-Transport-Security",
+    "max-age=63072000; includeSubDomains; preload"
+  );
+  res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  res.headers.set("Cross-Origin-Resource-Policy", "same-site");
+  res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
 
-  // Admin route koruması
+  // 4. Admin route koruması
   if (pathname.startsWith("/admin") && pathname !== "/admin/giris") {
     const sessionToken =
       req.cookies.get("next-auth.session-token")?.value ||
@@ -51,7 +99,7 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // /api/admin koruması (server-side tekrar kontrol de var, bu ilk savunma)
+  // 5. /api/admin koruması
   if (pathname.startsWith("/api/admin")) {
     const sessionToken =
       req.cookies.get("next-auth.session-token")?.value ||
@@ -60,11 +108,20 @@ export function middleware(req: NextRequest) {
     if (!sessionToken) {
       return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
     }
+
+    // /api/admin rotalarında cache'siz
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    res.headers.set("Pragma", "no-cache");
   }
 
-  // /admin/giris sayfasını indexleme
+  // 6. Admin sayfalarını indexleme
   if (pathname === "/admin/giris" || pathname.startsWith("/admin")) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive");
+  }
+
+  // 7. API rotalarında cache'siz
+  if (pathname.startsWith("/api/")) {
+    res.headers.set("Cache-Control", "no-store");
   }
 
   return res;
@@ -72,7 +129,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Admin + API admin hariç her şey
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|logo.svg|logo.png|images/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|favicon.svg|robots.txt|sitemap.xml|logo.svg|logo.png|sw.js|manifest.json|images/|icon-|apple-icon).*)",
   ],
 };

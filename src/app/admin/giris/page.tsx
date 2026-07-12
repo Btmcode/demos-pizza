@@ -72,11 +72,13 @@ function LoginContent() {
         <div className="bg-cream rounded-2xl shadow-xl p-7 md:p-9 border border-smoke">
           {/* Logo */}
           <div className="text-center mb-7">
-            <img
-              src="/logo.png"
-              alt="Demos Pizza"
-              className="h-12 mx-auto mb-3"
-            />
+            <div className="bg-ink rounded-2xl px-4 py-3 inline-block mb-3 shadow-premium">
+              <img
+                src="/logo.png"
+                alt="Demos Pizza"
+                className="h-10 md:h-12 w-auto"
+              />
+            </div>
             <div className="flex items-center justify-center gap-1.5 text-xs text-charcoal/60 font-mono uppercase tracking-widest">
               <Flame className="h-3 w-3 text-ember" />
               Yönetim Paneli

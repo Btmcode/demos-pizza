@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, Plus, Minus, Trash2, ShoppingBag, Loader2, CheckCircle2, ArrowRight, ArrowLeft, MapPin, User, Phone, CreditCard, Truck, Store, MessageSquare } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, Loader2, CheckCircle2, ArrowRight, ArrowLeft, MapPin, User, Phone, CreditCard, Truck, Store, MessageSquare, Navigation, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +32,83 @@ export function CartDrawer() {
     notes: "",
   });
   const [submitting, setSubmitting] = React.useState(false);
+  const [locating, setLocating] = React.useState(false);
+
+  // Geolocation — konum izni al, reverse geocode yap
+  const useGeolocation = async () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      toast.error("Tarayıcınız konum özelliğini desteklemiyor.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          // OpenStreetMap Nominatim ile reverse geocode (ücretsiz, API key yok)
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=tr`,
+            {
+              headers: { "Accept": "application/json" },
+            }
+          );
+          const data = await res.json();
+          if (data && data.address) {
+            const addr = data.address;
+            const street = addr.road || addr.pedestrian || addr.footway || "";
+            const houseNumber = addr.house_number || "";
+            const neighborhood = addr.suburb || addr.neighbourhood || addr.quarter || "";
+            const district = addr.city_district || addr.town || addr.city || "";
+            const fullAddress = [street, houseNumber && `No:${houseNumber}`, neighborhood]
+              .filter(Boolean)
+              .join(" ");
+            
+            // Servis bölgesi eşleştir
+            const matchedArea = CONTACT.delivery.serviceAreas.find(
+              (area) =>
+                district.toLowerCase().includes(area.toLowerCase()) ||
+                neighborhood.toLowerCase().includes(area.toLowerCase()) ||
+                (addr.county && addr.county.toLowerCase().includes(area.toLowerCase()))
+            );
+
+            setForm((f) => ({
+              ...f,
+              district: matchedArea || f.district,
+              address: fullAddress || f.address,
+            }));
+            toast.success("Konumunuz alındı!", {
+              description: matchedArea
+                ? `${matchedArea} bölgesi seçildi`
+                : "Adres alanı dolduruldu, bölge seçin",
+            });
+          } else {
+            toast.info("Konum alındı ama adres çözümlenemedi. Lütfen elle girin.");
+          }
+        } catch (e) {
+          toast.error("Adres çözümlenemedi. Lütfen elle girin.");
+        } finally {
+          setLocating(false);
+        }
+      },
+      (error) => {
+        setLocating(false);
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.error("Konum izni reddedildi. Tarayıcı ayarlarından izin verin.");
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          toast.error("Konum bilgisi mevcut değil.");
+        } else if (error.code === error.TIMEOUT) {
+          toast.error("Konum alınamadı (zaman aşımı).");
+        } else {
+          toast.error("Konum alınamadı.");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000, // 5 dk cache
+      }
+    );
+  };
   const [orderResult, setOrderResult] = React.useState<{ orderNumber: string; totalDisplay: string; estimatedTime: string } | null>(null);
 
   React.useEffect(() => {
@@ -322,7 +399,21 @@ export function CartDrawer() {
               {/* Delivery address — only for DELIVERY */}
               {orderType === "DELIVERY" && (
                 <div className="space-y-3">
-                  <Label className="text-xs font-semibold">Teslimat Adresi</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold">Teslimat Adresi</Label>
+                    <button
+                      onClick={useGeolocation}
+                      disabled={locating}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-medium text-pink hover:text-pink-hover transition-colors disabled:opacity-50"
+                    >
+                      {locating ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Navigation className="h-3.5 w-3.5" />
+                      )}
+                      {locating ? "Konum alınıyor..." : "Konumumu Kullan"}
+                    </button>
+                  </div>
                   {/* District dropdown */}
                   <div>
                     <Label htmlFor="co-district" className="text-[11px] text-charcoal/60">Bölge / Mahalle *</Label>
@@ -332,7 +423,7 @@ export function CartDrawer() {
                         id="co-district"
                         value={form.district}
                         onChange={(e) => setForm((f) => ({ ...f, district: e.target.value }))}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-md border border-charcoal/15 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-ember/30 focus:border-ember"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-md border border-charcoal/15 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-pink/30 focus:border-pink"
                       >
                         <option value="" disabled>Bölge seçin</option>
                         {CONTACT.delivery.serviceAreas.map((area) => (

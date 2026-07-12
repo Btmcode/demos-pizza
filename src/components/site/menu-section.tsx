@@ -221,7 +221,7 @@ function MenuCard({ item }: { item: MenuItem }) {
 
   return (
     <article className="group bg-paper rounded-2xl overflow-hidden border border-ink/8 card-premium flex flex-col">
-      <div className="relative aspect-[4/3] overflow-hidden bg-mist/20">
+      <a href={`/menu/${item.slug}`} className="relative aspect-[4/3] overflow-hidden bg-mist/20 block">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -259,11 +259,15 @@ function MenuCard({ item }: { item: MenuItem }) {
             </span>
           </div>
         )}
-      </div>
+      </a>
 
       <div className="p-4 md:p-5 flex flex-col flex-1">
-        <h3 className="font-display text-lg md:text-xl font-bold text-ink leading-tight">{item.name}</h3>
-        <p className="text-xs md:text-sm text-ink/65 mt-1 line-clamp-2 flex-1">{item.description}</p>
+        <a href={`/menu/${item.slug}`} className="hover:text-pink transition-colors">
+          <h3 className="font-display text-lg md:text-xl font-bold text-ink leading-tight">{item.name}</h3>
+        </a>
+        <a href={`/menu/${item.slug}`}>
+          <p className="text-xs md:text-sm text-ink/65 mt-1 line-clamp-2 flex-1">{item.description}</p>
+        </a>
 
         {item.ingredients.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1">

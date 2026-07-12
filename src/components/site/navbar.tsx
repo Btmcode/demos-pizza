@@ -60,11 +60,14 @@ export function Navbar() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-16 md:h-18">
             <Link href="/" className="flex items-center gap-2.5" aria-label="Demos Pizza ana sayfa">
-              <img
-                src="/logo.png"
-                alt={`${BRAND.name}`}
-                className="h-9 md:h-11 w-auto btn-premium"
-              />
+              {/* Logo container — koyu arka plan ile her zaman görünür */}
+              <div className="bg-ink rounded-xl px-2.5 py-1.5 md:px-3 md:py-2 shadow-premium flex items-center">
+                <img
+                  src="/logo.png"
+                  alt={`${BRAND.name}`}
+                  className="h-7 md:h-10 w-auto"
+                />
+              </div>
             </Link>
 
             <nav className="hidden md:flex items-center gap-0.5">

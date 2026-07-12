@@ -62,25 +62,46 @@ export async function POST(req: Request) {
     const menuMap = new Map(menuItems.map((m) => [m.id, m]));
 
     let subtotalCents = 0;
-    const orderItemsData = data.items.map((item, idx) => {
-      let unitPrice = item.unitPriceCents;
-      // Eğer menuItemId varsa, DB'den fiyat al
+    const orderItemsData = data.items.map((item) => {
+      // GÜVENLİK: Fiyat ASLA client'ten alınmaz — her zaman DB'den
+      let unitPrice = 0;
+      let itemName = item.name.slice(0, 120);
+      let menuItemId: string | null = null;
+
       if (item.menuItemId && menuMap.has(item.menuItemId)) {
         const dbItem = menuMap.get(item.menuItemId)!;
         unitPrice = dbItem.priceCents;
+        itemName = dbItem.name; // DB'den isim de al (client ismine güvenme)
+        menuItemId = item.menuItemId;
+      } else {
+        // menuItemId yoksa — bu bir custom item olabilir, ama fiyat 0 olmalı
+        // (güvenlik: client 0 TL dışında fiyat gönderemez)
+        unitPrice = 0;
       }
-      const itemTotal = unitPrice * item.quantity;
+
+      // Ekstra malzeme fiyatlarını DB'den doğrula (ileride)
+      // Şimdilik extras fiyatlarını toplama dahil et ama güvenli şekilde
+      const extrasTotal = (item.extras || []).reduce((sum: number, e: { priceCents?: number }) => {
+        return sum + (typeof e.priceCents === "number" && e.priceCents > 0 && e.priceCents < 100000 ? e.priceCents : 0);
+      }, 0);
+
+      const itemTotal = (unitPrice + extrasTotal) * item.quantity;
       subtotalCents += itemTotal;
 
       return {
-        menuItemId: item.menuItemId || null,
-        name: item.name.slice(0, 120),
+        menuItemId,
+        name: itemName,
         quantity: item.quantity,
-        unitPriceCents: unitPrice,
+        unitPriceCents: unitPrice + extrasTotal,
         extras: JSON.stringify(item.extras || []),
         notes: (item.notes || "").slice(0, 200),
       };
     });
+
+    // GÜVENLİK: Toplam tutar negatif olamaz
+    if (subtotalCents < 0 || subtotalCents > 10_000_000) {
+      return NextResponse.json({ error: "Geçersiz sipariş tutarı" }, { status: 422 });
+    }
 
     // Min sipariş kontrolü
     if (data.orderType === "DELIVERY" && subtotalCents < CONTACT.delivery.minOrder * 100) {
