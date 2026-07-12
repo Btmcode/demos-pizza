@@ -10,7 +10,7 @@ import { useCart } from "./cart-context";
 export function Navbar() {
   const [scrolled, setScrolled] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const { toggleCart, itemCount, totalCents } = useCart();
+  const { toggleCart, itemCount } = useCart();
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -21,7 +21,7 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top utility strip */}
+      {/* Top utility strip — marka rengi */}
       <div className="hidden md:block bg-ink text-white text-xs">
         <div className="container mx-auto flex items-center justify-between px-6 py-2">
           <div className="flex items-center gap-5">
@@ -50,38 +50,39 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Ana navbar — koyu arka plan (marka rengi) */}
       <header
         className={`sticky top-0 z-40 w-full border-b transition-all duration-200 ${
           scrolled
-            ? "glass border-ink/10 shadow-premium"
-            : "bg-paper border-transparent"
+            ? "bg-ink/95 backdrop-blur-md border-white/10 shadow-lg"
+            : "bg-ink border-white/5"
         }`}
       >
         <div className="container mx-auto px-2 md:px-6">
           <div className="flex items-center justify-between h-[72px] md:h-22">
+            {/* Logo — ŞEFFAF, büyük, konteyner yok */}
             <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Demos Pizza ana sayfa">
-              {/* Logo — mobilde ÇOK büyük, net okunur (Domino's tarzı) */}
-              <div className="bg-ink rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-premium flex items-center">
-                <img
-                  src="/logo.png"
-                  alt={`${BRAND.name}`}
-                  className="h-14 md:h-16 w-auto"
-                />
-              </div>
+              <img
+                src="/logo.png"
+                alt={`${BRAND.name}`}
+                className="h-12 md:h-16 w-auto"
+              />
             </Link>
 
+            {/* Desktop nav — beyaz linkler */}
             <nav className="hidden md:flex items-center gap-0.5">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="px-3.5 py-2 text-sm font-medium text-ink/70 hover:text-pink transition-colors rounded-lg hover:bg-pink/5"
+                  className="px-3.5 py-2 text-sm font-medium text-white/80 hover:text-yellow transition-colors rounded-lg hover:bg-white/5"
                 >
                   {link.label}
                 </a>
               ))}
             </nav>
 
+            {/* Right actions */}
             <div className="flex items-center gap-1.5 md:gap-2">
               <a
                 href={CONTACT.whatsappHref}
@@ -89,7 +90,7 @@ export function Navbar() {
                 rel="noopener noreferrer"
                 className="hidden lg:block"
               >
-                <Button variant="ghost" size="sm" className="text-ink hover:text-pink hover:bg-pink/5">
+                <Button variant="ghost" size="sm" className="text-white/80 hover:text-yellow hover:bg-white/5">
                   WhatsApp
                 </Button>
               </a>
@@ -106,13 +107,13 @@ export function Navbar() {
                 onClick={toggleCart}
                 size="icon"
                 variant="outline"
-                className="relative border-ink/15 text-ink hover:bg-pink hover:text-white hover:border-pink btn-premium h-12 w-12 md:h-9 md:w-9"
+                className="relative border-white/20 text-white hover:bg-pink hover:text-white hover:border-pink btn-premium h-12 w-12 md:h-9 md:w-9"
                 aria-label={`Sepetim, ${itemCount} ürün`}
               >
                 <ShoppingBag className="h-6 w-6 md:h-4 md:w-4" />
                 {itemCount > 0 && (
                   <span
-                    className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 flex items-center justify-center bg-yellow text-ink text-[10px] font-bold rounded-full border-2 border-white"
+                    className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 flex items-center justify-center bg-yellow text-ink text-[10px] font-bold rounded-full border-2 border-ink"
                     aria-hidden="true"
                   >
                     {itemCount}
@@ -123,7 +124,7 @@ export function Navbar() {
                 onClick={() => setMobileOpen(true)}
                 size="icon"
                 variant="ghost"
-                className="md:hidden text-ink h-12 w-12"
+                className="md:hidden text-white h-12 w-12"
                 aria-label="Menüyü aç"
               >
                 <Menu className="h-6 w-6" />
@@ -141,9 +142,9 @@ export function Navbar() {
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
           />
-          <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-paper shadow-premium-lg flex flex-col">
+          <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-paper shadow-2xl flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-ink/10">
-              <img src="/logo.png" alt="Demos Pizza" className="h-8" />
+              <img src="/logo.png" alt="Demos Pizza" className="h-10 w-auto" />
               <Button
                 size="icon"
                 variant="ghost"
