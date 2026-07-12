@@ -41,24 +41,24 @@ export function Contact() {
   };
 
   return (
-    <section id="iletisim" className="bg-cream py-20 md:py-28">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12 max-w-2xl mx-auto">
-          <span className="text-ember text-xs font-mono uppercase tracking-[0.3em]">
+    <section id="iletisim" className="bg-cream py-16 md:py-24">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="text-center mb-10 md:mb-12 max-w-2xl mx-auto">
+          <span className="text-ember text-xs font-mono uppercase tracking-[0.25em]">
             {"// İletişim"}
           </span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3 text-charcoal">
+          <h2 className="font-display text-3xl md:text-5xl font-bold mt-2 text-charcoal">
             Bize <span className="text-ember italic">ulaşın</span>
           </h2>
-          <p className="mt-4 text-charcoal/70">
+          <p className="mt-3 text-charcoal/70 text-sm md:text-base">
             Sorularınız, özel istekleriniz veya geri bildiriminiz mi var? Aşağıdaki formu doldurun
             veya doğrudan bizi arayın.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10">
           {/* Contact info cards */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-3">
             <ContactCard
               icon={<MapPin className="h-5 w-5" />}
               title="Adres"
@@ -69,7 +69,7 @@ export function Contact() {
             <ContactCard
               icon={<Phone className="h-5 w-5" />}
               title="Telefon"
-              lines={[CONTACT.phone, "Rezervasyon & sipariş için"]}
+              lines={[CONTACT.phone, "Sipariş & destek için"]}
               href={CONTACT.phoneHref}
               cta="Hemen ara"
             />
@@ -84,14 +84,13 @@ export function Contact() {
               icon={<Clock className="h-5 w-5" />}
               title="Çalışma Saatleri"
               lines={[
-                "Pzt-Per: 11:00 - 23:00",
-                "Cuma-Cmt: 11:00 - 00:00",
-                "Pazar: 12:00 - 23:00",
+                "Pzt-Per: 10:00 - 00:00",
+                "Cuma-Cmt: 10:00 - 01:00",
+                "Pazar: 10:00 - 00:00",
               ]}
             />
 
-            {/* Social */}
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-2 pt-1">
               <a href={CONTACT.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <Button size="icon" variant="outline" className="rounded-full border-ember/30 text-ember hover:bg-ember hover:text-cream">
                   <Instagram className="h-4 w-4" />
@@ -111,9 +110,8 @@ export function Contact() {
           </div>
 
           {/* Form + map */}
-          <div className="lg:col-span-3 space-y-6">
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 md:p-8 border border-charcoal/8 shadow-sm">
-              {/* Honeypot — bots fill this, humans don't see it */}
+          <div className="lg:col-span-3 space-y-5">
+            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-5 md:p-6 border border-charcoal/8 shadow-sm">
               <input
                 type="text"
                 name="website"
@@ -125,7 +123,7 @@ export function Contact() {
                 aria-hidden="true"
               />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
                   <Label htmlFor="c-name" className="text-xs">Ad Soyad *</Label>
                   <Input
@@ -176,7 +174,7 @@ export function Contact() {
                   />
                 </div>
               </div>
-              <div className="mb-5">
+              <div className="mb-4">
                 <Label htmlFor="c-message" className="text-xs">Mesajınız *</Label>
                 <Textarea
                   id="c-message"
@@ -208,7 +206,6 @@ export function Contact() {
               </Button>
             </form>
 
-            {/* Map */}
             <div className="rounded-2xl overflow-hidden border border-charcoal/8 shadow-sm h-72">
               <iframe
                 src={CONTACT.address.mapEmbed}
@@ -241,8 +238,8 @@ function ContactCard({
   cta?: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-5 border border-charcoal/8 shadow-sm flex items-start gap-4">
-      <div className="w-11 h-11 rounded-full bg-ember/10 text-ember flex items-center justify-center shrink-0">
+    <div className="bg-white rounded-xl p-4 border border-charcoal/8 shadow-sm flex items-start gap-3">
+      <div className="w-10 h-10 rounded-full bg-ember/10 text-ember flex items-center justify-center shrink-0">
         {icon}
       </div>
       <div className="flex-1">

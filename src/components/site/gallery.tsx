@@ -15,21 +15,21 @@ const GALLERY = [
 
 export function Gallery() {
   return (
-    <section id="galeri" className="bg-charcoal text-cream py-20 md:py-28">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <span className="text-saffron text-xs font-mono uppercase tracking-[0.3em]">
+    <section id="galeri" className="bg-cream py-16 md:py-24">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="text-center mb-10 md:mb-12">
+          <span className="text-ember text-xs font-mono uppercase tracking-[0.25em]">
             {"// Galeri"}
           </span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3">
-            Lezzetin <span className="text-saffron italic">portresi</span>
+          <h2 className="font-display text-3xl md:text-5xl font-bold mt-2 text-charcoal">
+            Lezzetin <span className="text-ember italic">portresi</span>
           </h2>
-          <p className="mt-4 text-cream/70 max-w-xl mx-auto">
+          <p className="mt-3 text-charcoal/70 max-w-xl mx-auto text-sm md:text-base">
             Her pizza bir sanat eseri. Taş fırından çıkan anları gözünüzle tadın.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[180px] md:auto-rows-[220px] gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[200px] gap-2.5 md:gap-3">
           {GALLERY.map((g, i) => (
             <figure
               key={i}
@@ -38,11 +38,10 @@ export function Gallery() {
               <img
                 src={g.src}
                 alt={g.alt}
-                className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <figcaption className="absolute bottom-0 inset-x-0 p-3 text-xs text-cream/90 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all">
+              <figcaption className="absolute bottom-0 inset-x-0 bg-charcoal/80 p-2.5 text-[11px] md:text-xs text-cream translate-y-full group-hover:translate-y-0 transition-transform">
                 <Camera className="h-3 w-3 inline mr-1 text-saffron" />
                 {g.alt}
               </figcaption>

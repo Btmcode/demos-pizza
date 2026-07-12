@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, ShoppingBag, Phone, MapPin, X, Flame } from "lucide-react";
+import { Menu, ShoppingBag, Phone, MapPin, X, Flame, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NAV_LINKS, CONTACT, BRAND } from "@/lib/constants";
@@ -14,7 +14,7 @@ export function Navbar() {
   const { toggleCart, itemCount } = useCart();
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -22,80 +22,82 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top strip */}
-      <div className="hidden md:block bg-charcoal text-cream/80 text-xs">
+      {/* Top utility strip */}
+      <div className="hidden md:block bg-charcoal text-cream text-xs">
         <div className="container mx-auto flex items-center justify-between px-6 py-2">
           <div className="flex items-center gap-5">
             <a href={CONTACT.phoneHref} className="flex items-center gap-1.5 hover:text-saffron transition-colors">
               <Phone className="h-3 w-3" />
-              {CONTACT.phone}
+              <span className="font-mono">{CONTACT.phone}</span>
             </a>
-            <a
-              href={`https://maps.google.com/?q=${encodeURIComponent(CONTACT.address.full)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-saffron transition-colors"
-            >
+            <span className="flex items-center gap-1.5 text-cream/70">
               <MapPin className="h-3 w-3" />
-              {CONTACT.address.full}
-            </a>
+              {CONTACT.address.district} · {CONTACT.address.city}
+            </span>
           </div>
           <div className="flex items-center gap-3">
             {CONTACT.promo.active && (
-              <span className="flex items-center gap-1 text-saffron font-semibold">
+              <span className="flex items-center gap-1.5 text-saffron font-semibold">
                 <Flame className="h-3 w-3" />
                 {CONTACT.promo.text}
               </span>
             )}
-            <span className="text-cream/30">|</span>
-            <span>Açık · {CONTACT.delivery.deliveryTime} teslimat</span>
+            <span className="text-cream/40">·</span>
+            <span className="flex items-center gap-1.5 text-cream/70">
+              <Clock className="h-3 w-3" />
+              Açık · {CONTACT.delivery.deliveryTime} teslimat
+            </span>
           </div>
         </div>
       </div>
 
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+        className={`sticky top-0 z-40 w-full border-b transition-colors ${
           scrolled
-            ? "bg-cream/95 backdrop-blur-md shadow-lg shadow-charcoal/5 border-b border-ember/10"
-            : "bg-cream/80 backdrop-blur-sm"
+            ? "bg-cream border-charcoal/10 shadow-sm"
+            : "bg-cream border-transparent"
         }`}
       >
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between h-16 md:h-18">
             {/* Logo */}
-            <Link href="#anasayfa" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-2.5 group" aria-label="Demos Pizza ana sayfa">
               <img
                 src="/logo.svg"
-                alt={`${BRAND.name} Logo`}
-                className="h-10 md:h-12 w-auto group-hover:scale-105 transition-transform"
+                alt={`${BRAND.name}`}
+                className="h-9 md:h-11 w-auto"
               />
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-0.5">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-2 text-sm font-medium text-charcoal/80 hover:text-ember transition-colors relative group"
+                  className="px-3.5 py-2 text-sm font-medium text-charcoal/80 hover:text-ember transition-colors rounded-md hover:bg-ember/5"
                 >
                   {link.label}
-                  <span className="absolute inset-x-4 -bottom-0.5 h-0.5 bg-ember scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                 </a>
               ))}
             </nav>
 
             {/* Right actions */}
-            <div className="flex items-center gap-2">
-              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="hidden lg:block">
-                <Button variant="ghost" size="sm" className="text-charcoal hover:text-basil">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <a
+                href={CONTACT.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden lg:block"
+              >
+                <Button variant="ghost" size="sm" className="text-charcoal hover:text-basil hover:bg-basil/5">
                   WhatsApp
                 </Button>
               </a>
-              <a href="#menu">
+              <a href="#menu" className="hidden sm:block">
                 <Button
                   size="sm"
-                  className="bg-ember hover:bg-ember/90 text-cream font-semibold"
+                  className="bg-ember hover:bg-ember/90 text-cream font-semibold shadow-sm"
                 >
                   Sipariş Ver
                 </Button>
@@ -104,14 +106,17 @@ export function Navbar() {
                 onClick={toggleCart}
                 size="icon"
                 variant="outline"
-                className="relative border-ember/30 text-ember hover:bg-ember hover:text-cream"
-                aria-label="Sepeti aç"
+                className="relative border-charcoal/15 text-charcoal hover:bg-ember hover:text-cream hover:border-ember"
+                aria-label={`Sepetim, ${itemCount} ürün`}
               >
                 <ShoppingBag className="h-4 w-4" />
                 {itemCount > 0 && (
-                  <Badge className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 flex items-center justify-center bg-saffron text-charcoal text-[10px] font-bold border-2 border-cream">
+                  <span
+                    className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 flex items-center justify-center bg-saffron text-charcoal text-[10px] font-bold rounded-full border-2 border-cream"
+                    aria-hidden="true"
+                  >
                     {itemCount}
-                  </Badge>
+                  </span>
                 )}
               </Button>
               <Button
@@ -130,13 +135,14 @@ export function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
           <div
-            className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-charcoal/50"
             onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
           />
-          <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-cream shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-ember/10">
+          <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-cream shadow-xl flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-charcoal/10">
               <img src="/logo.svg" alt="Demos Pizza" className="h-8" />
               <Button
                 size="icon"
@@ -147,7 +153,7 @@ export function Navbar() {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <nav className="flex flex-col p-4 gap-1">
+            <nav className="flex flex-col p-3 gap-0.5">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
@@ -159,11 +165,11 @@ export function Navbar() {
                 </a>
               ))}
             </nav>
-            <div className="mt-auto p-4 border-t border-ember/10 space-y-2">
+            <div className="mt-auto p-4 border-t border-charcoal/10 space-y-2">
               <a href={CONTACT.phoneHref}>
                 <Button variant="outline" className="w-full" size="sm">
                   <Phone className="h-4 w-4 mr-2" />
-                  {CONTACT.phone}
+                  <span className="font-mono">{CONTACT.phone}</span>
                 </Button>
               </a>
               <a href="#menu" onClick={() => setMobileOpen(false)}>

@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   UtensilsCrossed,
   ShoppingBag,
-  CalendarCheck,
   MessageSquare,
   Settings,
   Activity,
@@ -16,20 +15,20 @@ import {
   ExternalLink,
   Menu as MenuIcon,
   X,
-  Flame,
   Printer,
+  Flame,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/constants";
 
 const NAV = [
-  { href: "/admin", label: "Gösterge Paneli", icon: LayoutDashboard, exact: true },
+  { href: "/admin", label: "Panel", icon: LayoutDashboard, exact: true },
   { href: "/admin/siparisler", label: "Siparişler", icon: ShoppingBag },
-  { href: "/admin/menu", label: "Menü Yönetimi", icon: UtensilsCrossed },
-  { href: "/admin/yazici", label: "Termal Yazıcı", icon: Printer },
+  { href: "/admin/menu", label: "Menü", icon: UtensilsCrossed },
+  { href: "/admin/yazici", label: "Yazıcı", icon: Printer },
   { href: "/admin/mesajlar", label: "Mesajlar", icon: MessageSquare },
   { href: "/admin/ayarlar", label: "Ayarlar", icon: Settings },
-  { href: "/admin/aktivite", label: "Aktivite Kaydı", icon: Activity },
+  { href: "/admin/aktivite", label: "Aktivite", icon: Activity },
 ];
 
 function AdminShell({ children }: { children: React.ReactNode }) {
@@ -38,7 +37,6 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
-  // Login page is excluded from auth gate (handled in page itself)
   const isLogin = pathname === "/admin/giris";
 
   React.useEffect(() => {
@@ -54,8 +52,8 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-charcoal">
-        <div className="text-cream/60 text-sm">Yükleniyor...</div>
+      <div className="min-h-screen flex items-center justify-center bg-cream">
+        <div className="text-charcoal/60 text-sm">Yükleniyor...</div>
       </div>
     );
   }
@@ -66,30 +64,26 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-cream flex">
-      {/* Sidebar - desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-charcoal text-cream/80 fixed inset-y-0 left-0 z-30">
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex flex-col w-60 bg-charcoal text-cream/80 fixed inset-y-0 left-0 z-30">
         <SidebarContent pathname={pathname} session={session} />
       </aside>
 
-      {/* Sidebar - mobile drawer */}
+      {/* Mobile drawer */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setSidebarOpen(false)} />
-          <aside className="absolute left-0 inset-y-0 w-64 bg-charcoal text-cream/80 flex flex-col">
-            <SidebarContent
-              pathname={pathname}
-              session={session}
-              onNavigate={() => setSidebarOpen(false)}
-            />
+          <div className="absolute inset-0 bg-charcoal/50" onClick={() => setSidebarOpen(false)} />
+          <aside className="absolute left-0 inset-y-0 w-60 bg-charcoal text-cream/80 flex flex-col">
+            <SidebarContent pathname={pathname} session={session} onNavigate={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}
 
       {/* Main */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
-        {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-cream/95 backdrop-blur-md border-b border-charcoal/10">
-          <div className="flex items-center justify-between px-4 md:px-6 h-16">
+      <div className="flex-1 lg:ml-60 flex flex-col min-h-screen">
+        {/* Top bar — solid, no blur */}
+        <header className="sticky top-0 z-20 bg-cream border-b border-charcoal/10">
+          <div className="flex items-center justify-between px-4 md:px-6 h-14 md:h-16">
             <div className="flex items-center gap-3">
               <Button
                 size="icon"
@@ -100,9 +94,8 @@ function AdminShell({ children }: { children: React.ReactNode }) {
               >
                 <MenuIcon className="h-5 w-5" />
               </Button>
-              <div className="font-display font-bold text-charcoal text-lg">
-                {NAV.find((n) => (n.exact ? pathname === n.href : pathname.startsWith(n.href)) && !n.exact)?.label ||
-                  "Gösterge Paneli"}
+              <div className="font-display font-bold text-charcoal text-base md:text-lg">
+                {NAV.find((n) => (n.exact ? pathname === n.href : pathname.startsWith(n.href) && !n.exact))?.label || "Panel"}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -119,13 +112,13 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                 className="text-charcoal/70 hover:text-ember"
               >
                 <LogOut className="h-3.5 w-3.5 mr-1.5" />
-                Çıkış
+                <span className="hidden sm:inline">Çıkış</span>
               </Button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+        <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
     </div>
   );
@@ -142,10 +135,9 @@ function SidebarContent({
 }) {
   return (
     <>
-      {/* Logo */}
-      <div className="p-5 border-b border-cream/10 flex items-center justify-between">
+      <div className="p-4 border-b border-cream/10 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-2" onClick={onNavigate}>
-          <img src="/logo.svg" alt="Demos" className="h-9 brightness-0 invert" />
+          <img src="/logo.svg" alt="Demos" className="h-8" />
         </Link>
         {onNavigate && (
           <Button size="icon" variant="ghost" className="text-cream lg:hidden" onClick={onNavigate}>
@@ -154,7 +146,6 @@ function SidebarContent({
         )}
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto custom-scroll">
         {NAV.map((item) => {
           const Icon = item.icon;
@@ -177,7 +168,6 @@ function SidebarContent({
         })}
       </nav>
 
-      {/* User card */}
       <div className="p-3 border-t border-cream/10">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-cream/5">
           <div className="w-9 h-9 rounded-full bg-saffron flex items-center justify-center text-charcoal font-bold text-sm">

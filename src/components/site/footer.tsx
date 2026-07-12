@@ -6,16 +6,16 @@ import { BRAND, CONTACT, NAV_LINKS } from "@/lib/constants";
 
 export function Footer() {
   return (
-    <footer className="bg-charcoal text-cream/80 mt-auto">
-      <div className="container mx-auto px-6 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+    <footer className="bg-charcoal text-cream/80">
+      <div className="container mx-auto px-4 md:px-6 py-12 md:py-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <img src="/logo.svg" alt="Demos Pizza" className="h-12 mb-4 brightness-0 invert" />
+            <img src="/logo.svg" alt="Demos Pizza" className="h-10 md:h-11 mb-4" />
             <p className="text-sm text-cream/65 leading-relaxed max-w-xs">
               {BRAND.description}
             </p>
-            <div className="flex gap-2 mt-5">
+            <div className="flex gap-2 mt-4">
               <a href={CONTACT.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-cream/5 hover:bg-ember flex items-center justify-center transition-colors">
                 <Instagram className="h-4 w-4" />
               </a>
@@ -26,9 +26,8 @@ export function Footer() {
                 <MessageCircle className="h-4 w-4" />
               </a>
             </div>
-            {/* Promo badge */}
             {CONTACT.promo.active && (
-              <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ember/20 border border-ember/30 text-saffron text-xs font-bold">
+              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ember/15 border border-ember/30 text-saffron text-xs font-bold">
                 🔥 {CONTACT.promo.text}
               </div>
             )}
@@ -36,7 +35,7 @@ export function Footer() {
 
           {/* Quick links */}
           <div>
-            <h3 className="font-display font-bold text-cream mb-4">Hızlı Erişim</h3>
+            <h3 className="font-display font-bold text-cream mb-3 text-sm">Hızlı Erişim</h3>
             <ul className="space-y-2 text-sm">
               {NAV_LINKS.map((l) => (
                 <li key={l.href}>
@@ -50,7 +49,7 @@ export function Footer() {
 
           {/* Service areas */}
           <div>
-            <h3 className="font-display font-bold text-cream mb-4">Servis Bölgeleri</h3>
+            <h3 className="font-display font-bold text-cream mb-3 text-sm">Servis Bölgeleri</h3>
             <ul className="space-y-1.5 text-xs text-cream/65">
               {CONTACT.delivery.serviceAreas.slice(0, 8).map((area) => (
                 <li key={area} className="flex items-center gap-1">
@@ -64,8 +63,8 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-display font-bold text-cream mb-4">İletişim</h3>
-            <ul className="space-y-3 text-sm">
+            <h3 className="font-display font-bold text-cream mb-3 text-sm">İletişim</h3>
+            <ul className="space-y-2.5 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-saffron shrink-0 mt-0.5" />
                 <span>{CONTACT.address.full}</span>
@@ -73,7 +72,7 @@ export function Footer() {
               <li>
                 <a href={CONTACT.phoneHref} className="flex items-center gap-2 hover:text-saffron transition-colors">
                   <Phone className="h-4 w-4 text-saffron" />
-                  {CONTACT.phone}
+                  <span className="font-mono">{CONTACT.phone}</span>
                 </a>
               </li>
               <li>
@@ -90,13 +89,13 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Hours strip */}
+        {/* Hours */}
         <div className="mt-10 pt-6 border-t border-cream/10">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-2 mb-3">
             <Clock className="h-4 w-4 text-saffron" />
             <h3 className="font-display font-bold text-cream text-sm">Çalışma Saatleri</h3>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-xs">
             {CONTACT.hours.map((h) => (
               <div key={h.day} className="bg-cream/5 rounded-lg p-2.5">
                 <div className="text-cream/60">{h.day.slice(0, 3)}</div>
@@ -108,21 +107,21 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Legal links */}
+        {/* Legal */}
         <div className="mt-8 pt-6 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-cream/50">
           <div>
             © {new Date().getFullYear()} {BRAND.legalName} · Tüm hakları saklıdır
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <Link href="/kvkk" className="hover:text-saffron">KVKK</Link>
             <span className="text-cream/20">·</span>
             <Link href="/gizlilik" className="hover:text-saffron">Gizlilik</Link>
             <span className="text-cream/20">·</span>
-            <Link href="/cerez" className="hover:text-saffron">Çerez Politikası</Link>
+            <Link href="/cerez" className="hover:text-saffron">Çerez</Link>
             <span className="text-cream/20">·</span>
-            <Link href="/teslimat" className="hover:text-saffron">Teslimat Sözleşmesi</Link>
+            <Link href="/teslimat" className="hover:text-saffron">Teslimat</Link>
             <span className="text-cream/20">·</span>
-            <Link href="/iade" className="hover:text-saffron">İade & Değişim</Link>
+            <Link href="/iade" className="hover:text-saffron">İade</Link>
             <span className="text-cream/20">·</span>
             <Link href="/admin/giris" className="hover:text-saffron">Yönetim</Link>
           </div>

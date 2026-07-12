@@ -17,7 +17,6 @@ function LoginContent() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  // Already logged in?
   React.useEffect(() => {
     getSession().then((s) => {
       if (s) router.replace("/admin");
@@ -67,51 +66,38 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-charcoal p-4 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <img
-          src="/images/stone-oven.png"
-          alt=""
-          className="h-full w-full object-cover opacity-15"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-charcoal via-charcoal/95 to-smoke" />
-        <div className="absolute -top-20 -right-20 w-96 h-96 bg-saffron/10 blur-3xl rounded-full ember-pulse" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-ember/10 blur-3xl rounded-full ember-pulse" />
-      </div>
-
+    <div className="min-h-screen flex items-center justify-center bg-charcoal p-4">
       {/* Form card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-cream/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 border border-saffron/20">
+        <div className="bg-cream rounded-2xl shadow-xl p-7 md:p-9 border border-smoke">
           {/* Logo */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-7">
             <img
               src="/logo.svg"
               alt="Demos Pizza"
-              className="h-14 mx-auto mb-4"
+              className="h-12 mx-auto mb-3"
             />
-            <div className="flex items-center justify-center gap-2 text-xs text-charcoal/60 font-mono uppercase tracking-widest">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-charcoal/60 font-mono uppercase tracking-widest">
               <Flame className="h-3 w-3 text-ember" />
               Yönetim Paneli
             </div>
           </div>
 
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-charcoal text-center mb-2">
+          <h1 className="font-display text-xl md:text-2xl font-bold text-charcoal text-center mb-1">
             Hoş geldiniz
           </h1>
-          <p className="text-center text-sm text-charcoal/60 mb-8">
+          <p className="text-center text-xs text-charcoal/60 mb-6">
             Devam etmek için yönetici bilgilerinizle giriş yapın
           </p>
 
-          {/* Error */}
           {error && (
-            <div className="mb-5 p-3 rounded-lg bg-ember/10 border border-ember/30 text-ember text-sm flex items-center gap-2">
+            <div className="mb-4 p-2.5 rounded-lg bg-ember/10 border border-ember/30 text-ember text-xs flex items-center gap-2">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
             <div>
               <Label htmlFor="email" className="text-xs font-medium">
                 E-posta
@@ -163,7 +149,7 @@ function LoginContent() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-ember hover:bg-ember/90 text-cream h-12 text-base font-semibold"
+              className="w-full bg-ember hover:bg-ember/90 text-cream h-11 text-sm font-semibold mt-2"
             >
               {loading ? (
                 <>
@@ -179,22 +165,21 @@ function LoginContent() {
             </Button>
           </form>
 
-          {/* Security note */}
-          <div className="mt-6 p-3 rounded-lg bg-charcoal/5 text-[11px] text-charcoal/60 leading-relaxed">
+          <div className="mt-5 p-2.5 rounded-lg bg-charcoal/5 text-[11px] text-charcoal/60 leading-relaxed">
             <strong className="text-charcoal/80">Güvenlik:</strong> Tüm giriş denemeleri
             kaydedilir. Yetkisiz erişim girişimi yasal işlem doğurur. Bu alan sadece
             yetkili personel içindir.
           </div>
 
-          <div className="mt-5 text-center">
+          <div className="mt-4 text-center">
             <a href="/" className="text-xs text-charcoal/50 hover:text-ember">
               ← Siteye dön
             </a>
           </div>
         </div>
 
-        <div className="text-center text-cream/40 text-[10px] mt-6">
-          Demos Pizza Yönetim Sistemi · v1.0 · Güvenli Giriş
+        <div className="text-center text-cream/40 text-[10px] mt-5">
+          Demos Pizza Yönetim · v1.0 · Güvenli Giriş
         </div>
       </div>
     </div>
