@@ -3,13 +3,13 @@
 import * as React from "react";
 import {
   ShoppingBag,
-  CalendarCheck,
   MessageSquare,
   UtensilsCrossed,
   TrendingUp,
   Clock,
   ArrowUpRight,
   Flame,
+  Printer,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,7 @@ interface Stats {
     pendingOrders: number;
     todayReservations: number;
     pendingReservations: number;
+    unprintedOrders: number;
     unreadMessages: number;
     totalMenuItems: number;
     availableMenuItems: number;
@@ -109,10 +110,10 @@ export default function AdminDashboard() {
           color="saffron"
         />
         <KpiCard
-          title="Bugünkü Rezervasyon"
-          value={loading ? "—" : String(stats?.counts.todayReservations ?? 0)}
-          sub={`${stats?.counts.pendingReservations ?? 0} bekleyen`}
-          icon={<CalendarCheck className="h-5 w-5" />}
+          title="Yazdırılmamış"
+          value={loading ? "—" : String(stats?.counts.unprintedOrders ?? 0)}
+          sub="yeni sipariş"
+          icon={<Printer className="h-5 w-5" />}
           color="basil"
         />
         <KpiCard
@@ -215,7 +216,7 @@ export default function AdminDashboard() {
         <h3 className="font-display font-bold text-charcoal mb-4">Hızlı Erişim</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <QuickAction href="/admin/siparisler" icon={<ShoppingBag className="h-4 w-4" />} label="Siparişler" sub={`${stats?.counts.pendingOrders ?? 0} bekleyen`} />
-          <QuickAction href="/admin/rezervasyonlar" icon={<CalendarCheck className="h-4 w-4" />} label="Rezervasyonlar" sub={`${stats?.counts.pendingReservations ?? 0} bekleyen`} />
+          <QuickAction href="/admin/yazici" icon={<Printer className="h-4 w-4" />} label="Termal Yazıcı" sub={`${stats?.counts.unprintedOrders ?? 0} yazdırılacak`} />
           <QuickAction href="/admin/mesajlar" icon={<MessageSquare className="h-4 w-4" />} label="Mesajlar" sub={`${stats?.counts.unreadMessages ?? 0} okunmamış`} />
           <QuickAction href="/admin/menu" icon={<UtensilsCrossed className="h-4 w-4" />} label="Menü" sub={`${stats?.counts.availableMenuItems ?? 0} aktif`} />
         </div>

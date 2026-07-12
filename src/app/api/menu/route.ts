@@ -30,6 +30,8 @@ export async function GET(req: Request) {
         tags: true,
         allergens: true,
         sizes: true,
+        crustTypes: true,
+        extras: true,
       },
     });
 
@@ -39,6 +41,8 @@ export async function GET(req: Request) {
       tags: parseArrayField(it.tags),
       allergens: parseArrayField(it.allergens),
       sizes: parseJsonField(it.sizes, []),
+      crustTypes: parseJsonField(it.crustTypes, []),
+      extras: parseJsonField(it.extras, []),
     }));
 
     return NextResponse.json({ items: serialized });

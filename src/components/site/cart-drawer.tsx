@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, Plus, Minus, Trash2, ShoppingBag, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, Loader2, CheckCircle2, ArrowRight, ArrowLeft, MapPin, User, Phone, CreditCard, Truck, Store, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,21 +13,27 @@ import { toast } from "sonner";
 
 type Step = "cart" | "checkout" | "success";
 
+const PAYMENT_LABELS: Record<string, string> = {
+  CASH_ON_DELIVERY: "Kapıda Nakit",
+  CARD_ON_DELIVERY: "Kapıda Kart",
+};
+
 export function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, totalCents, clear, itemCount } = useCart();
   const [step, setStep] = React.useState<Step>("cart");
   const [orderType, setOrderType] = React.useState<"DELIVERY" | "PICKUP">("DELIVERY");
+  const [paymentMethod, setPaymentMethod] = React.useState<"CASH_ON_DELIVERY" | "CARD_ON_DELIVERY">("CASH_ON_DELIVERY");
   const [form, setForm] = React.useState({
     name: "",
     phone: "",
     email: "",
+    district: (CONTACT.delivery.serviceAreas[0] as string) || "",
     address: "",
     notes: "",
   });
   const [submitting, setSubmitting] = React.useState(false);
   const [orderResult, setOrderResult] = React.useState<{ orderNumber: string; totalDisplay: string; estimatedTime: string } | null>(null);
 
-  // Reset step when drawer closes
   React.useEffect(() => {
     if (!isOpen) {
       const t = setTimeout(() => setStep("cart"), 300);
@@ -50,7 +56,11 @@ export function CartDrawer() {
       return;
     }
     if (orderType === "DELIVERY" && !form.address.trim()) {
-      toast.error("Teslimat adresi gerekli");
+      toast.error("Lütfen adresinizi girin");
+      return;
+    }
+    if (orderType === "DELIVERY" && !form.district) {
+      toast.error("Lütfen bölgenizi seçin");
       return;
     }
     if (orderType === "DELIVERY" && !minMet) {
@@ -64,7 +74,7 @@ export function CartDrawer() {
         customerPhone: form.phone.trim(),
         customerEmail: form.email.trim() || undefined,
         orderType,
-        paymentMethod: "CASH_ON_DELIVERY" as const,
+        paymentMethod,
         items: items.map((i) => ({
           menuItemId: i.menuItemId,
           name: i.name + (i.size ? ` (${i.size})` : ""),
@@ -73,6 +83,7 @@ export function CartDrawer() {
           extras: i.extras,
           notes: i.notes,
         })),
+        deliveryDistrict: orderType === "DELIVERY" ? form.district : undefined,
         deliveryAddress: orderType === "DELIVERY" ? form.address.trim() : undefined,
         notes: form.notes.trim() || undefined,
       };
@@ -93,7 +104,7 @@ export function CartDrawer() {
       });
       setStep("success");
       clear();
-      toast.success("Siparişiniz alındı!");
+      toast.success("Siparişiniz alındı! WhatsApp'tan da onay gönderildi.");
     } catch {
       toast.error("Bağlantı hatası. Lütfen tekrar deneyin.");
     } finally {
@@ -151,6 +162,11 @@ export function CartDrawer() {
                           <div>
                             <h4 className="font-medium text-sm text-charcoal">{item.name}</h4>
                             {item.size && <p className="text-[11px] text-charcoal/55">{item.size}</p>}
+                            {item.extras.length > 0 && (
+                              <p className="text-[10px] text-charcoal/50 mt-0.5">
+                                + {item.extras.map((e) => e.name).join(", ")}
+                              </p>
+                            )}
                           </div>
                           <button
                             onClick={() => removeItem(item.id)}
@@ -220,67 +236,77 @@ export function CartDrawer() {
         {/* CHECKOUT STEP */}
         {step === "checkout" && (
           <>
-            <div className="flex-1 overflow-y-auto custom-scroll p-4 space-y-4">
-              <button onClick={() => setStep("cart")} className="text-xs text-charcoal/60 hover:text-ember">
-                ← Sepete dön
+            <div className="flex-1 overflow-y-auto custom-scroll p-4 space-y-5">
+              <button onClick={() => setStep("cart")} className="text-xs text-charcoal/60 hover:text-ember flex items-center gap-1">
+                <ArrowLeft className="h-3 w-3" />
+                Sepete dön
               </button>
 
-              {/* Order type */}
+              {/* Order type — toggle */}
               <div>
-                <Label className="text-xs font-medium">Sipariş tipi</Label>
-                <div className="grid grid-cols-2 gap-2 mt-1.5">
+                <Label className="text-xs font-semibold mb-2 block">Sipariş Tipi</Label>
+                <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setOrderType("DELIVERY")}
-                    className={`p-3 rounded-lg border text-sm font-medium transition-all ${
+                    className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
                       orderType === "DELIVERY"
-                        ? "bg-ember text-cream border-ember"
+                        ? "bg-ember text-cream border-ember shadow-md"
                         : "bg-white border-charcoal/15 hover:border-ember/40"
                     }`}
                   >
-                    🛵 Teslimat
-                    <div className="text-[10px] opacity-80 mt-0.5">{CONTACT.delivery.deliveryTime}</div>
+                    <Truck className="h-4 w-4" />
+                    <span>Teslimat</span>
+                    <span className="text-[10px] opacity-80">{CONTACT.delivery.deliveryTime}</span>
                   </button>
                   <button
                     onClick={() => setOrderType("PICKUP")}
-                    className={`p-3 rounded-lg border text-sm font-medium transition-all ${
+                    className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
                       orderType === "PICKUP"
-                        ? "bg-ember text-cream border-ember"
+                        ? "bg-ember text-cream border-ember shadow-md"
                         : "bg-white border-charcoal/15 hover:border-ember/40"
                     }`}
                   >
-                    🏪 Gel-Al
-                    <div className="text-[10px] opacity-80 mt-0.5">{CONTACT.delivery.pickupTime}</div>
+                    <Store className="h-4 w-4" />
+                    <span>Gel-Al</span>
+                    <span className="text-[10px] opacity-80">{CONTACT.delivery.pickupTime}</span>
                   </button>
                 </div>
               </div>
 
               {/* Customer info */}
               <div className="space-y-3">
+                <Label className="text-xs font-semibold">Müşteri Bilgileri</Label>
                 <div>
-                  <Label htmlFor="co-name" className="text-xs">Ad Soyad *</Label>
-                  <Input
-                    id="co-name"
-                    value={form.name}
-                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                    placeholder="Adınız"
-                    maxLength={80}
-                    className="mt-1"
-                  />
+                  <Label htmlFor="co-name" className="text-[11px] text-charcoal/60">Ad Soyad *</Label>
+                  <div className="relative mt-1">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40" />
+                    <Input
+                      id="co-name"
+                      value={form.name}
+                      onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                      placeholder="Adınız Soyadınız"
+                      maxLength={80}
+                      className="pl-9"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="co-phone" className="text-xs">Telefon *</Label>
-                  <Input
-                    id="co-phone"
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                    placeholder="+90 5XX XXX XX XX"
-                    maxLength={20}
-                    className="mt-1"
-                  />
+                  <Label htmlFor="co-phone" className="text-[11px] text-charcoal/60">Telefon *</Label>
+                  <div className="relative mt-1">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40" />
+                    <Input
+                      id="co-phone"
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                      placeholder="+90 5XX XXX XX XX"
+                      maxLength={20}
+                      className="pl-9"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="co-email" className="text-xs">E-posta (opsiyonel)</Label>
+                  <Label htmlFor="co-email" className="text-[11px] text-charcoal/60">E-posta (opsiyonel)</Label>
                   <Input
                     id="co-email"
                     type="email"
@@ -291,32 +317,84 @@ export function CartDrawer() {
                     className="mt-1"
                   />
                 </div>
-                {orderType === "DELIVERY" && (
+              </div>
+
+              {/* Delivery address — only for DELIVERY */}
+              {orderType === "DELIVERY" && (
+                <div className="space-y-3">
+                  <Label className="text-xs font-semibold">Teslimat Adresi</Label>
+                  {/* District dropdown */}
                   <div>
-                    <Label htmlFor="co-addr" className="text-xs">Teslimat Adresi *</Label>
+                    <Label htmlFor="co-district" className="text-[11px] text-charcoal/60">Bölge / Mahalle *</Label>
+                    <div className="relative mt-1">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40 z-10" />
+                      <select
+                        id="co-district"
+                        value={form.district}
+                        onChange={(e) => setForm((f) => ({ ...f, district: e.target.value }))}
+                        className="w-full pl-9 pr-3 py-2.5 rounded-md border border-charcoal/15 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-ember/30 focus:border-ember"
+                      >
+                        <option value="" disabled>Bölge seçin</option>
+                        {CONTACT.delivery.serviceAreas.map((area) => (
+                          <option key={area} value={area}>{area}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <p className="text-[10px] text-charcoal/50 mt-1">
+                      Listedeki bölgelere teslimat yapıyoruz
+                    </p>
+                  </div>
+                  {/* Full address */}
+                  <div>
+                    <Label htmlFor="co-addr" className="text-[11px] text-charcoal/60">Tam Adres *</Label>
                     <Textarea
                       id="co-addr"
                       value={form.address}
                       onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-                      placeholder="Mahalle, sokak, bina, daire no."
+                      placeholder="Mahalle, sokak, bina no, daire no, kat, ek tarif..."
                       maxLength={500}
                       rows={3}
                       className="mt-1"
                     />
                   </div>
-                )}
-                <div>
-                  <Label htmlFor="co-notes" className="text-xs">Sipariş notu (opsiyonel)</Label>
-                  <Textarea
-                    id="co-notes"
-                    value={form.notes}
-                    onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                    placeholder="Çıtır olsun, sos koymayın vs."
-                    maxLength={500}
-                    rows={2}
-                    className="mt-1"
-                  />
                 </div>
+              )}
+
+              {/* Payment method */}
+              <div>
+                <Label className="text-xs font-semibold mb-2 block">Ödeme Yöntemi</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(Object.keys(PAYMENT_LABELS) as (keyof typeof PAYMENT_LABELS)[]).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setPaymentMethod(m as "CASH_ON_DELIVERY" | "CARD_ON_DELIVERY")}
+                      className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
+                        paymentMethod === m
+                          ? "bg-charcoal text-cream border-charcoal"
+                          : "bg-white border-charcoal/15 hover:border-ember/40"
+                      }`}
+                    >
+                      <CreditCard className="h-4 w-4" />
+                      <span>{PAYMENT_LABELS[m]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <Label htmlFor="co-notes" className="text-[11px] text-charcoal/60 flex items-center gap-1">
+                  <MessageSquare className="h-3 w-3" /> Sipariş Notu (opsiyonel)
+                </Label>
+                <Textarea
+                  id="co-notes"
+                  value={form.notes}
+                  onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+                  placeholder="Çıtır olsun, sos koymayın, kapı zilini çalmayın vs."
+                  maxLength={500}
+                  rows={2}
+                  className="mt-1"
+                />
               </div>
             </div>
 
@@ -343,13 +421,10 @@ export function CartDrawer() {
                   <span className="text-ember">{CURRENCY.formatShort(grandTotal)}</span>
                 </div>
               </div>
-              <div className="text-xs text-charcoal/60 bg-charcoal/5 p-2 rounded">
-                💵 Kapıda nakit / kart ile ödeme
-              </div>
               <Button
                 onClick={handleCheckout}
                 disabled={submitting}
-                className="w-full bg-ember hover:bg-ember/90 text-cream"
+                className="w-full bg-ember hover:bg-ember/90 text-cream h-12"
               >
                 {submitting ? (
                   <>
@@ -358,11 +433,14 @@ export function CartDrawer() {
                   </>
                 ) : (
                   <>
-                    Siparişi Tamamla
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Siparişi Tamamla ({CURRENCY.formatShort(grandTotal)})
                   </>
                 )}
               </Button>
+              <p className="text-[10px] text-charcoal/50 text-center">
+                Sipariş verdiğinizde <a href="/teslimat" className="underline">Teslimat Sözleşmesi</a>'ni kabul etmiş olursunuz
+              </p>
             </div>
           </>
         )}
@@ -389,19 +467,25 @@ export function CartDrawer() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-charcoal/70">Ödeme</span>
-                <span className="font-medium">Kapıda</span>
+                <span className="font-medium">{PAYMENT_LABELS[paymentMethod]}</span>
               </div>
             </div>
+            <div className="mt-4 p-3 bg-basil/5 border border-basil/20 rounded-xl text-sm text-charcoal/70">
+              <MessageSquare className="h-4 w-4 inline mr-1 text-basil" />
+              Siparişinizi WhatsApp'tan da takip edebilirsiniz:{" "}
+              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="text-basil font-semibold underline">
+                {CONTACT.whatsapp}
+              </a>
+            </div>
             <p className="mt-4 text-xs text-charcoal/55">
-              Siparişiniz onaylandığında size telefon ile haber vereceğiz.
-              Teşekkür ederiz! 🍕
+              Sipariş onaylandığında telefon ile haber vereceğiz. Teşekkür ederiz! 🍕
             </p>
             <Button
               onClick={() => {
                 closeCart();
                 setStep("cart");
                 setOrderResult(null);
-                setForm({ name: "", phone: "", email: "", address: "", notes: "" });
+                setForm({ name: "", phone: "", email: "", district: (CONTACT.delivery.serviceAreas[0] as string) || "", address: "", notes: "" });
               }}
               className="w-full mt-6 bg-ember hover:bg-ember/90 text-cream"
             >

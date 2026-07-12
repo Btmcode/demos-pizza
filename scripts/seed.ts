@@ -79,8 +79,39 @@ async function main() {
     tags: string[];
     allergens: string[];
     sizes?: { size: string; diameter?: number; priceCents: number }[];
+    crustTypes?: { type: string; priceCents: number }[];
+    extras?: { category: string; name: string; priceCents: number }[];
     sortOrder: number;
   };
+
+  // Tüm pizzalar için ortak hamur tipleri
+  const PIZZA_CRUST_TYPES = [
+    { type: "İnce Hamur", priceCents: 0 },
+    { type: "Normal Hamur", priceCents: 0 },
+    { type: "Kalın Hamur", priceCents: 1500 },
+  ];
+
+  // Tüm pizzalar için ortak ekstra malzemeler
+  const PIZZA_EXTRAS = [
+    { category: "CHEESE", name: "Ekstra Mozarella", priceCents: 2000 },
+    { category: "CHEESE", name: "Cheddar", priceCents: 2500 },
+    { category: "CHEESE", name: "Burrata", priceCents: 4000 },
+    { category: "MEAT", name: "Sucuk", priceCents: 2500 },
+    { category: "MEAT", name: "Pastırma", priceCents: 3500 },
+    { category: "MEAT", name: "Salam", priceCents: 2000 },
+    { category: "MEAT", name: "Pepperoni", priceCents: 2500 },
+    { category: "MEAT", name: "Tavuk Izgara", priceCents: 2500 },
+    { category: "VEGETABLE", name: "Mantar", priceCents: 1500 },
+    { category: "VEGETABLE", name: "Biber", priceCents: 1200 },
+    { category: "VEGETABLE", name: "Soğan", priceCents: 1000 },
+    { category: "VEGETABLE", name: "Mısır", priceCents: 1200 },
+    { category: "VEGETABLE", name: "Zeytin", priceCents: 1200 },
+    { category: "VEGETABLE", name: "Jalapeño", priceCents: 1500 },
+    { category: "SAUCE", name: "Acı Sos", priceCents: 500 },
+    { category: "SAUCE", name: "Sarımsaklı Sos", priceCents: 800 },
+    { category: "SAUCE", name: "BBQ Sos", priceCents: 800 },
+    { category: "SAUCE", name: "Ranch Sos", priceCents: 800 },
+  ];
 
   const menuItems: MenuItemSeed[] = [
     // ---------- Klasik Pizzalar ----------
@@ -101,7 +132,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 22000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 26000 },
       ],
-      sortOrder: 1,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 1,
     },
     {
       slug: "pepperoni",
@@ -120,7 +153,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 28000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 32000 },
       ],
-      sortOrder: 2,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 2,
     },
     {
       slug: "quattro-formaggi",
@@ -138,7 +173,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 30000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 34000 },
       ],
-      sortOrder: 3,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 3,
     },
     {
       slug: "vegetariana",
@@ -156,7 +193,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 26000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 30000 },
       ],
-      sortOrder: 4,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 4,
     },
 
     // ---------- İmza Pizzalar ----------
@@ -176,7 +215,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 32000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 38000 },
       ],
-      sortOrder: 1,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 1,
     },
     {
       slug: "tartufo-nero",
@@ -194,7 +235,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 42000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 48000 },
       ],
-      sortOrder: 2,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 2,
     },
     {
       slug: "demos-sucuklu",
@@ -213,7 +256,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 30000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 34000 },
       ],
-      sortOrder: 3,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 3,
     },
 
     // ---------- Daha fazla klasik ----------
@@ -231,7 +276,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 25000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 29000 },
       ],
-      sortOrder: 5,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 5,
     },
     {
       slug: "tavuklu-bbq",
@@ -247,7 +294,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 26000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 30000 },
       ],
-      sortOrder: 6,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 6,
     },
     {
       slug: "karisik",
@@ -263,7 +312,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 27000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 31000 },
       ],
-      sortOrder: 7,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 7,
     },
     {
       slug: "mafya",
@@ -279,7 +330,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 28000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 32000 },
       ],
-      sortOrder: 8,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 8,
     },
     {
       slug: "akdeniz",
@@ -295,7 +348,9 @@ async function main() {
         { size: "Orta (30 cm)", diameter: 30, priceCents: 24000 },
         { size: "Büyük (34 cm)", diameter: 34, priceCents: 28000 },
       ],
-      sortOrder: 9,
+      crustTypes: PIZZA_CRUST_TYPES,
+      extras: PIZZA_EXTRAS,
+            sortOrder: 9,
     },
 
     // ---------- Yan Lezzetler ----------
@@ -451,6 +506,8 @@ async function main() {
       tags: JSON.stringify(item.tags),
       allergens: JSON.stringify(item.allergens),
       sizes: JSON.stringify(item.sizes || []),
+      crustTypes: JSON.stringify((item as any).crustTypes || []),
+      extras: JSON.stringify((item as any).extras || []),
       sortOrder: item.sortOrder,
     };
     await db.menuItem.upsert({

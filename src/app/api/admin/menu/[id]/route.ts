@@ -80,6 +80,8 @@ export async function PUT(
     if (data.tags !== undefined) updateData.tags = JSON.stringify(data.tags);
     if (data.allergens !== undefined) updateData.allergens = JSON.stringify(data.allergens);
     if (data.sizes !== undefined) updateData.sizes = JSON.stringify(data.sizes);
+    if (data.crustTypes !== undefined) updateData.crustTypes = JSON.stringify(data.crustTypes);
+    if (data.extras !== undefined) updateData.extras = JSON.stringify(data.extras);
     if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
 
     const updated = await db.menuItem.update({ where: { id }, data: updateData });

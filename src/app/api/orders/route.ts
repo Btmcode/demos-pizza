@@ -118,6 +118,7 @@ export async function POST(req: Request) {
         subtotalCents,
         deliveryCents,
         totalCents,
+        deliveryDistrict: data.deliveryDistrict || null,
         deliveryAddress: data.deliveryAddress || null,
         notes: data.notes || null,
         ipAddress: ip === "unknown" ? null : ip,
@@ -126,6 +127,19 @@ export async function POST(req: Request) {
       },
       include: { items: true },
     });
+
+    // WhatsApp bildirim gönder (env var varsa)
+    if (process.env.WHATSAPP_API_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
+      try {
+        await sendWhatsAppNotification(order, orderItemsData);
+        await db.order.update({
+          where: { id: order.id },
+          data: { whatsappSent: true, whatsappSentAt: new Date() },
+        });
+      } catch (e) {
+        console.error("WhatsApp send error:", e);
+      }
+    }
 
     return NextResponse.json(
       {
@@ -145,3 +159,69 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Sipariş oluşturulamadı" }, { status: 500 });
   }
 }
+
+/**
+ * WhatsApp Business Cloud API ile sipariş bildirimi gönderir.
+ *
+ * Kurulum (env vars):
+ * - WHATSAPP_API_TOKEN: Meta Business API token
+ * - WHATSAPP_PHONE_NUMBER_ID: WhatsApp Business phone number ID
+ * - WHATSAPP_RECIPIENT_PHONE: Bildirim gönderilecek numara (admin telefonu, format: 905551234567)
+ *
+ * Henüz API yoksa sessizce atlar. Admin panelde sipariş görünecektir.
+ */
+async function sendWhatsAppNotification(order: any, items: any[]) {
+  const token = process.env.WHATSAPP_API_TOKEN;
+  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const recipient = process.env.WHATSAPP_RECIPIENT_PHONE || CONTACT.whatsapp.replace(/\D/g, "");
+
+  if (!token || !phoneId || !recipient) return;
+
+  // Sipariş özeti
+  const itemsList = items.map((it) => `• ${it.quantity}× ${it.name}`).join("\n");
+  const orderTypeLabel = order.orderType === "DELIVERY" ? "Teslimat" : "Gel-Al";
+  const paymentLabel = order.paymentMethod === "CASH_ON_DELIVERY" ? "Kapıda Nakit" : "Kapıda Kart";
+
+  const message = `🍕 *YENİ SİPARİŞ - ${order.orderNumber}*
+
+👤 *Müşteri:* ${order.customerName}
+📞 *Telefon:* ${order.customerPhone}
+📦 *Tip:* ${orderTypeLabel}
+💳 *Ödeme:* ${paymentLabel}
+${order.deliveryDistrict ? `📍 *Bölge:* ${order.deliveryDistrict}` : ""}
+${order.deliveryAddress ? `🏠 *Adres:* ${order.deliveryAddress}` : ""}
+
+🛒 *Ürünler:*
+${itemsList}
+
+💰 *Toplam:* ${CURRENCY.formatShort(order.totalCents)}
+🕐 *Zaman:* ${new Date().toLocaleString("tr-TR")}
+${order.notes ? `\n📝 *Not:* ${order.notes}` : ""}
+
+_Sipariş hazırlanmak üzere admin panelinde._`;
+
+  const url = `https://graph.facebook.com/v18.0/${phoneId}/messages`;
+  const body = {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: recipient,
+    type: "text",
+    text: { body: message },
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error("WhatsApp API error:", errText);
+    throw new Error(`WhatsApp API: ${res.status}`);
+  }
+}
+

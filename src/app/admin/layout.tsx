@@ -17,6 +17,7 @@ import {
   Menu as MenuIcon,
   X,
   Flame,
+  Printer,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/constants";
@@ -25,7 +26,7 @@ const NAV = [
   { href: "/admin", label: "Gösterge Paneli", icon: LayoutDashboard, exact: true },
   { href: "/admin/siparisler", label: "Siparişler", icon: ShoppingBag },
   { href: "/admin/menu", label: "Menü Yönetimi", icon: UtensilsCrossed },
-  { href: "/admin/rezervasyonlar", label: "Rezervasyonlar", icon: CalendarCheck },
+  { href: "/admin/yazici", label: "Termal Yazıcı", icon: Printer },
   { href: "/admin/mesajlar", label: "Mesajlar", icon: MessageSquare },
   { href: "/admin/ayarlar", label: "Ayarlar", icon: Settings },
   { href: "/admin/aktivite", label: "Aktivite Kaydı", icon: Activity },

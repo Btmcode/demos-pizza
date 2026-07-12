@@ -1,10 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { Flame, Clock, Wheat, Pizza } from "lucide-react";
-import { STATS } from "@/lib/constants";
+import { Clock, Truck, Wheat, MapPin } from "lucide-react";
+import { STATS, CONTACT } from "@/lib/constants";
 
-const ICONS = [Flame, Clock, Wheat, Pizza];
+const ICONS = [Truck, Clock, Wheat, MapPin];
 
 export function Stats() {
   return (
@@ -12,10 +11,10 @@ export function Stats() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <span className="text-saffron text-xs font-mono uppercase tracking-[0.3em]">
-            {"// Sayılarla Demos"}
+            {"// Demos Pizza ile"}
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold mt-3">
-            Lezzetin <span className="text-saffron italic">sırrı</span> sayılarda
+            Hızlı, taze, <span className="text-saffron italic">kapınızda</span>
           </h2>
         </div>
 
@@ -34,18 +33,29 @@ export function Stats() {
                   {s.value}
                   <span className="text-saffron text-3xl md:text-4xl">{s.suffix}</span>
                 </div>
-                <div className="text-sm font-semibold text-cream mt-2">
-                  {s.label}
-                </div>
-                <div className="text-xs text-cream/60 mt-1 leading-snug">
-                  {s.sub}
-                </div>
-                <div className="text-[10px] text-saffron/60 font-mono mt-3">
-                  0{i + 1}
-                </div>
+                <div className="text-sm font-semibold text-cream mt-2">{s.label}</div>
+                <div className="text-xs text-cream/60 mt-1 leading-snug">{s.sub}</div>
+                <div className="text-[10px] text-saffron/60 font-mono mt-3">0{i + 1}</div>
               </div>
             );
           })}
+        </div>
+
+        {/* Servis bölgeleri strip */}
+        <div className="mt-10 text-center">
+          <p className="text-xs text-cream/50 uppercase tracking-widest mb-3">
+            Servis bölgelerimiz
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+            {CONTACT.delivery.serviceAreas.map((area) => (
+              <span
+                key={area}
+                className="px-3 py-1 rounded-full bg-cream/5 border border-cream/10 text-xs text-cream/70 hover:bg-ember/10 hover:border-ember/30 hover:text-saffron transition-colors"
+              >
+                {area}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -3,9 +3,9 @@
 import { Camera } from "lucide-react";
 
 const GALLERY = [
-  { src: "/images/hero-pizza.png", alt: "Margherita pizza overhead shot", span: "md:col-span-2 md:row-span-2" },
+  { src: "/images/demos-storefront.png", alt: "Demos Pizza — Fatih Haseki'de dükkanımız", span: "md:col-span-2 md:row-span-2" },
+  { src: "/images/hero-pizza.png", alt: "Margherita pizza overhead", span: "" },
   { src: "/images/pizza-prosciutto.png", alt: "Prosciutto e burrata pizza", span: "" },
-  { src: "/images/pizza-tartufo.png", alt: "Tartufo nero — siyah trüf pizza", span: "" },
   { src: "/images/ingredients.png", alt: "Taze pizza malzemeleri", span: "md:col-span-2" },
   { src: "/images/pizza-pepperoni.png", alt: "Pepperoni pizza", span: "" },
   { src: "/images/pizza-quattro.png", alt: "Quattro formaggi", span: "" },

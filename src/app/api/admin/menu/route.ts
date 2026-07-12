@@ -28,6 +28,8 @@ export async function GET(req: Request) {
       tags: parseArrayField(it.tags),
       allergens: parseArrayField(it.allergens),
       sizes: parseJsonField(it.sizes, []),
+      crustTypes: parseJsonField(it.crustTypes, []),
+      extras: parseJsonField(it.extras, []),
     }));
     return NextResponse.json({ items: serialized });
   } catch (e) {
@@ -88,6 +90,8 @@ export async function POST(req: Request) {
         tags: JSON.stringify(data.tags),
         allergens: JSON.stringify(data.allergens),
         sizes: JSON.stringify(data.sizes),
+        crustTypes: JSON.stringify(data.crustTypes),
+        extras: JSON.stringify(data.extras),
         sortOrder: data.sortOrder,
       },
     });

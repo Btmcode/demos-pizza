@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, ShoppingBag, Phone, MapPin, X } from "lucide-react";
+import { Menu, ShoppingBag, Phone, MapPin, X, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NAV_LINKS, CONTACT, BRAND } from "@/lib/constants";
@@ -41,10 +41,14 @@ export function Navbar() {
             </a>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-saffron">●</span>
-            <span>Açık · {CONTACT.delivery.deliveryTime} teslimat</span>
+            {CONTACT.promo.active && (
+              <span className="flex items-center gap-1 text-saffron font-semibold">
+                <Flame className="h-3 w-3" />
+                {CONTACT.promo.text}
+              </span>
+            )}
             <span className="text-cream/30">|</span>
-            <span>Min. sipariş {CONTACT.delivery.minOrder} ₺</span>
+            <span>Açık · {CONTACT.delivery.deliveryTime} teslimat</span>
           </div>
         </div>
       </div>
@@ -83,12 +87,12 @@ export function Navbar() {
 
             {/* Right actions */}
             <div className="flex items-center gap-2">
-              <a href="#rezervasyon" className="hidden lg:block">
-                <Button variant="ghost" size="sm" className="text-charcoal hover:text-ember">
-                  Rezervasyon
+              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="hidden lg:block">
+                <Button variant="ghost" size="sm" className="text-charcoal hover:text-basil">
+                  WhatsApp
                 </Button>
               </a>
-              <a href="#menu" className="hidden md:block">
+              <a href="#menu">
                 <Button
                   size="sm"
                   className="bg-ember hover:bg-ember/90 text-cream font-semibold"

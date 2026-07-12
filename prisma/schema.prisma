@@ -46,12 +46,16 @@ model MenuItem {
   imageUrl    String?
   isAvailable Boolean  @default(true)
   isFeatured  Boolean  @default(false)
-  // PostgreSQL'de dizi olur, SQLite'te Json saklanır
+  // PostgreSQL'de dizi olur, SQLite'ta Json saklanır
   ingredients String   @default("[]")
   tags        String   @default("[]") // vegetarian, spicy, new, halal, vegan
   allergens   String   @default("[]") // gluten, dairy, etc.
   // Pizza seçenekleri (sadece PIZZA kategorisi için)
   sizes       String   @default("[]") // [{size: "Orta", diameter: 30, priceCents: 0}]
+  // Hamur tipleri — sadece pizza kategorisi için
+  crustTypes  String   @default("[]") // [{type: "İnce", priceCents: 0}, {type: "Kalın", priceCents: 0}]
+  // Mevcut ekstra malzeme kategorileri
+  extras      String   @default("[]") // [{category: "CHEESE", name: "Ekstra Mozarella", priceCents: 1500}]
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -72,15 +76,22 @@ model Order {
   customerName   String
   customerPhone  String
   customerEmail  String?
-  orderType      String   // DELIVERY | PICKUP | DINE_IN
+  orderType      String   // DELIVERY | PICKUP
   status         String   @default("PENDING") // PENDING | CONFIRMED | PREPARING | OUT_FOR_DELIVERY | DELIVERED | CANCELLED
   paymentMethod  String   @default("CASH_ON_DELIVERY") // CASH_ON_DELIVERY | CARD_ON_DELIVERY | ONLINE
   paymentStatus  String   @default("PENDING") // PENDING | PAID | FAILED | REFUNDED
   subtotalCents  Int
   deliveryCents  Int      @default(0)
   totalCents     Int
+  // Teslimat adresi — bölge (dropdown) + tam adres
+  deliveryDistrict String?
   deliveryAddress String?
   notes          String?
+  // Bildirim durumları
+  whatsappSentAt DateTime?
+  whatsappSent   Boolean  @default(false)
+  printedAt      DateTime?
+  printed        Boolean  @default(false)
   ipAddress      String?
   userAgent      String?
   createdAt      DateTime @default(now())
@@ -91,6 +102,7 @@ model Order {
   @@index([status, createdAt])
   @@index([customerPhone])
   @@index([orderNumber])
+  @@index([createdAt])
 }
 
 model OrderItem {
@@ -107,29 +119,6 @@ model OrderItem {
   menuItem    MenuItem? @relation(fields: [menuItemId], references: [id])
 
   @@index([orderId])
-}
-
-// =====================
-//  Reservations
-// =====================
-
-model Reservation {
-  id          String   @id @default(cuid())
-  name        String
-  email       String
-  phone       String
-  date        DateTime
-  time        String
-  partySize   Int
-  service     String   // LUNCH | DINNER
-  status      String   @default("PENDING") // PENDING | CONFIRMED | CANCELLED | COMPLETED
-  notes       String?
-  ipAddress   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([date, status])
-  @@index([status])
 }
 
 // =====================

@@ -9,11 +9,11 @@ import { StoneOven } from "@/components/site/stone-oven";
 import { Stats } from "@/components/site/stats";
 import { About } from "@/components/site/about";
 import { Gallery } from "@/components/site/gallery";
-import { Reservation } from "@/components/site/reservation";
 import { Contact } from "@/components/site/contact";
 import { Footer } from "@/components/site/footer";
 import { CartDrawer } from "@/components/site/cart-drawer";
 import { CartProvider } from "@/components/site/cart-context";
+import { CookieBanner } from "@/components/site/cookie-banner";
 
 /** Scroll reveal hook */
 function useScrollReveal() {
@@ -55,11 +55,11 @@ export function HomePage() {
           <Stats />
           <About />
           <Gallery />
-          <Reservation />
           <Contact />
         </main>
         <Footer />
         <CartDrawer />
+        <CookieBanner />
       </div>
     </CartProvider>
   );

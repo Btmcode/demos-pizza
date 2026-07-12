@@ -34,19 +34,15 @@ export async function GET(req: Request) {
       totalOrders,
       todayOrders,
       pendingOrders,
-      todayReservations,
-      pendingReservations,
       unreadMessages,
       totalMenuItems,
       availableMenuItems,
       orders30d,
-      reservations30d,
+      unprintedOrders,
     ] = await Promise.all([
       db.order.count(),
       db.order.count({ where: { createdAt: { gte: todayStart } } }),
       db.order.count({ where: { status: "PENDING" } }),
-      db.reservation.count({ where: { date: { gte: todayStart } } }),
-      db.reservation.count({ where: { status: "PENDING" } }),
       db.contactMessage.count({ where: { isRead: false } }),
       db.menuItem.count(),
       db.menuItem.count({ where: { isAvailable: true } }),
@@ -54,10 +50,7 @@ export async function GET(req: Request) {
         where: { createdAt: { gte: last30 } },
         select: { totalCents: true, createdAt: true, status: true },
       }),
-      db.reservation.findMany({
-        where: { createdAt: { gte: last30 } },
-        select: { date: true, partySize: true, status: true },
-      }),
+      db.order.count({ where: { printed: false } }),
     ]);
 
     // Revenue calculation — only DELIVERED or CONFIRMED+ orders
@@ -114,8 +107,7 @@ export async function GET(req: Request) {
         totalOrders,
         todayOrders,
         pendingOrders,
-        todayReservations,
-        pendingReservations,
+        unprintedOrders,
         unreadMessages,
         totalMenuItems,
         availableMenuItems,

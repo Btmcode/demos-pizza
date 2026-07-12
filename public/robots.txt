@@ -1,7 +1,13 @@
-# Allow all crawlers except /admin
 User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /kvkk
+Disallow: /gizlilik
+Disallow: /cerez
 
-Sitemap: https://demospizza.vercel.app/sitemap.xml
+# Local SEO - servis bölgeleri
+# Demos Pizza - Haseki, Fatih, İstanbul
+# Servis: Aksaray, Fındıkzade, Çapa, Şehremini, Molla Gürani, vb.
+
+Sitemap: https://demos.pizza.com.tr/sitemap.xml

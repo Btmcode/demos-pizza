@@ -1,47 +1,59 @@
 /**
  * Demos Pizza · Brand Constants
  * Tek kaynak — tüm marka kimliği burada tanımlı.
+ *
+ * SON GÜNCELLEME: 2026-07-12
+ * - Endüstriyel fırın (taş fırın değil)
+ * - Günlük taze hamur (dondurulmuş değil)
+ * - demos.pizza.com.tr domain
+ * - Rezervasyon yok (sadece online sipariş)
+ * - Kurye ile bölgesel teslimat
  */
 
 export const BRAND = {
   name: "Demos Pizza",
-  legalName: "Demos Pizza Fatih",
-  tagline: "Taş Fırında Gerçek Lezzet",
+  legalName: "Demos Pizza",
+  tagline: "Günlük Taze Hamur, Gerçek Lezzet",
   description:
-    "Fatih Haseki'de taş fırında pişen gerçek İtalyan pizzası. 72 saat mayalı hamur, San Marzano domates, taze mozzarella.",
-  established: 2025,
-  foundedYear: 2025,
-  cuisine: "İtalyan · Taş Fırın Pizzası",
+    "Fatih Haseki'de günlük taze hamur ve endüstriyel fırınla pişen İtalyan tarzı pizza. Paket servis ile kapınıza geliyor.",
+  established: 2024,
+  cuisine: "Pizza · İtalyan · Fast Food",
   logo: "/logo.svg",
   favicon: "/favicon.svg",
+  domain: "demos.pizza.com.tr",
+  siteUrl: "https://demos.pizza.com.tr",
 } as const;
 
 export const CONTACT = {
   address: {
     street: "Haseki Sultan, Turgut Özal Millet Cd.",
+    streetNo: "", // kullanıcı belirleyecek
     district: "Fatih",
     city: "İstanbul",
     postalCode: "34093",
     country: "Türkiye",
     full: "Haseki Sultan, Turgut Özal Millet Cd., 34093 Fatih/İstanbul",
-    mapQuery: "Haseki Sultan, Turgut Özal Millet Cd., 34093 Fatih/İstanbul",
+    mapQuery: "Demos Pizza Haseki Sultan Turgut Özal Millet Cd. Fatih İstanbul",
     mapEmbed:
-      "https://www.google.com/maps?q=Haseki+Sultan,+Turgut+%C3%96zal+Millet+Cd.,+34093+Fatih/%C4%B0stanbul&output=embed",
+      "https://www.google.com/maps?q=Demos+Pizza+Haseki+Sultan+Turgut+%C3%96zal+Millet+Cd.+Fatih+%C4%B0stanbul&output=embed",
   },
-  phone: "+90 212 000 00 00",
-  phoneHref: "tel:+902120000000",
+  // Tabeladaki telefon numarasını görmezden geliyoruz
+  // Kullanıcı kendi telefonunu buraya girecek
+  phone: "+90 444 00 00",
+  phoneHref: "tel:+90444000000",
   whatsapp: "+90 555 000 00 00",
   whatsappHref: "https://wa.me/905550000000",
-  email: "merhaba@demospizza.com",
-  emailHref: "mailto:merhaba@demospizza.com",
+  whatsappBusinessId: "", // WhatsApp Business API için (ileri seviye)
+  email: "siparis@demos.pizza.com.tr",
+  emailHref: "mailto:siparis@demos.pizza.com.tr",
   hours: [
-    { day: "Pazartesi", open: "11:00", close: "23:00" },
-    { day: "Salı", open: "11:00", close: "23:00" },
-    { day: "Çarşamba", open: "11:00", close: "23:00" },
-    { day: "Perşembe", open: "11:00", close: "23:00" },
-    { day: "Cuma", open: "11:00", close: "00:00" },
-    { day: "Cumartesi", open: "11:00", close: "00:00" },
-    { day: "Pazar", open: "12:00", close: "23:00" },
+    { day: "Pazartesi", open: "10:00", close: "00:00" },
+    { day: "Salı", open: "10:00", close: "00:00" },
+    { day: "Çarşamba", open: "10:00", close: "00:00" },
+    { day: "Perşembe", open: "10:00", close: "00:00" },
+    { day: "Cuma", open: "10:00", close: "01:00" },
+    { day: "Cumartesi", open: "10:00", close: "01:00" },
+    { day: "Pazar", open: "10:00", close: "00:00" },
   ],
   social: {
     instagram: "https://instagram.com/demospizza",
@@ -49,12 +61,14 @@ export const CONTACT = {
     x: "https://x.com/demospizza",
     tiktok: "https://tiktok.com/@demospizza",
   },
+  // Trendyol/Getir benzeri kurye firmaları ile çalışma
   delivery: {
-    minOrder: 250,
+    minOrder: 200,
     deliveryFee: 30,
-    freeDeliveryThreshold: 500,
+    freeDeliveryThreshold: 400,
     deliveryTime: "30-45 dk",
     pickupTime: "20 dk",
+    // Trendyol/Getir benzeri kurye ile geniş bölgesel teslimat
     serviceAreas: [
       "Haseki",
       "Aksaray",
@@ -64,15 +78,28 @@ export const CONTACT = {
       "Molla Gürani",
       "İskenderpaşa",
       "Samatya",
+      "Yenikapı",
+      "Laleli",
+      "Beyazıt",
+      "Topkapı",
+      "Kocamustafapaşa",
+      "Vatan Caddesi",
+      "Adnan Menderes Bulvarı",
     ],
+  },
+  // Promo
+  promo: {
+    active: true,
+    text: "1 ALANA 1 BEDAVA · Paket Servis",
+    description: "Tüm büyük boy pizzalarda 1 alana 1 bedava fırsatı",
   },
 } as const;
 
 export const STATS = [
-  { value: 485, suffix: "°", label: "Taş Fırın Sıcaklığı", sub: "İtalyan geleneksel pişirme" },
-  { value: 90, suffix: "sn", label: "Pişirme Süresi", sub: "Hızlı, lezzetli, çıtır" },
-  { value: 72, suffix: "sa", label: "Hamur Mayalanması", sub: "Doğal maya, uzun ferment" },
-  { value: 25, suffix: "+", label: "Pizza Çeşidi", sub: "Klasik & imza menü" },
+  { value: 350, suffix: "+", label: "Günlük Sipariş", sub: "Hedef: 350+ sipariş/gün" },
+  { value: 30, suffix: " dk", label: "Hızlı Teslimat", sub: "Kurye ile kapınızda" },
+  { value: 10, suffix: "+", label: "Servis Bölgesi", sub: "Fatih ve çevresi" },
+  { value: 24, suffix: "/7", label: "Açık", sub: "Her gün 10:00-00:00" },
 ] as const;
 
 export const NAV_LINKS = [
@@ -80,7 +107,7 @@ export const NAV_LINKS = [
   { href: "#menu", label: "Menü" },
   { href: "#hakkimizda", label: "Hakkımızda" },
   { href: "#galeri", label: "Galeri" },
-  { href: "#rezervasyon", label: "Rezervasyon" },
+  { href: "#siparis", label: "Sipariş Ver" },
   { href: "#iletisim", label: "İletişim" },
 ] as const;
 
@@ -92,16 +119,16 @@ export const BRAND_COLORS = {
   cream: "#FAF3E0",
   basil: "#3A7D44",
   smoke: "#2A1F1A",
+  // Tabeladan ilham: pembe + altın
+  pink: "#E91E63",
+  gold: "#FFD700",
 } as const;
 
-/** Tüm para birimi formatlaması buradan.
- *  Fiyatlar veritabanında kuruş (cent) olarak tutulur.
- */
+/** Para formatı. Fiyatlar DB'de kuruş (cent) olarak tutulur. */
 export const CURRENCY = {
   locale: "tr-TR",
   code: "TRY",
   symbol: "₺",
-  /** Kuruş -> okunabilir string */
   format(cents: number): string {
     const lira = cents / 100;
     return new Intl.NumberFormat(this.locale, {
@@ -111,9 +138,40 @@ export const CURRENCY = {
       maximumFractionDigits: 0,
     }).format(lira);
   },
-  /** Kuruş -> TL sembolü ile sade string (kartlarda kullanılır) */
   formatShort(cents: number): string {
     const lira = Math.round(cents / 100);
     return `${lira.toLocaleString("tr-TR")} ₺`;
   },
+} as const;
+
+/**
+ * Sipariş akışı:
+ * 1. Ürün seç (menüden) → içerik/opsiyon seç (boyut, ekstra malzeme, hamur tipi)
+ * 2. Sepet → checkout
+ * 3. Sipariş tipi seç (Teslimat / Gel-Al)
+ * 4. Müşteri bilgileri + adres (dropdown servis bölgeleri)
+ * 5. Ödeme yöntemi (kapıda nakit / kapıda kart)
+ * 6. Sipariş onay → admin panele + WhatsApp'a düşer
+ * 7. Termal yazıcı otomatik yazdırır (admin bağladıysa)
+ */
+export const ORDER_FLOW = {
+  orderTypes: ["DELIVERY", "PICKUP"] as const,
+  paymentMethods: ["CASH_ON_DELIVERY", "CARD_ON_DELIVERY"] as const,
+  // Ekstra malzeme kategorileri
+  extraCategories: ["CHEESE", "MEAT", "VEGETABLE", "SAUCE", "CRUST"] as const,
+} as const;
+
+/**
+ * Termal yazıcı yapılandırması
+ */
+export const THERMAL_PRINTER = {
+  paperSizes: [
+    { id: "58mm", label: "58mm (ESC/POS)", width: 32, height: "auto" },
+    { id: "80mm", label: "80mm (ESC/POS)", width: 48, height: "auto" },
+    { id: "a6", label: "A6 (105x148mm)", width: 80, height: 148 },
+    { id: "a5", label: "A5 (148x210mm)", width: 148, height: 210 },
+  ],
+  // Web USB / Web Serial API ile tarayıcıdan direkt yazıcıya bağlanma
+  // Veya ağ yazıcı (IP printer) üzerinden RAW port 9100
+  connectionTypes: ["USB", "NETWORK"] as const,
 } as const;

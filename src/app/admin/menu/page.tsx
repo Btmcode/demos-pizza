@@ -50,6 +50,8 @@ interface MenuItem {
   tags: string[];
   allergens: string[];
   sizes: { size: string; diameter?: number; priceCents: number }[];
+  crustTypes?: { type: string; priceCents: number }[];
+  extras?: { category: string; name: string; priceCents: number }[];
   sortOrder: number;
 }
 
@@ -322,6 +324,8 @@ function MenuItemForm({
     sortOrder: item?.sortOrder ?? 0,
   });
   const [sizes, setSizes] = React.useState(item?.sizes || []);
+  const [crustTypes, setCrustTypes] = React.useState<any[]>(item?.crustTypes || []);
+  const [extras, setExtras] = React.useState<any[]>(item?.extras || []);
   const [saving, setSaving] = React.useState(false);
 
   // Auto-slug
@@ -365,6 +369,15 @@ function MenuItemForm({
           size: s.size,
           diameter: s.diameter,
           priceCents: Math.round(s.priceCents),
+        })),
+        crustTypes: crustTypes.map((c) => ({
+          type: c.type,
+          priceCents: Math.round(c.priceCents),
+        })),
+        extras: extras.map((e) => ({
+          category: e.category,
+          name: e.name,
+          priceCents: Math.round(e.priceCents),
         })),
         sortOrder: Number(form.sortOrder) || 0,
       };
@@ -528,6 +541,107 @@ function MenuItemForm({
                       variant="ghost"
                       className="text-ember"
                       onClick={() => setSizes((p) => p.filter((_, idx) => idx !== i))}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Crust Types (pizza) */}
+          {(form.category === "PIZZA" || form.category === "SIGNATURE") && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-xs">Hamur Tipleri (kuruş olarak)</Label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setCrustTypes((c) => [...c, { type: "", priceCents: 0 }])}
+                >
+                  <Plus className="h-3 w-3 mr-1" /> Hamur tipi ekle
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {crustTypes.map((c, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <Input
+                      value={c.type}
+                      onChange={(e) => setCrustTypes((p) => p.map((x, idx) => idx === i ? { ...x, type: e.target.value } : x))}
+                      placeholder="Örn: İnce Hamur"
+                      className="flex-1"
+                    />
+                    <Input
+                      type="number"
+                      value={c.priceCents / 100}
+                      onChange={(e) => setCrustTypes((p) => p.map((x, idx) => idx === i ? { ...x, priceCents: Math.round(Number(e.target.value) * 100) } : x))}
+                      placeholder="Fiyat ₺"
+                      className="w-28"
+                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="text-ember"
+                      onClick={() => setCrustTypes((p) => p.filter((_, idx) => idx !== i))}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Extras (pizza) */}
+          {(form.category === "PIZZA" || form.category === "SIGNATURE") && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-xs">Ekstra Malzemeler (kuruş olarak)</Label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setExtras((e) => [...e, { category: "CHEESE", name: "", priceCents: 0 }])}
+                >
+                  <Plus className="h-3 w-3 mr-1" /> Ekstra ekle
+                </Button>
+              </div>
+              <div className="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-1">
+                {extras.map((e, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <select
+                      value={e.category}
+                      onChange={(ev) => setExtras((p) => p.map((x, idx) => idx === i ? { ...x, category: ev.target.value } : x))}
+                      className="border rounded px-2 py-2 text-xs w-32"
+                    >
+                      <option value="CHEESE">Peynir</option>
+                      <option value="MEAT">Et</option>
+                      <option value="VEGETABLE">Sebze</option>
+                      <option value="SAUCE">Sos</option>
+                      <option value="CRUST">Kenar</option>
+                    </select>
+                    <Input
+                      value={e.name}
+                      onChange={(ev) => setExtras((p) => p.map((x, idx) => idx === i ? { ...x, name: ev.target.value } : x))}
+                      placeholder="Örn: Ekstra Mozarella"
+                      className="flex-1"
+                    />
+                    <Input
+                      type="number"
+                      value={e.priceCents / 100}
+                      onChange={(ev) => setExtras((p) => p.map((x, idx) => idx === i ? { ...x, priceCents: Math.round(Number(ev.target.value) * 100) } : x))}
+                      placeholder="Fiyat ₺"
+                      className="w-28"
+                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="text-ember"
+                      onClick={() => setExtras((p) => p.filter((_, idx) => idx !== i))}
                     >
                       <X className="h-4 w-4" />
                     </Button>

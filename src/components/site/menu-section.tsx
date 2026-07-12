@@ -23,6 +23,8 @@ export interface MenuItem {
   tags: string[];
   allergens: string[];
   sizes?: { size: string; diameter?: number; priceCents: number }[];
+  crustTypes?: { type: string; priceCents: number }[];
+  extras?: { category: string; name: string; priceCents: number }[];
 }
 
 const CATEGORIES = [

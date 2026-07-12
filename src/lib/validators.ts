@@ -51,6 +51,25 @@ export const menuItemSchema = z.object({
     )
     .max(5)
     .default([]),
+  crustTypes: z
+    .array(
+      z.object({
+        type: z.string().max(40),
+        priceCents: z.number().int().min(0).max(5000),
+      })
+    )
+    .max(5)
+    .default([]),
+  extras: z
+    .array(
+      z.object({
+        category: z.enum(["CHEESE", "MEAT", "VEGETABLE", "SAUCE", "CRUST"]),
+        name: z.string().max(60),
+        priceCents: z.number().int().min(0).max(10000),
+      })
+    )
+    .max(30)
+    .default([]),
   sortOrder: z.number().int().min(0).max(10000).default(0),
 });
 
@@ -81,9 +100,10 @@ export const orderSchema = z.object({
     .regex(/^[a-zA-ZçÇğĞıİöÖşŞüÜ\s']+$/, "İsim geçersiz karakter içeriyor"),
   customerPhone: z.string().trim().min(10, "Telefon geçersiz").max(20),
   customerEmail: z.string().trim().email("E-posta geçersiz").max(254).optional().or(z.literal("")),
-  orderType: z.enum(["DELIVERY", "PICKUP", "DINE_IN"]),
+  orderType: z.enum(["DELIVERY", "PICKUP"]),
   paymentMethod: z.enum(["CASH_ON_DELIVERY", "CARD_ON_DELIVERY", "ONLINE"]).default("CASH_ON_DELIVERY"),
   items: z.array(orderItemSchema).min(1, "En az 1 ürün olmalı").max(30, "Çok fazla ürün"),
+  deliveryDistrict: z.string().trim().max(80).optional().or(z.literal("")),
   deliveryAddress: z.string().trim().max(500).optional().or(z.literal("")),
   notes: z.string().trim().max(500).optional().or(z.literal("")),
 });
@@ -97,37 +117,6 @@ export const orderStatusUpdateSchema = z.object({
     "DELIVERED",
     "CANCELLED",
   ]),
-});
-
-// ============================================================
-//  Reservations
-// ============================================================
-
-export const reservationSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, "İsim en az 2 karakter")
-    .max(80)
-    .regex(/^[a-zA-ZçÇğĞıİöÖşŞüÜ\s']+$/, "İsim geçersiz karakter içeriyor"),
-  email: z.string().trim().email("Geçerli bir e-posta girin").max(254),
-  phone: z.string().trim().min(10, "Telefon geçersiz").max(20),
-  date: z.string().refine(
-    (val) => {
-      const d = new Date(val);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return !isNaN(d.getTime()) && d >= today;
-    },
-    { message: "Geçerli bir gelecek tarih girin" }
-  ),
-  time: z.enum([
-    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
-  ]),
-  partySize: z.number().int().min(1, "En az 1 kişi").max(20, "20+ kişi için arayın"),
-  service: z.enum(["LUNCH", "DINNER"]),
-  notes: z.string().trim().max(500).optional().or(z.literal("")),
 });
 
 // ============================================================
@@ -177,7 +166,6 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type MenuItemInput = z.infer<typeof menuItemSchema>;
 export type MenuItemUpdateInput = z.infer<typeof menuItemUpdateSchema>;
 export type OrderInput = z.infer<typeof orderSchema>;
-export type ReservationInput = z.infer<typeof reservationSchema>;
 export type ContactInput = z.infer<typeof contactSchema>;
 export type SettingInput = z.infer<typeof settingSchema>;
 export type AdminCreateInput = z.infer<typeof adminCreateSchema>;
