@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CURRENCY } from "@/lib/constants";
-import { useCart } from "@/components/site/cart-context";
+import { useCart, CartProvider } from "@/components/site/cart-context";
 import { toast } from "sonner";
 
 interface MenuItemDetail {
@@ -73,7 +73,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     );
   }
 
-  return <ProductDetailContent slug={slug} />;
+  return (
+    <CartProvider>
+      <ProductDetailContent slug={slug} />
+    </CartProvider>
+  );
 }
 
 function ProductDetailContent({ slug }: { slug: string }) {
