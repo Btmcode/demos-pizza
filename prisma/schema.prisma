@@ -1,6 +1,6 @@
 // Demos Pizza · Prisma Schema
-// PostgreSQL (Neon) uyumlu. Local development SQLite kullanır.
-// Production'a deploy ederken: provider = "postgresql" + DATABASE_URL = Neon connection string
+// PostgreSQL (Neon) — production database
+// Local development için de PostgreSQL (Neon free tier) önerilir
 // Daha fazla bilgi için README.md
 
 generator client {
@@ -8,8 +8,7 @@ generator client {
 }
 
 datasource db {
-  // Local dev: sqlite · Production (Vercel+Neon): postgresql
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

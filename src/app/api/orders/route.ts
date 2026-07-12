@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       if (subtotalCents >= CONTACT.delivery.freeDeliveryThreshold * 100) {
         deliveryCents = 0;
       } else {
-        deliveryCents = CONTACT.delivery.fee * 100;
+        deliveryCents = CONTACT.delivery.deliveryFee * 100;
       }
     }
 

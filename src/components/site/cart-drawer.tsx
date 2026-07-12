@@ -39,7 +39,7 @@ export function CartDrawer() {
     orderType === "DELIVERY"
       ? totalCents >= CONTACT.delivery.freeDeliveryThreshold * 100
         ? 0
-        : CONTACT.delivery.fee * 100
+        : CONTACT.delivery.deliveryFee * 100
       : 0;
   const grandTotal = totalCents + deliveryCents;
   const minMet = totalCents >= CONTACT.delivery.minOrder * 100;
