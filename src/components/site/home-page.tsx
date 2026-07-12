@@ -17,6 +17,7 @@ import { CookieBanner } from "@/components/site/cookie-banner";
 import { AIRecommendation } from "@/components/site/ai-recommendation";
 import { AIChatAssistant } from "@/components/site/ai-chat-assistant";
 import { FloatingActions } from "@/components/site/floating-actions";
+import { MobileBottomBar, FloatingCallButton } from "@/components/site/mobile-bottom-bar";
 
 function useScrollReveal() {
   React.useEffect(() => {
@@ -43,14 +44,11 @@ function ScrollRevealer() {
   return null;
 }
 
-/** Register PWA service worker */
 function useServiceWorker() {
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
-        // Silent fail — PWA not critical
-      });
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
     }
   }, []);
 }
@@ -83,6 +81,9 @@ export function HomePage() {
         <CookieBanner />
         <AIChatAssistant />
         <FloatingActions />
+        {/* Mobil alt bar — Domino's tarzı */}
+        <MobileBottomBar />
+        <FloatingCallButton />
       </div>
     </CartProvider>
   );

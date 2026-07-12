@@ -74,7 +74,7 @@ function LoginContent() {
           <div className="text-center mb-7">
             <div className="bg-ink rounded-2xl px-4 py-3 inline-block mb-3 shadow-premium">
               <img
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Demos Pizza"
                 className="h-10 md:h-12 w-auto"
               />
