@@ -1,138 +1,67 @@
 "use client";
 
 import * as React from "react";
-import { MapPin, Navigation } from "lucide-react";
+import dynamic from "next/dynamic";
+import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import { CONTACT } from "@/lib/constants";
 
-/**
- * OpenStreetMap Leaflet ile — SSR güvenli
- * Leaflet window gerektirdiği için dynamic import ile yüklenir
- */
-export function OpenStreetMap() {
-  const [mounted, setMounted] = React.useState(false);
-  const [MapComponent, setMapComponent] = React.useState<React.ComponentType<any> | null>(null);
-  const mapRef = React.useRef<any>(null);
-
-  React.useEffect(() => {
-    setMounted(true);
-    // Leaflet'i client-side yükle
-    Promise.all([
-      import("react-leaflet"),
-      import("leaflet"),
-    ]).then(([reactLeaflet, L]) => {
-      // CSS'i inject et
-      if (!document.querySelector("#leaflet-css")) {
-        const link = document.createElement("link");
-        link.id = "leaflet-css";
-        link.rel = "stylesheet";
-        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-        document.head.appendChild(link);
-      }
-
-      const { MapContainer, TileLayer, Marker, Popup, ZoomControl } = reactLeaflet;
-
-      // Custom marker
-      const customIcon = L.divIcon({
-        html: `<div style="width:40px;height:40px;background:#FF2D8D;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #FFC400;box-shadow:0 4px 12px rgba(255,45,141,0.4);display:flex;align-items:center;justify-content:center;">
-          <div style="transform:rotate(45deg);font-size:18px;">🍕</div>
-        </div>`,
-        className: "",
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40],
-      });
-
-      const position: [number, number] = [41.0096, 28.9471];
-
-      const Map = () => (
-        <MapContainer
-          center={position}
-          zoom={15}
-          style={{ width: "100%", height: "100%" }}
-          zoomControl={false}
-          scrollWheelZoom={false}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; OpenStreetMap'
-          />
-          <Marker position={position} icon={customIcon}>
-            <Popup>
-              <div style={{ textAlign: "center", padding: "4px" }}>
-                <strong style={{ color: "#FF2D8D", fontSize: "14px" }}>🍕 Demos Pizza</strong>
-                <br />
-                <span style={{ fontSize: "12px", color: "#666" }}>{CONTACT.address.full}</span>
-                <br />
-                <a
-                  href="https://www.openstreetmap.org/?mlat=41.0096&mlon=28.9471#map=16/41.0096/28.9471"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "inline-block",
-                    marginTop: "6px",
-                    padding: "4px 10px",
-                    background: "#FF2D8D",
-                    color: "white",
-                    borderRadius: "6px",
-                    fontSize: "11px",
-                    textDecoration: "none",
-                    fontWeight: "600",
-                  }}
-                >
-                  Yol Tarifi Al
-                </a>
-              </div>
-            </Popup>
-          </Marker>
-          <ZoomControl position="bottomright" />
-        </MapContainer>
-      );
-
-      setMapComponent(() => Map);
-    });
-  }, []);
-
-  return (
-    <div className="rounded-2xl overflow-hidden border border-ink/8 shadow-premium h-72 md:h-96 relative bg-mist/20">
-      {mounted && MapComponent ? (
-        <MapComponent />
-      ) : (
-        <div className="flex items-center justify-center h-full">
-          <div className="text-ink/40 text-sm">Harita yükleniyor...</div>
+// Leaflet'i SSR'siz yükle — Next.js dynamic import
+const MapClient = dynamic(() => import("./map-client"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-full bg-mist/20">
+      <div className="text-center">
+        <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-pink/10 flex items-center justify-center animate-pulse">
+          <MapPin className="h-5 w-5 text-pink" />
         </div>
-      )}
+        <div className="text-ink/40 text-sm">Harita yükleniyor...</div>
+      </div>
+    </div>
+  ),
+});
 
-      {/* Address overlay — üstte */}
+export function OpenStreetMap() {
+  return (
+    <div className="rounded-2xl overflow-hidden border border-ink/8 shadow-premium h-80 md:h-96 relative bg-mist/20">
+      <MapClient />
+
+      {/* Address overlay — üstte, glass */}
       <div className="absolute top-3 left-3 z-[1000] glass rounded-xl p-3 max-w-[240px] pointer-events-none">
         <div className="flex items-start gap-2">
-          <MapPin className="h-4 w-4 text-pink shrink-0 mt-0.5" />
+          <div className="w-8 h-8 rounded-full bg-pink flex items-center justify-center shrink-0">
+            <MapPin className="h-4 w-4 text-white" />
+          </div>
           <div>
             <div className="font-display font-bold text-ink text-sm">Demos Pizza</div>
-            <div className="text-[11px] text-ink/60 mt-0.5">{CONTACT.address.full}</div>
+            <div className="text-[11px] text-ink/60 mt-0.5 leading-snug">{CONTACT.address.full}</div>
           </div>
         </div>
       </div>
 
-      {/* "Konumumdan Tarif" butonu */}
-      <button
-        onClick={() => {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((pos) => {
-              const userLat = pos.coords.latitude;
-              const userLng = pos.coords.longitude;
-              window.open(
-                `https://www.openstreetmap.org/directions?from=${userLat},${userLng}&to=41.0096,28.9471`,
-                "_blank"
-              );
-            });
-          }
-        }}
-        className="absolute top-3 right-3 z-[1000] glass rounded-lg p-2 hover:bg-pink transition-colors group"
-        aria-label="Konumumdan yol tarifi"
-        title="Konumumdan yol tarifi"
+      {/* "Konumumdan Tarif" butonu — sağ üstte */}
+      <a
+        href={`https://www.openstreetmap.org/directions?to=41.0096%2C28.9471`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-3 right-3 z-[1000] glass rounded-xl p-2.5 hover:bg-pink transition-colors group flex items-center gap-1.5"
+        aria-label="Yol tarifi al"
+        title="Yol tarifi al"
       >
         <Navigation className="h-4 w-4 text-pink group-hover:text-white" />
-      </button>
+        <span className="text-xs font-medium text-ink group-hover:text-white hidden sm:inline">Yol Tarifi</span>
+      </a>
+
+      {/* "OSM'de Aç" butonu — sağ altta */}
+      <a
+        href="https://www.openstreetmap.org/?mlat=41.0096&mlon=28.9471#map=17/41.0096/28.9471"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute bottom-3 right-3 z-[1000] glass rounded-lg px-2.5 py-1.5 hover:bg-ink hover:text-white transition-colors group flex items-center gap-1"
+        aria-label="OpenStreetMap'de aç"
+      >
+        <ExternalLink className="h-3 w-3 text-ink/60 group-hover:text-white" />
+        <span className="text-[10px] font-medium text-ink/60 group-hover:text-white">Büyük Harita</span>
+      </a>
     </div>
   );
 }

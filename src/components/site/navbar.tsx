@@ -102,12 +102,11 @@ export function Navbar() {
                   Sipariş Ver
                 </Button>
               </a>
-              {/* Sepet — mobilde büyük, belirgin */}
+              {/* Sepet — pembe, belirgin */}
               <Button
                 onClick={toggleCart}
                 size="icon"
-                variant="outline"
-                className="relative border-white/20 text-white hover:bg-pink hover:text-white hover:border-pink btn-premium h-12 w-12 md:h-9 md:w-9"
+                className="relative bg-pink hover:bg-pink-hover text-white shadow-pink-glow btn-premium h-12 w-12 md:h-9 md:w-9"
                 aria-label={`Sepetim, ${itemCount} ürün`}
               >
                 <ShoppingBag className="h-6 w-6 md:h-4 md:w-4" />
