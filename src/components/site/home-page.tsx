@@ -14,8 +14,10 @@ import { Footer } from "@/components/site/footer";
 import { CartDrawer } from "@/components/site/cart-drawer";
 import { CartProvider } from "@/components/site/cart-context";
 import { CookieBanner } from "@/components/site/cookie-banner";
+import { AIRecommendation } from "@/components/site/ai-recommendation";
+import { AIChatAssistant } from "@/components/site/ai-chat-assistant";
+import { FloatingActions } from "@/components/site/floating-actions";
 
-/** Scroll reveal hook */
 function useScrollReveal() {
   React.useEffect(() => {
     const els = document.querySelectorAll(".reveal");
@@ -41,16 +43,35 @@ function ScrollRevealer() {
   return null;
 }
 
+/** Register PWA service worker */
+function useServiceWorker() {
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {
+        // Silent fail — PWA not critical
+      });
+    }
+  }, []);
+}
+
+function SWRegister() {
+  useServiceWorker();
+  return null;
+}
+
 export function HomePage() {
   return (
     <CartProvider>
       <ScrollRevealer />
-      <div className="min-h-screen flex flex-col bg-cream">
+      <SWRegister />
+      <div className="min-h-screen flex flex-col bg-paper">
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-1 pb-16 md:pb-0">
           <Hero />
           <ToppingsMarquee />
           <MenuSection />
+          <AIRecommendation />
           <StoneOven />
           <Stats />
           <About />
@@ -60,6 +81,8 @@ export function HomePage() {
         <Footer />
         <CartDrawer />
         <CookieBanner />
+        <AIChatAssistant />
+        <FloatingActions />
       </div>
     </CartProvider>
   );

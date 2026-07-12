@@ -105,23 +105,22 @@ export const STATS = [
 export const NAV_LINKS = [
   { href: "#anasayfa", label: "Anasayfa" },
   { href: "#menu", label: "Menü" },
+  { href: "#ai-recommendation", label: "AI Öneri" },
   { href: "#hakkimizda", label: "Hakkımızda" },
   { href: "#galeri", label: "Galeri" },
-  { href: "#siparis", label: "Sipariş Ver" },
   { href: "#iletisim", label: "İletişim" },
 ] as const;
 
-/** Marka renkleri — CSS değişkenleri ile birebir. */
+/** Marka renkleri — Premium palette per spec. */
 export const BRAND_COLORS = {
-  ember: "#D62828",
-  saffron: "#F77F00",
-  charcoal: "#1A1410",
-  cream: "#FAF3E0",
-  basil: "#3A7D44",
-  smoke: "#2A1F1A",
-  // Tabeladan ilham: pembe + altın
-  pink: "#E91E63",
-  gold: "#FFD700",
+  ink: "#111111",
+  ink2: "#1A1A1A",
+  yellow: "#FFC400",
+  gold: "#FFB300",
+  pink: "#FF2D8D",
+  pinkHover: "#FF4FA3",
+  paper: "#FFFFFF",
+  mist: "#D9D9D9",
 } as const;
 
 /** Para formatı. Fiyatlar DB'de kuruş (cent) olarak tutulur. */

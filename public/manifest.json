@@ -1,0 +1,67 @@
+{
+  "name": "Demos Pizza — Fatih'in Premium Pizza Platformu",
+  "short_name": "Demos Pizza",
+  "description": "Fatih Haseki'de günlük taze hamur, endüstriyel fırında pişen premium İtalyan pizza. AI destekli sipariş, 30-45 dk teslimat.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "lang": "tr-TR",
+  "dir": "ltr",
+  "categories": ["food", "lifestyle", "shopping"],
+  "id": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Sipariş Ver",
+      "short_name": "Sipariş",
+      "description": "Hemen online sipariş ver",
+      "url": "/#menu",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Menüyü Gör",
+      "short_name": "Menü",
+      "description": "Pizza menüsünü incele",
+      "url": "/#menu",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "İletişim",
+      "short_name": "İletişim",
+      "description": "Bizimle iletişime geç",
+      "url": "/#iletisim",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/demos-storefront.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "form_factor": "wide",
+      "label": "Demos Pizza — Fatih Haseki"
+    }
+  ]
+}
