@@ -59,9 +59,13 @@ const EXTRA_CAT_LABELS: Record<string, string> = {
   CRUST: "Kenar",
 };
 
-export default function ProductDetailPage() {
+export default function ProductDetailPageWrapper() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
+  return <ProductDetailPage slug={slug as string} />;
+}
+
+function ProductDetailPage({ slug }: { slug: string }) {
   const { addItem } = useCart();
 
   const [item, setItem] = React.useState<MenuItemDetail | null>(null);
