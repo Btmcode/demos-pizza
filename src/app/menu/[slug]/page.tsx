@@ -507,6 +507,52 @@ function ProductDetailContent({ slug }: { slug: string }) {
           </div>
         )}
       </div>
+
+      {/* Sticky mobile sepet barı — Domino's tarzı */}
+      <MobileStickyBar
+        price={totalPrice}
+        quantity={quantity}
+        onAddToCart={handleAddToCart}
+      />
+    </div>
+  );
+}
+
+// ============================================================
+// Mobil sticky sepet barı — scroll'da görünür
+// ============================================================
+function MobileStickyBar({ price, quantity, onAddToCart }: { price: number; quantity: number; onAddToCart: () => void }) {
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const onScroll = () => {
+      // 300px scroll'dan sonra sticky bar göster
+      setVisible(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="md:hidden fixed bottom-16 inset-x-0 z-30 animate-in slide-in-from-bottom-4 duration-300">
+      <div className="mx-3 mb-2 bg-ink rounded-2xl shadow-2xl p-3 flex items-center gap-3">
+        <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1 shrink-0">
+          <span className="font-display font-bold text-lg text-white w-8 text-center">{quantity}</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[10px] text-white/50 uppercase tracking-wider">Toplam</div>
+          <div className="font-display font-bold text-yellow text-lg leading-none">{CURRENCY.formatShort(price)}</div>
+        </div>
+        <button
+          onClick={onAddToCart}
+          className="bg-pink hover:bg-pink-hover text-white font-semibold text-sm px-5 h-11 rounded-xl shadow-pink-glow flex items-center gap-1.5 shrink-0"
+        >
+          <ShoppingBag className="h-4 w-4" />
+          Sepete Ekle
+        </button>
+      </div>
     </div>
   );
 }

@@ -55,8 +55,11 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-paper">
-        <div className="text-ink/60 text-sm">Yükleniyor...</div>
+      <div className="min-h-screen flex items-center justify-center bg-ink text-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-full border-2 border-yellow/30 border-t-yellow animate-spin" />
+          <div className="text-white/60 text-sm">Yükleniyor...</div>
+        </div>
       </div>
     );
   }

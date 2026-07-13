@@ -14,6 +14,7 @@ import { CartDrawer } from "@/components/site/cart-drawer";
 import { CartProvider } from "@/components/site/cart-context";
 import { CookieBanner } from "@/components/site/cookie-banner";
 import { PWAInstallPrompt } from "@/components/site/pwa-install-prompt";
+import { PushNotificationPrompt } from "@/components/site/push-notification-prompt";
 import { Splashscreen } from "@/components/site/splash-screen";
 import { FloatingActions } from "@/components/site/floating-actions";
 import { MobileBottomBar, FloatingCallButton } from "@/components/site/mobile-bottom-bar";
@@ -77,6 +78,7 @@ export function HomePage() {
         <CartDrawer />
         <CookieBanner />
         <PWAInstallPrompt />
+        <PushNotificationPrompt />
         <Splashscreen />
         <FloatingActions />
         <MobileBottomBar />
