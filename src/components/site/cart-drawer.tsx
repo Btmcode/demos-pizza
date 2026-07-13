@@ -264,20 +264,45 @@ export function CartDrawer() {
     }
   };
 
+  // Mobil geri tuşu yönetimi — sepet açıksa kapat, siteden çıkma
+  React.useEffect(() => {
+    if (!isOpen) return;
+    // History'e yeni state push — geri tuşu bunu yakalayacak
+    window.history.pushState({ cartOpen: true }, "");
+    const onPopState = (e: PopStateEvent) => {
+      closeCart();
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+    };
+  }, [isOpen, closeCart]);
+
   return (
     <Sheet open={isOpen} onOpenChange={(o) => !o && closeCart()}>
       <SheetContent className="w-full sm:max-w-lg p-0 flex flex-col bg-paper">
-        <SheetHeader className="px-5 py-4 border-b border-ink/10 bg-ink text-white">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-white flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4 text-yellow" />
-              {step === "cart" && "Sepetim"}
-              {step === "checkout" && "Sipariş Bilgileri"}
-              {step === "success" && "Sipariş Onayı"}
+        <SheetHeader className="px-4 py-3.5 border-b border-white/10 bg-ink text-white">
+          <div className="flex items-center justify-between gap-3">
+            <SheetTitle className="text-white flex items-center gap-2 min-w-0">
+              <ShoppingBag className="h-4 w-4 text-yellow shrink-0" />
+              <span className="truncate">
+                {step === "cart" && "Sepetim"}
+                {step === "checkout" && "Sipariş Bilgileri"}
+                {step === "success" && "Sipariş Onayı"}
+              </span>
             </SheetTitle>
-            {itemCount > 0 && step === "cart" && (
-              <span className="text-xs text-white/70">{itemCount} ürün</span>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              {itemCount > 0 && step === "cart" && (
+                <span className="text-xs text-white/60">{itemCount} ürün</span>
+              )}
+              <button
+                onClick={closeCart}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Kapat"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </SheetHeader>
 
