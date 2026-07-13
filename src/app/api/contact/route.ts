@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (e) {
-    console.error("contact create error:", e);
+    console.error("contact create error");
     return NextResponse.json({ error: "Mesaj gönderilemedi" }, { status: 500 });
   }
 }

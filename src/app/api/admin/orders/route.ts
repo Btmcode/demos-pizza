@@ -49,7 +49,7 @@ export async function GET(req: Request) {
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
   } catch (e) {
-    console.error("admin orders GET error:", e);
+    console.error("admin orders GET error");
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }

@@ -124,7 +124,7 @@ export async function GET(req: Request) {
       },
     });
   } catch (e) {
-    console.error("admin stats error:", e);
+    console.error("admin stats error");
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }

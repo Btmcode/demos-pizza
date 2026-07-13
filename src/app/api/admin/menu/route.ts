@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     }));
     return NextResponse.json({ items: serialized });
   } catch (e) {
-    console.error("admin menu GET error:", e);
+    console.error("admin menu GET error");
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
@@ -115,7 +115,7 @@ export async function POST(req: Request) {
     if (e?.code === "P2002") {
       return NextResponse.json({ error: "Bu slug zaten kullanımda" }, { status: 409 });
     }
-    console.error("admin menu POST error:", e);
+    console.error("admin menu POST error");
     return NextResponse.json({ error: "Oluşturulamadı" }, { status: 500 });
   }
 }

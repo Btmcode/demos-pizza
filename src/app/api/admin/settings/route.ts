@@ -70,7 +70,7 @@ export async function PUT(req: Request) {
     );
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("admin settings PUT error:", e);
+    console.error("admin settings PUT error");
     return NextResponse.json({ error: "Güncellenemedi" }, { status: 500 });
   }
 }

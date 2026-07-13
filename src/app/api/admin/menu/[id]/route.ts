@@ -104,7 +104,7 @@ export async function PUT(
     if (e?.code === "P2002") {
       return NextResponse.json({ error: "Bu slug zaten kullanımda" }, { status: 409 });
     }
-    console.error("admin menu PUT error:", e);
+    console.error("admin menu PUT error");
     return NextResponse.json({ error: "Güncellenemedi" }, { status: 500 });
   }
 }
@@ -166,7 +166,7 @@ export async function DELETE(
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("admin menu DELETE error:", e);
+    console.error("admin menu DELETE error");
     return NextResponse.json({ error: "Silinemedi" }, { status: 500 });
   }
 }

@@ -158,7 +158,7 @@ export async function POST(req: Request) {
           data: { whatsappSent: true, whatsappSentAt: new Date() },
         });
       } catch (e) {
-        console.error("WhatsApp send error:", e);
+        console.error("WhatsApp send error");
       }
     }
 
@@ -176,7 +176,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (e) {
-    console.error("order create error:", e);
+    console.error("order create error");
     return NextResponse.json({ error: "Sipariş oluşturulamadı" }, { status: 500 });
   }
 }

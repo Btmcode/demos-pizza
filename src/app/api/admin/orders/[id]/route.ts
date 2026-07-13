@@ -82,7 +82,7 @@ export async function PATCH(
 
     return NextResponse.json({ ok: true, order: updated });
   } catch (e) {
-    console.error("admin orders PATCH error:", e);
+    console.error("admin orders PATCH error");
     return NextResponse.json({ error: "Güncellenemedi" }, { status: 500 });
   }
 }
@@ -124,7 +124,7 @@ export async function DELETE(
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("admin orders DELETE error:", e);
+    console.error("admin orders DELETE error");
     return NextResponse.json({ error: "Silinemedi" }, { status: 500 });
   }
 }

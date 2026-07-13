@@ -54,7 +54,7 @@ export async function GET(
 
     return NextResponse.json({ item: serialized, related });
   } catch (e) {
-    console.error("menu detail error:", e);
+    console.error("menu detail error");
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }

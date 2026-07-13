@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -339,8 +338,20 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster />
-          <SonnerToaster position="top-center" richColors />
+          <SonnerToaster
+            position="top-center"
+            richColors
+            toastOptions={{
+              duration: 3000,
+              style: {
+                borderRadius: "12px",
+                padding: "12px 16px",
+                fontSize: "13px",
+                fontWeight: 500,
+                boxShadow: "0 8px 24px rgba(17,17,17,0.15)",
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>

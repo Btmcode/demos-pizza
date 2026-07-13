@@ -28,7 +28,7 @@ export async function GET(req: Request) {
     });
     return NextResponse.json({ campaigns });
   } catch (e) {
-    console.error("campaigns GET error:", e);
+    console.error("campaigns GET error");
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }

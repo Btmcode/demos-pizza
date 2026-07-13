@@ -36,14 +36,14 @@ export function PWAInstallPrompt() {
     const onBIP = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      // 3 saniye sonra göster (sayfa yüklenmesi tamamlandıktan sonra)
-      setTimeout(() => setShow(true), 3000);
+      // 8 saniye sonra göster (cookie banner'dan sonra)
+      setTimeout(() => setShow(true), 8000);
     };
     window.addEventListener("beforeinstallprompt", onBIP);
 
     // iOS: beforeinstallprompt yok, manuel prompt göster
     if (isIOS) {
-      setTimeout(() => setShow(true), 3000);
+      setTimeout(() => setShow(true), 8000);
     }
 
     // appinstalled event
@@ -81,7 +81,7 @@ export function PWAInstallPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-[60] animate-in slide-in-from-bottom-4 duration-500 pointer-events-none">
+    <div className="fixed bottom-0 inset-x-0 z-40 animate-in slide-in-from-bottom-4 duration-500 pointer-events-none">
       <div className="mx-auto max-w-md m-3 md:m-4 pointer-events-auto">
         <div className="bg-ink text-white rounded-2xl shadow-2xl border border-yellow/20 overflow-hidden">
           {/* Header */}
