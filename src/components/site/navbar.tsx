@@ -162,8 +162,8 @@ export function Navbar() {
                 onKeyDown={(e) => {
                   if (e.key === "Escape") setSearchOpen(false);
                 }}
-                placeholder="Pizza ara... (örn: margherita, sucuk, acı)"
-                className="flex-1 text-base bg-transparent outline-none placeholder:text-ink/40"
+                placeholder="Pizza veya malzeme ara..."
+                className="flex-1 text-sm bg-transparent outline-none placeholder:text-ink/40"
               />
               <button
                 onClick={() => setSearchOpen(false)}

@@ -138,7 +138,7 @@ export function MenuSection() {
 
         {/* Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-stretch">
             {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} className="h-80 rounded-2xl bg-ink/5" />
             ))}
@@ -149,7 +149,7 @@ export function MenuSection() {
             <p>Aramanızla eşleşen ürün bulunamadı.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-stretch">
             {filtered.map((item) => (
               <MenuCard key={item.id} item={item} />
             ))}
@@ -220,7 +220,7 @@ function MenuCard({ item }: { item: MenuItem }) {
   const price = hasSizes ? item.sizes![selectedSize].priceCents : item.priceCents;
 
   return (
-    <article className="group bg-paper rounded-2xl overflow-hidden border border-ink/8 card-premium flex flex-col">
+    <article className="group bg-paper rounded-2xl overflow-hidden border border-ink/8 card-premium flex flex-col h-full">
       <a href={`/menu/${item.slug}`} className="relative aspect-[4/3] overflow-hidden bg-mist/20 block">
         {item.imageUrl ? (
           <img

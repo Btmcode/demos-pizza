@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   openGraph: {
     title: "Demos Pizza · Fatih'in Premium Pizza Platformu",
-    description: "AI destekli sipariş deneyimi, günlük taze hamur, 30-45 dk teslimat.",
+    description: "günlük taze hamur, 30-45 dk teslimat.",
     url: SITE_URL,
     siteName: "Demos Pizza",
     locale: "tr_TR",
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Demos Pizza · Premium Pizza Platformu",
-    description: "Fatih Haseki'de günlük taze hamur, AI destekli sipariş.",
+    description: "Fatih Haseki'de günlük taze hamur, .",
     images: ["/images/hero-pizza-main.png"],
   },
   category: "food",
@@ -119,7 +119,7 @@ export const viewport: Viewport = {
 };
 
 // ============================================================
-// JSON-LD STRUCTURED DATA — Multi-schema for AISO + GEO
+// JSON-LD STRUCTURED DATA — Multi-schema for GEO
 // ============================================================
 const jsonLd = {
   restaurant: {

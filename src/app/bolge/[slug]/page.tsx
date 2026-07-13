@@ -213,7 +213,7 @@ export default async function DistrictPage({ params }: PageProps) {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-pink mt-1">●</span>
-                <span>AI destekli pizza öneri sistemi</span>
+                <span>Kişiselleştirilmiş pizza önerileri</span>
               </li>
             </ul>
           </div>
