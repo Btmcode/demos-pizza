@@ -9,7 +9,7 @@ import { apiLimiter, checkRateLimit, getClientIp, containsSqlInjection, contains
  * GET /api/admin/settings
  */
 export async function GET(req: Request) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin(req);
   if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
 
   try {
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
  * Body: { settings: { KEY: "value", ... } }
  */
 export async function PUT(req: Request) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin(req);
   if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
 
   const ip = getClientIp(req);

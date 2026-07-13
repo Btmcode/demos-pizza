@@ -8,7 +8,7 @@ import { apiLimiter, checkRateLimit, getClientIp } from "@/lib/security";
  * Admin dashboard istatistikleri
  */
 export async function GET(req: Request) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin(req);
   if (!auth.ok) {
     return NextResponse.json({ error: auth.message }, { status: auth.status });
   }

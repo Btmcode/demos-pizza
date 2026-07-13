@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { orderSchema } from "@/lib/validators";
-import { orderLimiter, checkRateLimit, getClientIp, getUserAgent, containsSqlInjection, containsXss, normalizePhone } from "@/lib/security";
+import { orderLimiter, checkRateLimit, getClientIp, getUserAgent, containsSqlInjection, containsXss, normalizePhone, checkOrigin, checkRequestSize } from "@/lib/security";
 import { CURRENCY, CONTACT } from "@/lib/constants";
 
 /**
@@ -9,10 +9,22 @@ import { CURRENCY, CONTACT } from "@/lib/constants";
  * Public: yeni sipariş oluştur.
  * - Zod validation
  * - Rate limited (10/saat IP bazlı)
+ * - CSRF protection (origin check)
+ * - Request size limit (512KB — sipariş için yeterli)
  * - SQL injection / XSS pattern kontrol
  * - Toplam tutar server-side hesaplanır (client güvenilmez)
  */
 export async function POST(req: Request) {
+  // CSRF: origin kontrolü
+  if (!checkOrigin(req)) {
+    return NextResponse.json({ error: "Yetkisiz istek" }, { status: 403 });
+  }
+
+  // Request size limit (512KB)
+  if (!checkRequestSize(req, 512 * 1024)) {
+    return NextResponse.json({ error: "İstek çok büyük" }, { status: 413 });
+  }
+
   const ip = getClientIp(req);
   const rl = checkRateLimit(orderLimiter, `order:${ip}`);
   if (!rl.ok) {

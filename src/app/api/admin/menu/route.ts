@@ -9,7 +9,7 @@ import { apiLimiter, checkRateLimit, getClientIp, getUserAgent, containsSqlInjec
  * Tüm menü öğeleri (admin, kullanılabilir olmayanlar dahil)
  */
 export async function GET(req: Request) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin(req);
   if (!auth.ok) {
     return NextResponse.json({ error: auth.message }, { status: auth.status });
   }
@@ -43,7 +43,7 @@ export async function GET(req: Request) {
  * Yeni menü öğesi oluştur
  */
 export async function POST(req: Request) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin(req);
   if (!auth.ok) {
     return NextResponse.json({ error: auth.message }, { status: auth.status });
   }

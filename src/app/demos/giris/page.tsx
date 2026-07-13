@@ -50,7 +50,20 @@ function LoginContent() {
         callbackUrl,
       });
       if (res?.error) {
-        setError("E-posta veya şifre hatalı");
+        // NextAuth CredentialsSignin — authorize'dan throw edilen error
+        // "RATE_LIMITED" ise rate limit mesajı göster, değilse generic
+        // Not: res.error "CredentialsSignin" döner, gerçek mesajı içeren
+        // query parametresi olarak gelir. Bu yüzden URL'den error'ı kontrol et.
+        const url = new URL(window.location.href);
+        const errorParam = url.searchParams.get("error");
+
+        if (errorParam === "RATE_LIMITED" || res.error === "RATE_LIMITED") {
+          setError(
+            "Çok fazla giriş denemesi. Güvenlik nedeniyle 15 dakika bekleyip tekrar deneyin."
+          );
+        } else {
+          setError("E-posta veya şifre hatalı");
+        }
         setLoading(false);
         return;
       }

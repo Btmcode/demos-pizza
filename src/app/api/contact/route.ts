@@ -1,14 +1,28 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { contactSchema } from "@/lib/validators";
-import { contactLimiter, checkRateLimit, getClientIp, containsSqlInjection, containsXss } from "@/lib/security";
+import { contactLimiter, checkRateLimit, getClientIp, containsSqlInjection, containsXss, checkOrigin, checkRequestSize } from "@/lib/security";
 
 /**
  * POST /api/contact
  * Public: iletişim formundan mesaj gönder.
  * Honeypot alanı ile bot koruması.
+ * - Rate limited (3/saat)
+ * - CSRF protection (origin check)
+ * - Request size limit (256KB)
+ * - SQL injection / XSS pattern kontrol
  */
 export async function POST(req: Request) {
+  // CSRF: origin kontrolü
+  if (!checkOrigin(req)) {
+    return NextResponse.json({ error: "Yetkisiz istek" }, { status: 403 });
+  }
+
+  // Request size limit (256KB — iletişim formu için yeterli)
+  if (!checkRequestSize(req, 256 * 1024)) {
+    return NextResponse.json({ error: "İstek çok büyük" }, { status: 413 });
+  }
+
   const ip = getClientIp(req);
   const rl = checkRateLimit(contactLimiter, `contact:${ip}`);
   if (!rl.ok) {

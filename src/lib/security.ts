@@ -70,18 +70,31 @@ class RateLimiter {
   }
 }
 
-// Login: 5 deneme / 15 dakika
-export const loginLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, max: 5 });
+// ============================================================
+//  Rate Limiters — Multi-tier güvenlik
+// ============================================================
+// Login: 3 deneme / hesap / 15 dakika ( brute force prevention)
+export const loginAccountLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, max: 3 });
+// Login: 10 deneme / IP / 15 dakika (IP bazlı — credential stuffing prevention)
+export const loginIpLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
+// Eski alias — backward compat (şimdi loginIpLimiter kullanılıyor)
+export const loginLimiter = loginIpLimiter;
+// Global login: 50 deneme / IP / saat (sustained attack prevention)
+export const loginHourlyLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, max: 50 });
 // Contact form: 3 / saat
 export const contactLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, max: 3 });
 // Reservation: 5 / saat
 export const reservationLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, max: 5 });
 // Order: 10 / saat (force pickup abuse)
 export const orderLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, max: 10 });
-// Generic API: 60 / dakika
+// Generic admin API: 60 / dakika
 export const apiLimiter = new RateLimiter({ windowMs: 60 * 1000, max: 60 });
-// Public read: 200 / dakika
-export const readLimiter = new RateLimiter({ windowMs: 60 * 1000, max: 200 });
+// Public read: 120 / dakika
+export const readLimiter = new RateLimiter({ windowMs: 60 * 1000, max: 120 });
+// Global API (middleware'de): 100 / dakika / IP — tüm API rotaları
+export const globalApiLimiter = new RateLimiter({ windowMs: 60 * 1000, max: 100 });
+// Auth endpoints (signin/csrf/providers): 20 / dakika / IP
+export const authEndpointLimiter = new RateLimiter({ windowMs: 60 * 1000, max: 20 });
 
 // ============================================================
 //  2. Input Sanitization
@@ -263,4 +276,103 @@ export function checkRateLimit(
     };
   }
   return { ok: true };
+}
+
+// ============================================================
+//  9. Request size limit (DOS protection)
+// ============================================================
+
+/**
+ * Request body size'ını kontrol eder.
+ * Default: 1MB. Büyük payload'ları reddeder.
+ */
+export function checkRequestSize(req: Request, maxBytes = 1024 * 1024): boolean {
+  const contentLength = req.headers.get("content-length");
+  if (!contentLength) return true; // bilinmiyorsa izin ver
+  const size = parseInt(contentLength, 10);
+  if (isNaN(size)) return true;
+  return size <= maxBytes;
+}
+
+/**
+ * JSON body parse eder — boyut limiti ile.
+ * Hatalı JSON veya çok büyük body'yi güvenli reddeder.
+ */
+export async function safeJsonParse(req: Request, maxBytes = 1024 * 1024): Promise<{ ok: true; data: any } | { ok: false; status: number; message: string }> {
+  // Content-Length kontrolü
+  if (!checkRequestSize(req, maxBytes)) {
+    return { ok: false, status: 413, message: "İstek çok büyük" };
+  }
+
+  // Content-Type kontrolü
+  const contentType = req.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    return { ok: false, status: 415, message: "Geçersiz content-type" };
+  }
+
+  try {
+    const text = await req.text();
+    // Tekrar boyut kontrolü (content-length sahte olabilir)
+    if (text.length > maxBytes) {
+      return { ok: false, status: 413, message: "İstek çok büyük" };
+    }
+    const data = JSON.parse(text);
+    return { ok: true, data };
+  } catch {
+    return { ok: false, status: 400, message: "Geçersiz JSON" };
+  }
+}
+
+// ============================================================
+//  10. Origin / Referer kontrolü (CSRF prevention)
+// ============================================================
+
+/**
+ * POST/PATCH/PUT/DELETE isteklerinde origin kontrolü yapar.
+ * Same-origin değilse reddeder. CSRF koruması.
+ */
+export function checkOrigin(req: Request): boolean {
+  const method = req.method.toUpperCase();
+  if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
+    return true; // Safe methods
+  }
+
+  const origin = req.headers.get("origin");
+  const referer = req.headers.get("referer");
+  const host = req.headers.get("host");
+
+  if (!host) return false;
+
+  // İzin verilen host'lar
+  const allowedHosts = [
+    host,
+    "demospizza.com.tr",
+    "www.demospizza.com.tr",
+    "demos-pizza-dusky.vercel.app",
+  ];
+
+  // Origin kontrolü
+  if (origin) {
+    try {
+      const url = new URL(origin);
+      if (allowedHosts.includes(url.host)) return true;
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  // Referer kontrolü (origin yoksa)
+  if (referer) {
+    try {
+      const url = new URL(referer);
+      if (allowedHosts.includes(url.host)) return true;
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  // İkisi de yoksa — modern tarayıcılar her zaman gönderir, reddet
+  return false;
 }
