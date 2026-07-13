@@ -8,7 +8,7 @@ const POINTS = [
   "Endüstriyel fırında mükemmel kıvamında pişirme",
   "İtalyan tarzı malzemeler: San Marzano domates, taze mozzarella",
   "Tüm ürünler helal sertifikalı taze et ve malzemelerle",
-  "Açık mutfak — pizzasınız gözünüzün önünde yapılır",
+  "Açık mutfak — pizzan gözünün önünde yapılır",
   "Kurye ile 30-45 dakikada kapınızda — Fatih ve çevresi",
 ];
 

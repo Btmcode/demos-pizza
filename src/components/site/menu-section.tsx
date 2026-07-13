@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ShoppingBag, Plus, Flame, Leaf, Sparkles, Star, Pizza, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -89,11 +90,11 @@ export function MenuSection() {
             Taze Pizzalar
           </Badge>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-ink leading-tight">
-            Taze pizzasını <span className="text-gradient-pink">seç</span>
+            Taze pizzanı <span className="text-gradient-pink">seç</span>
           </h2>
           <p className="mt-3 text-ink/70 text-sm md:text-base">
             Her sabah taze hazırlanan hamur, günlük gelen malzemeler.
-            Sipariş ver, {CONTACT_PLACEHOLDER.deliveryTime} kapında.
+            Sipariş ver, {CONTACT_PLACEHOLDER.deliveryTime} kapına gelsin.
           </p>
         </div>
 
@@ -221,7 +222,7 @@ function MenuCard({ item }: { item: MenuItem }) {
 
   return (
     <article className="group bg-paper rounded-2xl overflow-hidden border border-ink/8 card-premium flex flex-col h-full">
-      <a href={`/menu/${item.slug}`} className="relative aspect-[4/3] overflow-hidden bg-mist/20 block">
+      <Link href={`/menu/${item.slug}`} className="relative aspect-[4/3] overflow-hidden bg-mist/20 block">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -259,15 +260,15 @@ function MenuCard({ item }: { item: MenuItem }) {
             </span>
           </div>
         )}
-      </a>
+      </Link>
 
       <div className="p-4 md:p-5 flex flex-col flex-1">
-        <a href={`/menu/${item.slug}`} className="hover:text-pink transition-colors">
+        <Link href={`/menu/${item.slug}`} className="hover:text-pink transition-colors">
           <h3 className="font-display text-lg md:text-xl font-bold text-ink leading-tight">{item.name}</h3>
-        </a>
-        <a href={`/menu/${item.slug}`}>
+        </Link>
+        <Link href={`/menu/${item.slug}`}>
           <p className="text-xs md:text-sm text-ink/65 mt-1 line-clamp-2 flex-1">{item.description}</p>
-        </a>
+        </Link>
 
         {item.ingredients.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1">

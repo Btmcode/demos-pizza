@@ -177,7 +177,7 @@ export default async function DistrictPage({ params }: PageProps) {
             <p className="text-ink/70 leading-relaxed">
               Demos Pizza, {area} bölgesine günlük taze hamur ve endüstriyel fırında pişen
               premium İtalyan pizza teslimatı yapıyor. Her sabah taze hazırlanan hamurumuz,
-              dondurulmuş değil, gerçek el yapımı. Sipariş verir vermez, pizzasınız hemen
+              dondurulmuş değil, gerçek el yapımı. Sipariş verir vermez, pizzan hemen
               hazırlanmaya başlar ve {CONTACT.delivery.deliveryTime} içinde kurye ile kapınıza gelir.
             </p>
             <p className="text-ink/70 leading-relaxed mt-4">

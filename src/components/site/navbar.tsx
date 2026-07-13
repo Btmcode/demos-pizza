@@ -76,13 +76,13 @@ export function Navbar() {
         }`}
       >
         <div className="container mx-auto px-3 md:px-6">
-          <div className="flex items-center justify-between h-[72px] md:h-20 gap-4">
+          <div className="flex items-center justify-between h-[80px] md:h-24 gap-4">
             {/* Logo */}
             <Link href="/" className="flex items-center shrink-0" aria-label="Demos Pizza ana sayfa">
               <img
                 src="/logo.webp"
                 alt={`${BRAND.name}`}
-                className="h-[64px] md:h-[80px] w-auto"
+                className="h-[72px] md:h-[96px] w-auto"
               />
             </Link>
 
@@ -208,7 +208,7 @@ export function Navbar() {
           />
           <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-ink shadow-2xl flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <img src="/logo.webp" alt="Demos Pizza" className="h-12 w-auto" />
+              <img src="/logo.webp" alt="Demos Pizza" className="h-14 w-auto" />
               <Button
                 size="icon"
                 variant="ghost"

@@ -200,7 +200,7 @@ export function Hero() {
           <p className="mt-5 md:mt-6 text-base md:text-xl text-white/85 max-w-xl leading-relaxed">
             Haseki'de her gün taze hazırlanan hamurumuz, endüstriyel fırınımızda mükemmel
             kıvamında pişer. Kurye ile{" "}
-            <span className="text-yellow font-semibold">30-45 dakikada</span> kapında.
+            <span className="text-yellow font-semibold">30-45 dakikada</span> kapına gelsin.
           </p>
 
           {/* CTAs */}
