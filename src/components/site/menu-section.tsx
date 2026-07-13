@@ -161,7 +161,7 @@ export function MenuSection() {
   );
 }
 
-const CONTACT_PLACEHOLDER = { deliveryTime: "30-45 dk" };
+const CONTACT_PLACEHOLDER = { deliveryTime: "Sıcak & Taze" };
 
 function FeaturedCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();

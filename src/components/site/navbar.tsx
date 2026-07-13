@@ -89,7 +89,7 @@ export function Navbar() {
       <header
         className={`sticky top-0 z-40 w-full border-b transition-all duration-300 ${
           scrolled
-            ? "bg-ink/80 backdrop-blur-xl border-white/10"
+            ? "bg-ink/80 backdrop-blur border-white/10"
             : "bg-ink border-white/5"
         }`}
       >
@@ -164,7 +164,7 @@ export function Navbar() {
 
       {/* Search overlay — Apple tarzı: tam ekran cam efekt */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-ink/60 backdrop-blur-sm" onClick={() => setSearchOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-ink/60 " onClick={() => setSearchOpen(false)}>
           <div
             className="w-full max-w-2xl mx-4 bg-paper rounded-2xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
@@ -220,7 +220,7 @@ export function Navbar() {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
           <div
-            className="absolute inset-0 bg-ink/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink/60 "
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
           />

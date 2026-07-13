@@ -66,7 +66,7 @@ export const CONTACT = {
     minOrder: 200,
     deliveryFee: 30,
     freeDeliveryThreshold: 400,
-    deliveryTime: "30-45 dk",
+    deliveryTime: "Sıcak & Taze",
     pickupTime: "20 dk",
     // Trendyol/Getir benzeri kurye ile geniş bölgesel teslimat
     serviceAreas: [
@@ -97,7 +97,7 @@ export const CONTACT = {
 
 export const STATS = [
   { value: 350, suffix: "+", label: "Günlük Sipariş", sub: "Hedef: 350+ sipariş/gün" },
-  { value: 30, suffix: " dk", label: "Hızlı Teslimat", sub: "Kurye ile kapınızda" },
+  { value: 10, suffix: "+", label: "Servis Bölgesi", sub: "Fatih ve çevresi" },
   { value: 10, suffix: "+", label: "Servis Bölgesi", sub: "Fatih ve çevresi" },
   { value: 10, suffix: ":30", label: "Açılış", sub: "Her gün 10:30 - 02:00" },
 ] as const;

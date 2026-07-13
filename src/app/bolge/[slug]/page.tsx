@@ -145,7 +145,7 @@ export default async function DistrictPage({ params }: PageProps) {
               <div className="w-10 h-10 rounded-lg bg-pink/10 text-pink flex items-center justify-center mb-3">
                 <Truck className="h-5 w-5" />
               </div>
-              <div className="font-display font-bold text-ink">Hızlı Teslimat</div>
+              <div className="font-display font-bold text-ink">Sıcak & Taze</div>
               <div className="text-sm text-ink/60 mt-1">{CONTACT.delivery.deliveryTime}</div>
               <div className="text-xs text-ink/40 mt-1">Kurye ile {area}'ya</div>
             </div>

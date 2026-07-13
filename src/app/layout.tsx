@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · Demos Pizza",
   },
   description:
-    "Fatih Haseki'de günlük taze el yapımı hamur, endüstriyel fırında pişen İtalyan pizza. 30 dk kurye teslimat. 1 alana 1 bedava! Aksaray, Fındıkzade, Çapa, Samatya.",
+    "Fatih Haseki'de günlük taze el yapımı hamur, endüstriyel fırında pişen İtalyan pizza. sıcak ve taze kurye teslimat. 1 alana 1 bedava! Aksaray, Fındıkzade, Çapa, Samatya.",
   keywords: [
     "Demos Pizza", "Fatih pizza", "Haseki pizza", "Aksaray pizza",
     "Fındıkzade pizza", "Çapa pizza", "İstanbul pizza sipariş",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   openGraph: {
     title: "Demos Pizza · Fatih'in Premium Pizza Platformu",
-    description: "günlük taze hamur, 30-45 dk teslimat.",
+    description: "günlük taze hamur, sıcak ve taze teslimat.",
     url: SITE_URL,
     siteName: "Demos Pizza",
     locale: "tr_TR",
@@ -172,7 +172,7 @@ const jsonLd = {
     "acceptsReservations": "False",
     "hasDelivery": {
       "@type": "DeliveryService",
-      "deliveryTime": "PT30M",
+      "deliveryTime": "PT45M",
       "priceRange": "₺₺",
     },
   },

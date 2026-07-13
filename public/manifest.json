@@ -1,7 +1,7 @@
 {
   "name": "Demos Pizza — Fatih'in Premium Pizza Platformu",
   "short_name": "Demos Pizza",
-  "description": "Fatih Haseki'de günlük taze hamur, endüstriyel fırında pişen premium İtalyan pizza. AI destekli sipariş, 30-45 dk teslimat.",
+  "description": "Sıcacık pizzalar, sevdiklerinle",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

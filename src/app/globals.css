@@ -171,20 +171,20 @@
 /* Glassmorphism — GPU-friendly (backdrop-filter with low cost) */
 .glass {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 .glass-dark {
   background: rgba(17, 17, 17, 0.72);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .glass-pink {
   background: rgba(255, 45, 141, 0.08);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 45, 141, 0.2);
 }
 
@@ -420,7 +420,7 @@
 }
 .leaflet-control-attribution {
   background: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
   border-radius: 6px 0 0 0 !important;
   font-size: 10px !important;
   padding: 2px 6px !important;
