@@ -182,6 +182,18 @@ export function middleware(req: NextRequest) {
         }
       );
     }
+
+    // NextAuth'un default signin/providers/error sayfalarını gizle (GET)
+    // Sadece POST (login işlemi) ve diğer endpoint'ler (csrf, session) çalışır
+    if (method === "GET") {
+      if (
+        pathname === "/api/auth/signin" ||
+        pathname === "/api/auth/providers" ||
+        pathname === "/api/auth/error"
+      ) {
+        return NextResponse.json({ error: "Not Found" }, { status: 404 });
+      }
+    }
   }
 
   const res = NextResponse.next();
