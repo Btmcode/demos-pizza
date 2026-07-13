@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, ShoppingBag, Phone, MapPin, X, Flame, Clock, Search, ChevronRight, Truck } from "lucide-react";
+import { Menu, ShoppingBag, Phone, MapPin, X, Flame, Clock, Search, ChevronRight, Truck, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NAV_LINKS, CONTACT, BRAND } from "@/lib/constants";
@@ -252,21 +252,32 @@ export function Navbar() {
               ))}
             </nav>
 
-            {/* Bottom actions — aralıklı, okunaklı */}
-            <div className="p-5 border-t border-white/10 space-y-3">
+            {/* Bottom actions — kurumsal aralıklı, marka renkleri */}
+            <div className="p-5 border-t border-white/10 space-y-4">
               <a href={CONTACT.phoneHref} className="block">
-                <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-pink flex items-center justify-center shrink-0">
-                    <Phone className="h-4 w-4 text-white" />
+                <div className="flex items-center gap-3.5 px-4 py-4 rounded-xl bg-yellow/10 border border-yellow/20 hover:bg-yellow/15 transition-colors">
+                  <div className="w-11 h-11 rounded-full bg-yellow flex items-center justify-center shrink-0">
+                    <Phone className="h-5 w-5 text-ink" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider">Telefon</div>
-                    <div className="text-sm font-mono text-white truncate">{CONTACT.phone}</div>
+                    <div className="text-[10px] text-yellow/60 uppercase tracking-wider font-medium">Hemen Ara</div>
+                    <div className="text-base font-mono text-white truncate font-semibold">{CONTACT.phone}</div>
+                  </div>
+                </div>
+              </a>
+              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="block">
+                <div className="flex items-center gap-3.5 px-4 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div className="w-11 h-11 rounded-full bg-[#25D366] flex items-center justify-center shrink-0">
+                    <MessageCircle className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider font-medium">WhatsApp</div>
+                    <div className="text-base text-white truncate font-semibold">Sipariş & Destek</div>
                   </div>
                 </div>
               </a>
               <a href="#menu" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow h-12 text-base font-semibold">
+                <Button className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow h-13 text-base font-semibold">
                   Sipariş Ver
                 </Button>
               </a>

@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://www.reddit.com/r/PWA/comments/1jkucok/pwa_install_prompt_woes_on_iphone",
+    "name": "PWA Install Prompt Woes on iPhone - Reddit",
+    "snippet": "I use an <install-prompt> web component that captures beforeinstallprompt in actual Chrome (since it's still basically Safari on iOS) and gives ... How do you handle PWA installation prompts? : r/Frontend Install PWA UI More results from www.reddit.com",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://web.dev/learn/pwa/installation-prompt",
+    "name": "Installation prompt | web.dev",
+    "snippet": "The browser's installation prompts are the first step in getting users to install your PWA. To implement your own install experience, your app ...",
+    "host_name": "web.dev",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://whatpwacando.today/installation",
+    "name": "Installation - What PWA Can Do Today",
+    "snippet": "On Chromium based browsers, the beforeinstallprompt event is fired when the web app is eligible to be installed. This event will display a native install dialog ...",
+    "host_name": "whatpwacando.today",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://articles.wesionary.team/prompt-installation-in-pwa-is-a-nightmare-unless-you-know-this-36cb0005e2b2",
+    "name": "Prompt installation in PWA is a nightmare unless you know this.",
+    "snippet": "When the app loads we add listeners to the beforeinstallprompt and the appinstalled event, and also assign installation beforeinstallprompt to ...",
+    "host_name": "articles.wesionary.team",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/50762626/pwa-beforeinstallprompt-not-called",
+    "name": "PWA - beforeinstallprompt not called - Stack Overflow",
+    "snippet": "I'm trying to install a custom PWA \"Add to Homescreen\". The ServiceWorkerRegistration is successful. But the function beforeinstallpromp is not calling after ...",
+    "host_name": "stackoverflow.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

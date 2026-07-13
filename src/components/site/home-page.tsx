@@ -13,6 +13,7 @@ import { Footer } from "@/components/site/footer";
 import { CartDrawer } from "@/components/site/cart-drawer";
 import { CartProvider } from "@/components/site/cart-context";
 import { CookieBanner } from "@/components/site/cookie-banner";
+import { PWAInstallPrompt } from "@/components/site/pwa-install-prompt";
 import { FloatingActions } from "@/components/site/floating-actions";
 import { MobileBottomBar, FloatingCallButton } from "@/components/site/mobile-bottom-bar";
 
@@ -74,6 +75,7 @@ export function HomePage() {
         <Footer />
         <CartDrawer />
         <CookieBanner />
+        <PWAInstallPrompt />
         <FloatingActions />
         <MobileBottomBar />
         <FloatingCallButton />
