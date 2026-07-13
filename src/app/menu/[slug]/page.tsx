@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CURRENCY } from "@/lib/constants";
-import { useCart, CartProvider } from "@/components/site/cart-context";
+import { useCart } from "@/components/site/cart-context";
 import { toast } from "sonner";
 
 interface MenuItemDetail {
@@ -73,15 +73,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     );
   }
 
-  return (
-    <CartProvider>
-      <ProductDetailContent slug={slug} />
-    </CartProvider>
-  );
+  return <ProductDetailContent slug={slug} />;
 }
 
 function ProductDetailContent({ slug }: { slug: string }) {
-  const { addItem } = useCart();
+  const { addItem, itemCount, openCart } = useCart();
 
   const [item, setItem] = React.useState<MenuItemDetail | null>(null);
   const [related, setRelated] = React.useState<RelatedItem[]>([]);
@@ -154,6 +150,10 @@ function ProductDetailContent({ slug }: { slug: string }) {
     });
     toast.success(`${item.name} sepete eklendi!`, {
       description: `${quantity} adet · ${CURRENCY.formatShort(totalPrice)}`,
+      action: {
+        label: "Sepete Git",
+        onClick: () => openCart(),
+      },
     });
   };
 
@@ -459,6 +459,18 @@ function ProductDetailContent({ slug }: { slug: string }) {
               </Button>
             </div>
 
+            {/* Sepete Git — sepette ürün olduğunda görünür */}
+            {itemCount > 0 && (
+              <button
+                onClick={openCart}
+                className="mt-3 w-full bg-ink hover:bg-ink/90 text-white h-12 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                Sepete Git ({itemCount} ürün)
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            )}
+
             {/* Back link */}
             <Link href="/#menu" className="mt-6 inline-flex items-center gap-1.5 text-sm text-ink/60 hover:text-pink transition-colors">
               <ArrowLeft className="h-4 w-4" />
@@ -513,6 +525,8 @@ function ProductDetailContent({ slug }: { slug: string }) {
         price={totalPrice}
         quantity={quantity}
         onAddToCart={handleAddToCart}
+        itemCount={itemCount}
+        onViewCart={openCart}
       />
     </div>
   );
@@ -520,8 +534,21 @@ function ProductDetailContent({ slug }: { slug: string }) {
 
 // ============================================================
 // Mobil sticky sepet barı — scroll'da görünür
+// Sepette ürün varsa "Sepete Git" gösterir, yoksa "Sepete Ekle" gösterir
 // ============================================================
-function MobileStickyBar({ price, quantity, onAddToCart }: { price: number; quantity: number; onAddToCart: () => void }) {
+function MobileStickyBar({
+  price,
+  quantity,
+  onAddToCart,
+  itemCount,
+  onViewCart,
+}: {
+  price: number;
+  quantity: number;
+  onAddToCart: () => void;
+  itemCount: number;
+  onViewCart: () => void;
+}) {
   const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
@@ -530,10 +557,15 @@ function MobileStickyBar({ price, quantity, onAddToCart }: { price: number; quan
       setVisible(window.scrollY > 300);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   if (!visible) return null;
+
+  // Sepette ürün varsa "Sepete Git" göster, yoksa "Sepete Ekle"
+  // Bu sayede çift "Sepete Ekle" butonu sorunu çözülür
+  const showViewCart = itemCount > 0;
 
   return (
     <div className="md:hidden fixed bottom-16 inset-x-0 z-30 animate-in slide-in-from-bottom-4 duration-300">
@@ -542,16 +574,28 @@ function MobileStickyBar({ price, quantity, onAddToCart }: { price: number; quan
           <span className="font-display font-bold text-lg text-white w-8 text-center">{quantity}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[10px] text-white/50 uppercase tracking-wider">Toplam</div>
+          <div className="text-[10px] text-white/50 uppercase tracking-wider">
+            {showViewCart ? `Sepette ${itemCount} ürün` : "Toplam"}
+          </div>
           <div className="font-display font-bold text-yellow text-lg leading-none">{CURRENCY.formatShort(price)}</div>
         </div>
-        <button
-          onClick={onAddToCart}
-          className="bg-pink hover:bg-pink-hover text-white font-semibold text-sm px-5 h-11 rounded-xl shadow-pink-glow flex items-center gap-1.5 shrink-0"
-        >
-          <ShoppingBag className="h-4 w-4" />
-          Sepete Ekle
-        </button>
+        {showViewCart ? (
+          <button
+            onClick={onViewCart}
+            className="bg-yellow hover:bg-yellow/90 text-ink font-semibold text-sm px-5 h-11 rounded-xl shadow-lg flex items-center gap-1.5 shrink-0"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Sepete Git
+          </button>
+        ) : (
+          <button
+            onClick={onAddToCart}
+            className="bg-pink hover:bg-pink-hover text-white font-semibold text-sm px-5 h-11 rounded-xl shadow-pink-glow flex items-center gap-1.5 shrink-0"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Sepete Ekle
+          </button>
+        )}
       </div>
     </div>
   );

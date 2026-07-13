@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BRAND, CONTACT } from "@/lib/constants";
+import { useCurrentYear } from "@/hooks/use-hydration-safe";
 
 export function LegalLayout({
   title,
@@ -16,6 +17,7 @@ export function LegalLayout({
   lastUpdated?: string;
   children: React.ReactNode;
 }) {
+  const year = useCurrentYear();
   return (
     <div className="min-h-screen flex flex-col bg-cream">
       {/* Header */}
@@ -51,7 +53,7 @@ export function LegalLayout({
       <footer className="bg-charcoal text-cream/60 text-xs py-6 mt-auto">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between gap-3">
           <div>
-            © {new Date().getFullYear()} {BRAND.legalName} · {CONTACT.address.full}
+            © {year} {BRAND.legalName} · {CONTACT.address.full}
           </div>
           <div className="flex gap-3">
             <Link href="/kvkk" className="hover:text-saffron">KVKK</Link>

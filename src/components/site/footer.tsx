@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { Instagram, Facebook, MessageCircle, MapPin, Phone, Mail, Clock, Truck } from "lucide-react";
 import { BRAND, CONTACT, NAV_LINKS } from "@/lib/constants";
+import { useCurrentYear } from "@/hooks/use-hydration-safe";
 
 export function Footer() {
+  const year = useCurrentYear();
   return (
     <footer className="bg-ink text-white/80">
       <div className="container mx-auto px-4 md:px-6 py-12 md:py-14">
@@ -120,7 +122,7 @@ export function Footer() {
         {/* Legal */}
         <div className="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-white/50">
           <div>
-            © {new Date().getFullYear()} {BRAND.legalName} · Tüm hakları saklıdır
+            © {year} {BRAND.legalName} · Tüm hakları saklıdır
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <Link href="/kvkk" className="hover:text-yellow">KVKK</Link>

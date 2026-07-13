@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOrderSound } from "@/hooks/use-order-sound";
+import { useCurrentDate } from "@/hooks/use-hydration-safe";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -65,6 +66,14 @@ export default function AdminDashboard() {
   const { soundEnabled, soundType, saveSettings, playSound, checkNewOrders, soundOptions } = useOrderSound();
   const [showSoundSettings, setShowSoundSettings] = React.useState(false);
 
+  // Hydration-safe tarih — SSR ve client arası uyuşmazlığı önler
+  const todayStr = useCurrentDate("tr-TR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   const load = React.useCallback(() => {
     fetch("/api/admin/stats", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
@@ -91,12 +100,7 @@ export default function AdminDashboard() {
             Merhaba! 👋
           </h1>
           <p className="text-xs md:text-sm text-ink/60 mt-1">
-            {new Date().toLocaleDateString("tr-TR", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
+            {todayStr || "Yükleniyor..."}
           </p>
         </div>
         <div className="flex items-center gap-2">

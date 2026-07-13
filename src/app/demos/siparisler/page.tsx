@@ -269,18 +269,21 @@ function AdminOrdersContent() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
                     {next && (
                       <Button
                         size="sm"
                         onClick={() => updateStatus(order.id, next)}
                         disabled={updating === order.id}
-                        className="bg-pink hover:bg-pink/90 text-white"
+                        className="bg-pink hover:bg-pink/90 text-white h-8 px-2.5 text-xs"
                       >
                         {updating === order.id ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
-                          STATUS_META[next]?.label
+                          <>
+                            <span className="hidden sm:inline">{STATUS_META[next]?.label}</span>
+                            <span className="sm:hidden">İlerle</span>
+                          </>
                         )}
                       </Button>
                     )}
@@ -289,22 +292,23 @@ function AdminOrdersContent() {
                       variant="outline"
                       onClick={() => setSelectedOrder(order)}
                       aria-label="Detay"
+                      className="h-8 w-8 sm:h-9 sm:w-9"
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button
                       size="icon"
                       variant="outline"
-                      className="hidden sm:flex"
                       onClick={() => printOrder(order)}
                       aria-label="Yazdır"
+                      className="h-8 w-8 sm:h-9 sm:w-9"
                     >
                       <Printer className="h-4 w-4" />
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="text-pink hover:bg-pink/5"
+                      className="text-pink hover:bg-pink/5 h-8 w-8 sm:h-9 sm:w-9"
                       onClick={async () => {
                         if (confirm(`${order.orderNumber} numaralı siparişi silmek istediğinize emin misiniz?`)) {
                           try {

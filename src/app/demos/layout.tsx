@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/constants";
+import { useCurrentYear } from "@/hooks/use-hydration-safe";
 
 const NAV = [
   { href: "/demos", label: "Panel", icon: LayoutDashboard, exact: true },
@@ -140,6 +141,7 @@ function SidebarContent({
   session: any;
   onNavigate?: () => void;
 }) {
+  const currentYear = useCurrentYear();
   return (
     <>
       <div className="p-4 border-b border-white/10 flex items-center justify-between">
@@ -193,7 +195,7 @@ function SidebarContent({
           <Flame className="h-4 w-4 text-yellow" />
         </div>
         <div className="mt-2 text-[10px] text-white/40 px-3">
-          © {new Date().getFullYear()} {BRAND.name}
+          © {currentYear} {BRAND.name}
         </div>
       </div>
     </>

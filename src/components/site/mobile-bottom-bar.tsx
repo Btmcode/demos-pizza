@@ -111,16 +111,23 @@ export function MobileBottomBar() {
 
 /**
  * Floating Call Button — sağ alt, mobilde
+ * Pulse-ring efekti <a>'nın arkasında, ikon önde (z-10) — ikonun görünürlüğünü bozmaz
  */
 export function FloatingCallButton() {
   return (
     <a
       href={CONTACT.phoneHref}
-      className="md:hidden fixed bottom-20 right-4 z-30 w-12 h-12 rounded-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow flex items-center justify-center btn-premium"
+      className="md:hidden fixed bottom-20 right-4 z-30 w-12 h-12 rounded-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow flex items-center justify-center btn-premium relative overflow-visible"
       aria-label="Telefon ile sipariş"
     >
-      <Phone className="h-5 w-5" />
-      <span className="absolute inset-0 rounded-full bg-pink pulse-ring" />
+      {/* Pulse ring — arka planda, ikonu kapatmaz */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 rounded-full bg-pink pulse-ring pointer-events-none"
+        style={{ zIndex: 0 }}
+      />
+      {/* Telefon ikonu — önde */}
+      <Phone className="h-5 w-5 relative" style={{ zIndex: 1 }} />
     </a>
   );
 }

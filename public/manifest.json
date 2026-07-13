@@ -1,5 +1,5 @@
 {
-  "name": "Demos Pizza — Fatih'in Premium Pizza Platformu",
+  "name": "Demos Pizza — Fatih Haseki",
   "short_name": "Demos Pizza",
   "description": "Sıcacık pizzalar, sevdiklerinle",
   "start_url": "/",
@@ -30,6 +30,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
