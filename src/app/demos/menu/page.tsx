@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Plus, Pencil, Trash2, Search, RefreshCw, Star, StarOff, Eye, EyeOff, Loader2, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, RefreshCw, Star, StarOff, Eye, EyeOff, Loader2, X, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -213,11 +213,9 @@ export default function AdminMenuPage() {
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="font-display font-bold text-ink">
-                        {CURRENCY.formatShort(item.priceCents)}
-                      </div>
+                      <QuickPriceEditor item={item} onUpdated={load} />
                       {item.sizes.length > 1 && (
-                        <div className="text-[10px] text-ink/50">
+                        <div className="text-[10px] text-ink/50 mt-0.5">
                           {item.sizes.length} boyut
                         </div>
                       )}
@@ -687,5 +685,88 @@ function MenuItemForm({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ============================================================
+// Hızlı Fiyat Düzenleme Component'i
+// ============================================================
+function QuickPriceEditor({ item, onUpdated }: { item: MenuItem; onUpdated: () => void }) {
+  const [editing, setEditing] = React.useState(false);
+  const [value, setValue] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+
+  const startEdit = () => {
+    setValue(String(item.priceCents / 100));
+    setEditing(true);
+  };
+
+  const save = async () => {
+    const num = Number(value);
+    if (isNaN(num) || num < 0 || num > 10000) {
+      toast.error("Geçersiz fiyat");
+      return;
+    }
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/admin/menu/${item.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceCents: Math.round(num * 100) }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success(`${item.name}: ${num.toLocaleString("tr-TR")} ₺`);
+      setEditing(false);
+      onUpdated();
+    } catch {
+      toast.error("Fiyat güncellenemedi");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-1">
+        <input
+          type="number"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") save();
+            if (e.key === "Escape") setEditing(false);
+          }}
+          autoFocus
+          className="w-20 px-2 py-1 text-sm border border-pink rounded-md focus:outline-none focus:ring-1 focus:ring-pink"
+          disabled={saving}
+        />
+        <button
+          onClick={save}
+          disabled={saving}
+          className="p-1 rounded text-basil hover:bg-basil/10"
+          aria-label="Kaydet"
+        >
+          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+        </button>
+        <button
+          onClick={() => setEditing(false)}
+          className="p-1 rounded text-ink/40 hover:bg-ink/5"
+          aria-label="İptal"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={startEdit}
+      className="font-display font-bold text-ink hover:text-pink transition-colors group flex items-center gap-1"
+      title="Düzenlemek için tıkla"
+    >
+      {CURRENCY.formatShort(item.priceCents)}
+      <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
+    </button>
   );
 }

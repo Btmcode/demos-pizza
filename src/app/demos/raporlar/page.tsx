@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { TrendingUp, ShoppingBag, Users, Star, Download, Loader2 } from "lucide-react";
+import { TrendingUp, ShoppingBag, Users, Star, Download, Loader2, Printer } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -90,10 +90,37 @@ export default function ReportsPage() {
           <h1 className="font-display text-3xl font-bold text-ink">Raporlar</h1>
           <p className="text-sm text-ink/60 mt-1">Detaylı satış ve performans analizi</p>
         </div>
-        <Button variant="outline" size="sm" onClick={exportCSV}>
-          <Download className="h-3.5 w-3.5 mr-1.5" />
-          CSV İndir
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={exportCSV}>
+            <Download className="h-3.5 w-3.5 mr-1.5" />
+            CSV İndir
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => {
+            // Termal yazıcı için HTML fiş oluştur
+            const html = generateReportHTML(stats);
+            const iframe = document.createElement("iframe");
+            iframe.style.position = "fixed";
+            iframe.style.right = "0";
+            iframe.style.bottom = "0";
+            iframe.style.width = "0";
+            iframe.style.height = "0";
+            iframe.style.border = "0";
+            document.body.appendChild(iframe);
+            const doc = iframe.contentWindow?.document;
+            if (!doc) return;
+            doc.open();
+            doc.write(html);
+            doc.close();
+            iframe.contentWindow?.focus();
+            setTimeout(() => {
+              iframe.contentWindow?.print();
+              setTimeout(() => document.body.removeChild(iframe), 1000);
+            }, 300);
+          }}>
+            <Printer className="h-3.5 w-3.5 mr-1.5" />
+            Yazdır
+          </Button>
+        </div>
       </div>
 
       {/* KPI Summary */}
@@ -189,4 +216,48 @@ export default function ReportsPage() {
       </Card>
     </div>
   );
+}
+
+// Termal yazıcı için rapor HTML'i
+function generateReportHTML(stats: Stats): string {
+  const now = new Date().toLocaleString("tr-TR");
+  const items = stats.charts.popularItems.slice(0, 6).map((item) =>
+    `<tr><td>${item.name}</td><td style="text-align:right">${item.count}</td><td style="text-align:right">${(item.revenue / 100).toLocaleString("tr-TR")} ₺</td></tr>`
+  ).join("");
+  const dailyRows = stats.charts.dailyOrders.map((d) =>
+    `<tr><td>${new Date(d.date).toLocaleDateString("tr-TR", { day: "numeric", month: "short" })}</td><td style="text-align:right">${d.count}</td><td style="text-align:right">${(d.revenue / 100).toLocaleString("tr-TR")} ₺</td></tr>`
+  ).join("");
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Rapor</title>
+  <style>
+    @page { size: 80mm auto; margin: 4mm; }
+    * { font-family: 'Courier New', monospace; font-size: 11px; }
+    body { padding: 8px; }
+    h1 { font-size: 14px; text-align: center; margin: 4px 0; }
+    h2 { font-size: 12px; margin: 8px 0 4px; }
+    .sep { border-top: 1px dashed #000; margin: 4px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    td { padding: 1px 0; }
+    .total { font-weight: bold; }
+    .center { text-align: center; }
+  </style></head><body>
+    <h1>DEMOS PIZZA</h1>
+    <p class="center">Satış Raporu</p>
+    <p class="center">${now}</p>
+    <div class="sep"></div>
+    <p><b>Toplam Sipariş:</b> ${stats.counts.totalOrders}</p>
+    <p><b>Bugünkü Sipariş:</b> ${stats.counts.todayOrders}</p>
+    <p><b>Bugünkü Ciro:</b> ${stats.revenue.todayDisplay}</p>
+    <p><b>30 Günlük Ciro:</b> ${stats.revenue.last30Display}</p>
+    <p><b>Aktif Ürün:</b> ${stats.counts.availableMenuItems}</p>
+    <div class="sep"></div>
+    <h2>GÜNLÜK DETAY</h2>
+    <table>${dailyRows}</table>
+    <div class="sep"></div>
+    <h2>EN ÇOK SATANLAR</h2>
+    <table>${items}</table>
+    <div class="sep"></div>
+    <p class="center">Demos Pizza · demospizza.com.tr</p>
+    <script>window.onload = () => setTimeout(() => window.print(), 300);</script>
+  </body></html>`;
 }

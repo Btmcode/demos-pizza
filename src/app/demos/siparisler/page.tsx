@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Search, RefreshCw, Phone, MapPin, Clock, ShoppingBag, Eye, Loader2 } from "lucide-react";
+import { Search, RefreshCw, Phone, MapPin, Clock, ShoppingBag, Eye, Loader2, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -277,6 +277,26 @@ function AdminOrdersContent() {
                       aria-label="Detay"
                     >
                       <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-pink hover:bg-pink/5"
+                      onClick={async () => {
+                        if (confirm(`${order.orderNumber} numaralı siparişi silmek istediğinize emin misiniz?`)) {
+                          try {
+                            const res = await fetch(`/api/admin/orders/${order.id}`, { method: "DELETE" });
+                            if (!res.ok) throw new Error();
+                            toast.success("Sipariş silindi");
+                            load();
+                          } catch {
+                            toast.error("Silinemedi");
+                          }
+                        }
+                      }}
+                      aria-label="Sil"
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>

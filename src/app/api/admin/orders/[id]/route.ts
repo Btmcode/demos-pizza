@@ -86,3 +86,45 @@ export async function PATCH(
     return NextResponse.json({ error: "Güncellenemedi" }, { status: 500 });
   }
 }
+
+/**
+ * DELETE /api/admin/orders/[id]
+ * Siparişi sil (items ile birlikte cascade)
+ */
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
+
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(apiLimiter, `admin-orders:${ip}`);
+  if (!rl.ok) return NextResponse.json({ error: rl.message }, { status: rl.status });
+
+  const { id } = await params;
+  try {
+    const existing = await db.order.findUnique({ where: { id } });
+    if (!existing) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
+
+    await db.order.delete({ where: { id } });
+
+    await db.activityLog.create({
+      data: {
+        adminId: (auth.session.user as any).id,
+        adminEmail: (auth.session.user as any).email,
+        action: "DELETE",
+        entityType: "Order",
+        entityId: id,
+        details: `Deleted order ${existing.orderNumber}`,
+        ipAddress: ip === "unknown" ? null : ip,
+        userAgent: getUserAgent(req),
+      },
+    }).catch(() => null);
+
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error("admin orders DELETE error:", e);
+    return NextResponse.json({ error: "Silinemedi" }, { status: 500 });
+  }
+}

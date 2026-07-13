@@ -10,11 +10,19 @@ import {
   ArrowUpRight,
   Flame,
   Printer,
+  Volume2,
+  VolumeX,
+  Settings2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useOrderSound } from "@/hooks/use-order-sound";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -54,18 +62,23 @@ const TR_DAYS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
 export default function AdminDashboard() {
   const [stats, setStats] = React.useState<Stats | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const { soundEnabled, soundType, saveSettings, playSound, checkNewOrders, soundOptions } = useOrderSound();
+  const [showSoundSettings, setShowSoundSettings] = React.useState(false);
 
   const load = React.useCallback(() => {
     fetch("/api/admin/stats", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then((d) => setStats(d))
+      .then((d) => {
+        setStats(d);
+        checkNewOrders(d.counts?.totalOrders ?? 0);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [checkNewOrders]);
 
   React.useEffect(() => {
     load();
-    const i = setInterval(load, 30000);
+    const i = setInterval(load, 15000); // 15 saniyede bir kontrol
     return () => clearInterval(i);
   }, [load]);
 
@@ -86,11 +99,83 @@ export default function AdminDashboard() {
             })}
           </p>
         </div>
-        <Badge className="bg-basil/10 text-basil border-basil/25">
-          <span className="w-1.5 h-1.5 rounded-full bg-basil mr-1.5 pulse-dot" />
-          Sistem aktif
-        </Badge>
+        <div className="flex items-center gap-2">
+          {/* Sipariş ses bildirimi */}
+          <div className="flex items-center gap-1.5 bg-ink/5 rounded-xl p-1">
+            <button
+              onClick={() => {
+                const newEnabled = !soundEnabled;
+                saveSettings(newEnabled, soundType);
+                toast.success(newEnabled ? "Ses bildirimi açıldı" : "Ses bildirimi kapatıldı");
+              }}
+              className={`p-2 rounded-lg transition-colors ${soundEnabled ? "text-pink bg-pink/10" : "text-ink/30"}`}
+              title={soundEnabled ? "Sesi kapat" : "Sesi aç"}
+            >
+              {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            </button>
+            <button
+              onClick={() => playSound()}
+              className="p-2 rounded-lg text-ink/50 hover:text-ink hover:bg-ink/5 transition-colors"
+              title="Sesi test et"
+            >
+              <Flame className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setShowSoundSettings(!showSoundSettings)}
+              className={`p-2 rounded-lg transition-colors ${showSoundSettings ? "text-pink bg-pink/10" : "text-ink/50 hover:text-ink hover:bg-ink/5"}`}
+              title="Ses ayarları"
+            >
+              <Settings2 className="h-4 w-4" />
+            </button>
+          </div>
+          <Badge className="bg-basil/10 text-basil border-basil/25">
+            <span className="w-1.5 h-1.5 rounded-full bg-basil mr-1.5 pulse-dot" />
+            Sistem aktif
+          </Badge>
+        </div>
       </div>
+
+      {/* Ses ayarları paneli */}
+      {showSoundSettings && (
+        <Card className="p-4 border-ink/8 shadow-sm">
+          <h3 className="font-display font-bold text-ink text-sm mb-3">Sipariş Ses Bildirimi</h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <div>
+              <label className="text-xs text-ink/60 mb-1 block">Ses Tipi</label>
+              <Select
+                value={soundType}
+                onValueChange={(v) => {
+                  saveSettings(soundEnabled, v as any);
+                  setTimeout(() => playSound(v as any), 100);
+                }}
+              >
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {soundOptions.map((opt) => (
+                    <SelectItem key={opt.key} value={opt.key}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => playSound()}
+              className="mt-5"
+            >
+              <Volume2 className="h-3.5 w-3.5 mr-1.5" />
+              Test Et
+            </Button>
+            <p className="text-xs text-ink/50 mt-5">
+              Yeni sipariş geldiğinde otomatik ses çalar. Her 15 saniyede kontrol edilir.
+            </p>
+          </div>
+        </Card>
+      )}
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">

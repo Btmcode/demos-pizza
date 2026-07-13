@@ -136,43 +136,50 @@ export default function PrinterSettingsPage() {
   const scanSystemPrinters = async () => {
     setScanning(true);
     try {
-      // Yöntem 1: Web Print API (Chromium 130+)
-      // @ts-ignore
-      if (navigator.printer?.getPrinters) {
+      // Yöntem 1: Web Print API ( Chromium 130+ — deneysel)
+      let found = false;
+      try {
         // @ts-ignore
-        const printers = await navigator.printer.getPrinters();
-        const thermalKeywords = ["thermal", "pos", "receipt", "escpos", "esc-Pos", "star", "epson tm", "bixolon", "xprinter", "58mm", "80mm"];
-        const list: SystemPrinter[] = printers.map((p: any) => ({
-          name: p.name || p.displayName || "Bilinmeyen Yazıcı",
-          isDefault: p.isDefault || false,
-          isThermal: thermalKeywords.some((k) => (p.name || "").toLowerCase().includes(k)),
-        }));
-        setSystemPrinters(list);
-        if (list.length === 0) {
-          toast.info("Sistemde yazıcı bulunamadı");
-        } else {
-          toast.success(`${list.length} yazıcı bulundu`);
+        if (navigator.printer?.getPrinters) {
+          // @ts-ignore
+          const printers = await navigator.printer.getPrinters();
+          const thermalKeywords = ["thermal", "pos", "receipt", "escpos", "esc-pos", "star", "epson tm", "bixolon", "xprinter", "58mm", "80mm"];
+          const list: SystemPrinter[] = printers.map((p: any) => ({
+            name: p.name || p.displayName || "Bilinmeyen Yazıcı",
+            isDefault: p.isDefault || false,
+            isThermal: thermalKeywords.some((k) => (p.name || "").toLowerCase().includes(k)),
+          }));
+          setSystemPrinters(list);
+          found = true;
+          if (list.length === 0) {
+            toast.info("Sistemde yazıcı bulunamadı");
+          } else {
+            toast.success(`${list.length} yazıcı bulundu`);
+          }
         }
-        return;
+      } catch (e) {
+        // API var ama hata verdi — devam et
       }
+
+      if (found) return;
 
       // Yöntem 2: localStorage'a kaydedilmiş son kullanılan yazıcılar
       const savedPrinters = localStorage.getItem("demos-known-printers");
       if (savedPrinters) {
         const parsed = JSON.parse(savedPrinters);
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
           setSystemPrinters(parsed);
           toast.success(`${parsed.length} kayıtlı yazıcı bulundu`);
           return;
         }
       }
 
-      // Yöntem 3: window.print() ile manuel seçim — kullanıcıyı bilgilendir
-      toast.info("Tarayıcınız otomatik yazıcı taramayı desteklemiyor. Manuel seçim kullanın.");
-      // Dummy list — common thermal printer names
+      // Yöntem 3: window.print() ile manuel seçim (her tarayıcıda çalışır)
+      // Hata DEĞİL — bu normal davranış. Manuel seçim her zaman çalışır.
       setSystemPrinters([
-        { name: "Manuel seç (window.print)", isDefault: true, isThermal: false },
+        { name: "Manuel seç (tarayıcı yazdırma penceresi)", isDefault: true, isThermal: false },
       ]);
+      toast.success("Manuel yazdırma hazır! Tıklayıp tarayıcı yazdırma penceresinden yazıcınızı seçin.");
     } catch (e: any) {
       toast.error("Tarama hatası: " + e.message);
     } finally {

@@ -18,7 +18,7 @@ export const BRAND = {
     "Fatih Haseki'de günlük taze hamur ve endüstriyel fırınla pişen İtalyan tarzı pizza. Paket servis ile kapınıza geliyor.",
   established: 2024,
   cuisine: "Pizza · İtalyan · Fast Food",
-  logo: "/logo.png",
+  logo: "/logo.webp",
   favicon: "/favicon.svg",
   domain: "demospizza.com.tr",
   siteUrl: "https://demospizza.com.tr",

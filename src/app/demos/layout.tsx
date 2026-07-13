@@ -142,7 +142,7 @@ function SidebarContent({
       <div className="p-4 border-b border-white/10 flex items-center justify-between">
         <Link href="/demos" className="flex items-center gap-2" onClick={onNavigate}>
           <div className="bg-ink-2 rounded-lg px-2 py-1">
-            <img src="/logo.png" alt="Demos" className="h-11 w-auto" />
+            <img src="/logo.webp" alt="Demos" className="h-[46px] w-auto" />
           </div>
         </Link>
         {onNavigate && (

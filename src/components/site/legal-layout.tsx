@@ -28,7 +28,7 @@ export function LegalLayout({
             </Button>
           </Link>
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Demos Pizza" className="h-10 brightness-0 invert" />
+            <img src="/logo.webp" alt="Demos Pizza" className="h-10 brightness-0 invert" />
             <div className="border-l border-cream/20 pl-3">
               <h1 className="font-display text-2xl md:text-3xl font-bold">{title}</h1>
               {subtitle && <p className="text-sm text-cream/65 mt-0.5">{subtitle}</p>}

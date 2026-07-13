@@ -128,7 +128,7 @@ const jsonLd = {
     "name": "Demos Pizza",
     "alternateName": "Demos Pizza Haseki",
     "image": `${SITE_URL}/images/hero-pizza-main.png`,
-    "logo": `${SITE_URL}/logo.png`,
+    "logo": `${SITE_URL}/logo.webp`,
     "url": SITE_URL,
     "telephone": "+90444000000",
     "servesCuisine": ["Pizza", "Italian", "Fast Food"],
@@ -275,7 +275,7 @@ const jsonLd = {
     "@type": "Organization",
     "name": "Demos Pizza",
     "url": SITE_URL,
-    "logo": `${SITE_URL}/logo.png`,
+    "logo": `${SITE_URL}/logo.webp`,
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+90444000000",

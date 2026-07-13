@@ -74,9 +74,9 @@ function LoginContent() {
           <div className="text-center mb-7">
             <div className="bg-ink rounded-2xl px-4 py-3 inline-block mb-3 shadow-premium">
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Demos Pizza"
-                className="h-12 md:h-14 w-auto"
+                className="h-[50px] md:h-[59px] w-auto"
               />
             </div>
             <div className="flex items-center justify-center gap-1.5 text-xs text-ink/60 font-mono uppercase tracking-widest">
