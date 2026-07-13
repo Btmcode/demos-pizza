@@ -183,12 +183,12 @@ export function middleware(req: NextRequest) {
       );
     }
 
-    // NextAuth'un default signin/providers/error sayfalarını gizle (GET)
-    // Sadece POST (login işlemi) ve diğer endpoint'ler (csrf, session) çalışır
+    // NextAuth'un default signin/error sayfalarını gizle (GET)
+    // /api/auth/providers AÇIK — signIn() fonksiyonu için zorunlu
+    // /api/auth/csrf, /api/auth/session, /api/auth/callback/* AÇIK
     if (method === "GET") {
       if (
         pathname === "/api/auth/signin" ||
-        pathname === "/api/auth/providers" ||
         pathname === "/api/auth/error"
       ) {
         return NextResponse.json({ error: "Not Found" }, { status: 404 });
