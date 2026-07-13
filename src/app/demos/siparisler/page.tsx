@@ -55,12 +55,12 @@ interface Order {
 }
 
 const STATUS_META: Record<string, { label: string; cls: string }> = {
-  PENDING: { label: "Bekliyor", cls: "bg-saffron/15 text-saffron border-saffron/30" },
+  PENDING: { label: "Bekliyor", cls: "bg-yellow/15 text-yellow border-yellow/30" },
   CONFIRMED: { label: "Onaylandı", cls: "bg-blue-100 text-blue-700 border-blue-300" },
   PREPARING: { label: "Hazırlanıyor", cls: "bg-purple-100 text-purple-700 border-purple-300" },
   OUT_FOR_DELIVERY: { label: "Yolda", cls: "bg-indigo-100 text-indigo-700 border-indigo-300" },
   DELIVERED: { label: "Teslim Edildi", cls: "bg-basil/15 text-basil border-basil/30" },
-  CANCELLED: { label: "İptal", cls: "bg-ember/15 text-ember border-ember/30" },
+  CANCELLED: { label: "İptal", cls: "bg-pink/15 text-pink border-pink/30" },
 };
 
 const ORDER_TYPE_LABEL: Record<string, string> = {
@@ -80,7 +80,7 @@ const NEXT_STATUS: Record<string, string | null> = {
 
 export default function AdminOrdersPage() {
   return (
-    <React.Suspense fallback={<div className="p-8 text-center text-charcoal/50">Yükleniyor...</div>}>
+    <React.Suspense fallback={<div className="p-8 text-center text-ink/50">Yükleniyor...</div>}>
       <AdminOrdersContent />
     </React.Suspense>
   );
@@ -106,7 +106,7 @@ function AdminOrdersContent() {
       params.set("page", String(page));
       params.set("limit", "20");
       if (q) params.set("q", q);
-      const res = await fetch(`/api/demos/orders?${params}`, { cache: "no-store" });
+      const res = await fetch(`/api/admin/orders?${params}`, { cache: "no-store" });
       const data = await res.json();
       if (data.orders) setOrders(data.orders);
       if (data.pagination) setTotal(data.pagination.total);
@@ -125,7 +125,7 @@ function AdminOrdersContent() {
   const updateStatus = async (id: string, status: string) => {
     setUpdating(id);
     try {
-      const res = await fetch(`/api/demos/orders/${id}`, {
+      const res = await fetch(`/api/admin/orders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -152,12 +152,12 @@ function AdminOrdersContent() {
       {/* Header + filters */}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold text-charcoal">Siparişler</h1>
-          <p className="text-sm text-charcoal/60 mt-1">{total} toplam sipariş</p>
+          <h1 className="font-display text-3xl font-bold text-ink">Siparişler</h1>
+          <p className="text-sm text-ink/60 mt-1">{total} toplam sipariş</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
             <Input
               value={q}
               onChange={(e) => {
@@ -199,20 +199,20 @@ function AdminOrdersContent() {
         {loading ? (
           Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-32 w-full rounded-xl" />)
         ) : orders.length === 0 ? (
-          <Card className="p-12 text-center border-charcoal/8">
-            <ShoppingBag className="h-12 w-12 mx-auto text-charcoal/20 mb-3" />
-            <p className="text-charcoal/60">Sipariş bulunamadı</p>
+          <Card className="p-12 text-center border-ink/8">
+            <ShoppingBag className="h-12 w-12 mx-auto text-ink/20 mb-3" />
+            <p className="text-ink/60">Sipariş bulunamadı</p>
           </Card>
         ) : (
           orders.map((order) => {
             const next = NEXT_STATUS[order.status];
             return (
-              <Card key={order.id} className="p-4 md:p-5 border-charcoal/8 shadow-sm hover:shadow-md transition-shadow">
+              <Card key={order.id} className="p-4 md:p-5 border-ink/8 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
                   {/* Order number + time */}
                   <div className="md:w-44 shrink-0">
-                    <div className="font-mono text-sm font-bold text-ember">{order.orderNumber}</div>
-                    <div className="text-[11px] text-charcoal/50 flex items-center gap-1 mt-0.5">
+                    <div className="font-mono text-sm font-bold text-pink">{order.orderNumber}</div>
+                    <div className="text-[11px] text-ink/50 flex items-center gap-1 mt-0.5">
                       <Clock className="h-3 w-3" />
                       {new Date(order.createdAt).toLocaleString("tr-TR", {
                         day: "2-digit",
@@ -225,8 +225,8 @@ function AdminOrdersContent() {
 
                   {/* Customer */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-charcoal">{order.customerName}</div>
-                    <div className="text-xs text-charcoal/60 flex items-center gap-1 mt-0.5">
+                    <div className="font-medium text-ink">{order.customerName}</div>
+                    <div className="text-xs text-ink/60 flex items-center gap-1 mt-0.5">
                       <Phone className="h-3 w-3" />
                       {order.customerPhone}
                       {order.orderType === "DELIVERY" && order.deliveryAddress && (
@@ -241,8 +241,8 @@ function AdminOrdersContent() {
 
                   {/* Items count + total */}
                   <div className="md:text-right shrink-0">
-                    <div className="text-xs text-charcoal/50">{order.items.length} ürün · {ORDER_TYPE_LABEL[order.orderType]}</div>
-                    <div className="font-display font-bold text-lg text-charcoal">
+                    <div className="text-xs text-ink/50">{order.items.length} ürün · {ORDER_TYPE_LABEL[order.orderType]}</div>
+                    <div className="font-display font-bold text-lg text-ink">
                       {CURRENCY.formatShort(order.totalCents)}
                     </div>
                   </div>
@@ -261,7 +261,7 @@ function AdminOrdersContent() {
                         size="sm"
                         onClick={() => updateStatus(order.id, next)}
                         disabled={updating === order.id}
-                        className="bg-ember hover:bg-ember/90 text-cream"
+                        className="bg-pink hover:bg-pink/90 text-white"
                       >
                         {updating === order.id ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -297,7 +297,7 @@ function AdminOrdersContent() {
           >
             Önceki
           </Button>
-          <span className="text-sm text-charcoal/60">
+          <span className="text-sm text-ink/60">
             Sayfa {page} / {Math.ceil(total / 20)}
           </span>
           <Button
@@ -325,32 +325,32 @@ function AdminOrdersContent() {
               {/* Customer */}
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <div className="text-xs text-charcoal/50">Müşteri</div>
+                  <div className="text-xs text-ink/50">Müşteri</div>
                   <div className="font-medium">{selectedOrder.customerName}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-charcoal/50">Telefon</div>
-                  <a href={`tel:${selectedOrder.customerPhone}`} className="font-medium text-ember">
+                  <div className="text-xs text-ink/50">Telefon</div>
+                  <a href={`tel:${selectedOrder.customerPhone}`} className="font-medium text-pink">
                     {selectedOrder.customerPhone}
                   </a>
                 </div>
                 <div>
-                  <div className="text-xs text-charcoal/50">E-posta</div>
+                  <div className="text-xs text-ink/50">E-posta</div>
                   <div className="font-medium">{selectedOrder.customerEmail || "—"}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-charcoal/50">Sipariş tipi</div>
+                  <div className="text-xs text-ink/50">Sipariş tipi</div>
                   <div className="font-medium">{ORDER_TYPE_LABEL[selectedOrder.orderType]}</div>
                 </div>
                 {selectedOrder.deliveryAddress && (
                   <div className="col-span-2">
-                    <div className="text-xs text-charcoal/50">Adres</div>
+                    <div className="text-xs text-ink/50">Adres</div>
                     <div className="font-medium">{selectedOrder.deliveryAddress}</div>
                   </div>
                 )}
                 {selectedOrder.notes && (
                   <div className="col-span-2">
-                    <div className="text-xs text-charcoal/50">Not</div>
+                    <div className="text-xs text-ink/50">Not</div>
                     <div className="font-medium italic">{selectedOrder.notes}</div>
                   </div>
                 )}
@@ -358,20 +358,20 @@ function AdminOrdersContent() {
 
               {/* Items */}
               <div>
-                <div className="text-xs text-charcoal/50 mb-2">Ürünler</div>
+                <div className="text-xs text-ink/50 mb-2">Ürünler</div>
                 <div className="space-y-2">
                   {selectedOrder.items.map((it) => (
-                    <div key={it.id} className="flex justify-between items-start py-2 border-b border-charcoal/8 last:border-0">
+                    <div key={it.id} className="flex justify-between items-start py-2 border-b border-ink/8 last:border-0">
                       <div className="flex-1">
                         <div className="font-medium text-sm">
                           {it.quantity}× {it.name}
                         </div>
                         {it.extras && it.extras !== "[]" && (
-                          <div className="text-xs text-charcoal/55 mt-0.5">
+                          <div className="text-xs text-ink/55 mt-0.5">
                             Ekstra: {JSON.parse(it.extras).map((e: any) => e.name).join(", ")}
                           </div>
                         )}
-                        {it.notes && <div className="text-xs italic text-charcoal/55 mt-0.5">→ {it.notes}</div>}
+                        {it.notes && <div className="text-xs italic text-ink/55 mt-0.5">→ {it.notes}</div>}
                       </div>
                       <div className="text-sm font-medium">
                         {CURRENCY.formatShort(it.unitPriceCents * it.quantity)}
@@ -382,26 +382,26 @@ function AdminOrdersContent() {
               </div>
 
               {/* Totals */}
-              <div className="bg-charcoal/5 rounded-lg p-3 space-y-1.5 text-sm">
+              <div className="bg-ink/5 rounded-lg p-3 space-y-1.5 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-charcoal/70">Ara toplam</span>
+                  <span className="text-ink/70">Ara toplam</span>
                   <span>{CURRENCY.formatShort(selectedOrder.subtotalCents)}</span>
                 </div>
                 {selectedOrder.deliveryCents > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-charcoal/70">Teslimat</span>
+                    <span className="text-ink/70">Teslimat</span>
                     <span>{CURRENCY.formatShort(selectedOrder.deliveryCents)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-base pt-1 border-t border-charcoal/15">
+                <div className="flex justify-between font-bold text-base pt-1 border-t border-ink/15">
                   <span>Toplam</span>
-                  <span className="text-ember">{CURRENCY.formatShort(selectedOrder.totalCents)}</span>
+                  <span className="text-pink">{CURRENCY.formatShort(selectedOrder.totalCents)}</span>
                 </div>
               </div>
 
               {/* Status update */}
               <div>
-                <div className="text-xs text-charcoal/50 mb-2">Durumu güncelle</div>
+                <div className="text-xs text-ink/50 mb-2">Durumu güncelle</div>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(STATUS_META).map(([key, meta]) => (
                     <Button
@@ -412,7 +412,7 @@ function AdminOrdersContent() {
                       disabled={updating === selectedOrder.id || selectedOrder.status === key}
                       className={
                         selectedOrder.status === key
-                          ? "bg-ember hover:bg-ember/90 text-cream"
+                          ? "bg-pink hover:bg-pink/90 text-white"
                           : ""
                       }
                     >

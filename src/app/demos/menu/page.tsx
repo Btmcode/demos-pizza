@@ -77,7 +77,7 @@ export default function AdminMenuPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/demos/menu", { cache: "no-store" });
+      const res = await fetch("/api/admin/menu", { cache: "no-store" });
       const data = await res.json();
       if (data.items) setItems(data.items);
     } catch {
@@ -103,7 +103,7 @@ export default function AdminMenuPage() {
       prev.map((i) => (i.id === item.id ? { ...i, [field]: !i[field] } : i))
     );
     try {
-      const res = await fetch(`/api/demos/menu/${item.id}`, {
+      const res = await fetch(`/api/admin/menu/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: !item[field] }),
@@ -119,7 +119,7 @@ export default function AdminMenuPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/demos/menu/${deleteTarget.id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/menu/${deleteTarget.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       const data = await res.json().catch(() => ({}));
       toast.success(data.archived ? "Ürün arşivlendi (geçmiş siparişlerde var)" : "Ürün silindi");
@@ -135,12 +135,12 @@ export default function AdminMenuPage() {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold text-charcoal">Menü Yönetimi</h1>
-          <p className="text-sm text-charcoal/60 mt-1">{items.length} toplam ürün</p>
+          <h1 className="font-display text-3xl font-bold text-ink">Ürün Yönetimi</h1>
+          <p className="text-sm text-ink/60 mt-1">{items.length} toplam ürün</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
             <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ara..." className="pl-9 w-48" />
           </div>
           <Select value={catFilter} onValueChange={setCatFilter}>
@@ -157,7 +157,7 @@ export default function AdminMenuPage() {
           <Button variant="outline" size="icon" onClick={load} disabled={loading}>
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </Button>
-          <Button onClick={() => setCreating(true)} className="bg-ember hover:bg-ember/90 text-cream">
+          <Button onClick={() => setCreating(true)} className="bg-pink hover:bg-pink/90 text-white">
             <Plus className="h-4 w-4 mr-1.5" />
             Yeni Ürün
           </Button>
@@ -165,10 +165,10 @@ export default function AdminMenuPage() {
       </div>
 
       {/* Table */}
-      <Card className="border-charcoal/8 shadow-sm overflow-hidden">
+      <Card className="border-ink/8 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-charcoal/5 text-charcoal/70">
+            <thead className="bg-ink/5 text-ink/70">
               <tr>
                 <th className="text-left px-4 py-3 font-medium">Ürün</th>
                 <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Kategori</th>
@@ -186,24 +186,24 @@ export default function AdminMenuPage() {
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-charcoal/50">
+                  <td colSpan={5} className="px-4 py-12 text-center text-ink/50">
                     Ürün bulunamadı
                   </td>
                 </tr>
               ) : (
                 filtered.map((item) => (
-                  <tr key={item.id} className="border-t border-charcoal/8 hover:bg-cream/50">
+                  <tr key={item.id} className="border-t border-ink/8 hover:bg-paper/50">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-charcoal/5 shrink-0">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-ink/5 shrink-0">
                           {item.imageUrl ? (
                             <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                           ) : null}
                         </div>
                         <div className="min-w-0">
-                          <div className="font-medium text-charcoal truncate">{item.name}</div>
-                          <div className="text-xs text-charcoal/50 truncate max-w-xs">{item.description}</div>
-                          <div className="text-[10px] text-charcoal/40 font-mono">/{item.slug}</div>
+                          <div className="font-medium text-ink truncate">{item.name}</div>
+                          <div className="text-xs text-ink/50 truncate max-w-xs">{item.description}</div>
+                          <div className="text-[10px] text-ink/40 font-mono">/{item.slug}</div>
                         </div>
                       </div>
                     </td>
@@ -213,11 +213,11 @@ export default function AdminMenuPage() {
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="font-display font-bold text-charcoal">
+                      <div className="font-display font-bold text-ink">
                         {CURRENCY.formatShort(item.priceCents)}
                       </div>
                       {item.sizes.length > 1 && (
-                        <div className="text-[10px] text-charcoal/50">
+                        <div className="text-[10px] text-ink/50">
                           {item.sizes.length} boyut
                         </div>
                       )}
@@ -226,14 +226,14 @@ export default function AdminMenuPage() {
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleToggle(item, "isAvailable")}
-                          className={`p-1.5 rounded-md transition-colors ${item.isAvailable ? "text-basil hover:bg-basil/10" : "text-charcoal/30 hover:bg-charcoal/5"}`}
+                          className={`p-1.5 rounded-md transition-colors ${item.isAvailable ? "text-basil hover:bg-basil/10" : "text-ink/30 hover:bg-ink/5"}`}
                           title={item.isAvailable ? "Aktif (kapat)" : "Pasif (aç)"}
                         >
                           {item.isAvailable ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                         </button>
                         <button
                           onClick={() => handleToggle(item, "isFeatured")}
-                          className={`p-1.5 rounded-md transition-colors ${item.isFeatured ? "text-saffron hover:bg-saffron/10" : "text-charcoal/30 hover:bg-charcoal/5"}`}
+                          className={`p-1.5 rounded-md transition-colors ${item.isFeatured ? "text-yellow hover:bg-yellow/10" : "text-ink/30 hover:bg-ink/5"}`}
                           title={item.isFeatured ? "Öne çıkarıldı (kaldır)" : "Öne çıkar"}
                         >
                           {item.isFeatured ? <Star className="h-4 w-4 fill-saffron" /> : <StarOff className="h-4 w-4" />}
@@ -245,7 +245,7 @@ export default function AdminMenuPage() {
                         <Button size="icon" variant="ghost" onClick={() => setEditing(item)} aria-label="Düzenle">
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="text-ember" onClick={() => setDeleteTarget(item)} aria-label="Sil">
+                        <Button size="icon" variant="ghost" className="text-pink" onClick={() => setDeleteTarget(item)} aria-label="Sil">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -289,7 +289,7 @@ export default function AdminMenuPage() {
             <AlertDialogCancel>İptal</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-ember hover:bg-ember/90 text-cream"
+              className="bg-pink hover:bg-pink/90 text-white"
             >
               Sil
             </AlertDialogAction>
@@ -381,7 +381,7 @@ function MenuItemForm({
         })),
         sortOrder: Number(form.sortOrder) || 0,
       };
-      const url = item ? `/api/demos/menu/${item.id}` : "/api/demos/menu";
+      const url = item ? `/api/admin/menu/${item.id}` : "/api/admin/menu";
       const res = await fetch(url, {
         method: item ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -456,7 +456,7 @@ function MenuItemForm({
             <Label htmlFor="m-img" className="text-xs">Görsel URL</Label>
             <Input id="m-img" value={form.imageUrl} onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))} placeholder="/images/pizza-xxx.png" className="mt-1" />
             {form.imageUrl && (
-              <div className="mt-2 w-24 h-24 rounded-lg overflow-hidden bg-charcoal/5">
+              <div className="mt-2 w-24 h-24 rounded-lg overflow-hidden bg-ink/5">
                 <img src={form.imageUrl} alt="preview" className="w-full h-full object-cover" />
               </div>
             )}
@@ -488,8 +488,8 @@ function MenuItemForm({
                   }
                   className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                     form.tags.includes(t)
-                      ? "bg-ember text-cream border-ember"
-                      : "bg-cream text-charcoal/70 border-charcoal/15 hover:border-ember/40"
+                      ? "bg-pink text-white border-pink"
+                      : "bg-paper text-ink/70 border-ink/15 hover:border-pink/40"
                   }`}
                 >
                   {t}
@@ -539,7 +539,7 @@ function MenuItemForm({
                       type="button"
                       size="icon"
                       variant="ghost"
-                      className="text-ember"
+                      className="text-pink"
                       onClick={() => setSizes((p) => p.filter((_, idx) => idx !== i))}
                     >
                       <X className="h-4 w-4" />
@@ -584,7 +584,7 @@ function MenuItemForm({
                       type="button"
                       size="icon"
                       variant="ghost"
-                      className="text-ember"
+                      className="text-pink"
                       onClick={() => setCrustTypes((p) => p.filter((_, idx) => idx !== i))}
                     >
                       <X className="h-4 w-4" />
@@ -640,7 +640,7 @@ function MenuItemForm({
                       type="button"
                       size="icon"
                       variant="ghost"
-                      className="text-ember"
+                      className="text-pink"
                       onClick={() => setExtras((p) => p.filter((_, idx) => idx !== i))}
                     >
                       <X className="h-4 w-4" />
@@ -673,9 +673,9 @@ function MenuItemForm({
             </label>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t border-charcoal/10">
+          <div className="flex justify-end gap-2 pt-4 border-t border-ink/10">
             <Button variant="outline" onClick={onClose}>İptal</Button>
-            <Button onClick={handleSubmit} disabled={saving} className="bg-ember hover:bg-ember/90 text-cream">
+            <Button onClick={handleSubmit} disabled={saving} className="bg-pink hover:bg-pink/90 text-white">
               {saving ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />

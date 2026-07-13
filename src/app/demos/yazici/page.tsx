@@ -80,7 +80,7 @@ export default function PrinterSettingsPage() {
   const loadOrders = React.useCallback(async () => {
     setLoadingOrders(true);
     try {
-      const res = await fetch("/api/demos/orders?limit=10", { cache: "no-store" });
+      const res = await fetch("/api/admin/orders?limit=10", { cache: "no-store" });
       const data = await res.json();
       setRecentOrders(data.orders || []);
     } catch {}
@@ -286,29 +286,29 @@ export default function PrinterSettingsPage() {
   return (
     <div className="space-y-5 max-w-4xl">
       <div>
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-charcoal flex items-center gap-2">
-          <Printer className="h-6 w-6 text-ember" />
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-ink flex items-center gap-2">
+          <Printer className="h-6 w-6 text-pink" />
           Termal Yazıcı
         </h1>
-        <p className="text-xs md:text-sm text-charcoal/60 mt-1">
+        <p className="text-xs md:text-sm text-ink/60 mt-1">
           Otomatik sipariş yazdırma · USB veya Sistem Yazıcısı
         </p>
       </div>
 
       {/* Status card */}
-      <Card className={`p-4 md:p-5 border-2 ${state.connected ? "border-basil/30 bg-basil/5" : "border-charcoal/10"}`}>
+      <Card className={`p-4 md:p-5 border-2 ${state.connected ? "border-basil/30 bg-basil/5" : "border-ink/10"}`}>
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
             <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${
-              state.connected ? "bg-basil/15 text-basil" : "bg-charcoal/5 text-charcoal/40"
+              state.connected ? "bg-basil/15 text-basil" : "bg-ink/5 text-ink/40"
             }`}>
               {state.connected ? <CheckCircle2 className="h-6 w-6" /> : <XCircle className="h-6 w-6" />}
             </div>
             <div>
-              <div className="font-display font-bold text-charcoal text-base">
+              <div className="font-display font-bold text-ink text-base">
                 {state.connected ? "Yazıcı Bağlı" : "Bağlı Değil"}
               </div>
-              <div className="text-xs text-charcoal/60">
+              <div className="text-xs text-ink/60">
                 {state.deviceName || "Yazıcı bağlamak için aşağıdaki yöntemlerden birini seçin"}
               </div>
               {state.connected && state.connectionType && (
@@ -317,7 +317,7 @@ export default function PrinterSettingsPage() {
                 </Badge>
               )}
               {state.lastTestAt && (
-                <div className="text-[10px] text-charcoal/40 mt-1">
+                <div className="text-[10px] text-ink/40 mt-1">
                   Son test: {new Date(state.lastTestAt).toLocaleString("tr-TR")}
                 </div>
               )}
@@ -330,7 +330,7 @@ export default function PrinterSettingsPage() {
                   {testing ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <FileText className="h-3.5 w-3.5 mr-1.5" />}
                   Test
                 </Button>
-                <Button variant="outline" size="sm" onClick={disconnect} className="text-ember">
+                <Button variant="outline" size="sm" onClick={disconnect} className="text-pink">
                   Kes
                 </Button>
               </>
@@ -343,21 +343,21 @@ export default function PrinterSettingsPage() {
       {!state.connected && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {/* Yöntem 1: USB */}
-          <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
+          <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-ember/10 text-ember flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-pink/10 text-pink flex items-center justify-center">
                 <Usb className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-charcoal">USB ile Bağla</h3>
-                <p className="text-xs text-charcoal/55">ESC/POS direkt bağlantı</p>
+                <h3 className="font-display font-bold text-ink">USB ile Bağla</h3>
+                <p className="text-xs text-ink/55">ESC/POS direkt bağlantı</p>
               </div>
             </div>
-            <p className="text-xs text-charcoal/70 mb-3 leading-relaxed">
+            <p className="text-xs text-ink/70 mb-3 leading-relaxed">
               Termal yazıcıyı USB ile bilgisayara bağlayın. Chrome veya Edge gerekli.
               ESC/POS protokolü destekleyen tüm yazıcılar (Epson, Bixolon, Star, Xprinter).
             </p>
-            <Button onClick={connectUSB} disabled={connecting} className="w-full bg-ember hover:bg-ember/90 text-cream" size="sm">
+            <Button onClick={connectUSB} disabled={connecting} className="w-full bg-pink hover:bg-pink/90 text-white" size="sm">
               {connecting ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Bağlanıyor...
@@ -371,17 +371,17 @@ export default function PrinterSettingsPage() {
           </Card>
 
           {/* Yöntem 2: Sistem Yazıcısı */}
-          <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
+          <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-saffron/10 text-saffron flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-yellow/10 text-yellow flex items-center justify-center">
                 <PrinterIcon className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-charcoal">Sistem Yazıcısı</h3>
-                <p className="text-xs text-charcoal/55">Bilgisayardaki yüklü yazıcılar</p>
+                <h3 className="font-display font-bold text-ink">Sistem Yazıcısı</h3>
+                <p className="text-xs text-ink/55">Bilgisayardaki yüklü yazıcılar</p>
               </div>
             </div>
-            <p className="text-xs text-charcoal/70 mb-3 leading-relaxed">
+            <p className="text-xs text-ink/70 mb-3 leading-relaxed">
               Bilgisayarınıza yüklü tüm yazıcıları tarar. Termal yazıcı listeden seçilir.
               Her yazıcı için uygundur, manuel onay gerekebilir.
             </p>
@@ -402,10 +402,10 @@ export default function PrinterSettingsPage() {
 
       {/* System printers list */}
       {systemPrinters.length > 0 && !state.connected && (
-        <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
+        <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display font-bold text-charcoal flex items-center gap-2">
-              <Wifi className="h-4 w-4 text-saffron" />
+            <h3 className="font-display font-bold text-ink flex items-center gap-2">
+              <Wifi className="h-4 w-4 text-yellow" />
               Bulunan Yazıcılar ({systemPrinters.length})
             </h3>
             <Button variant="ghost" size="sm" onClick={scanSystemPrinters} disabled={scanning}>
@@ -418,34 +418,34 @@ export default function PrinterSettingsPage() {
               <button
                 key={p.name}
                 onClick={() => connectSystemPrinter(p.name)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg border border-charcoal/8 hover:border-ember/40 hover:bg-ember/5 transition-colors text-left"
+                className="w-full flex items-center gap-3 p-3 rounded-lg border border-ink/8 hover:border-pink/40 hover:bg-pink/5 transition-colors text-left"
               >
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                  p.isThermal ? "bg-ember/10 text-ember" : "bg-charcoal/5 text-charcoal/60"
+                  p.isThermal ? "bg-pink/10 text-pink" : "bg-ink/5 text-ink/60"
                 }`}>
                   <PrinterIcon className="h-4 w-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-charcoal truncate">{p.name}</div>
+                  <div className="text-sm font-medium text-ink truncate">{p.name}</div>
                   <div className="flex items-center gap-2 mt-0.5">
                     {p.isThermal && (
-                      <Badge variant="outline" className="text-[10px] text-ember border-ember/30">
+                      <Badge variant="outline" className="text-[10px] text-pink border-pink/30">
                         Termal
                       </Badge>
                     )}
                     {p.isDefault && (
-                      <Badge variant="outline" className="text-[10px] text-charcoal/60">
+                      <Badge variant="outline" className="text-[10px] text-ink/60">
                         Varsayılan
                       </Badge>
                     )}
                   </div>
                 </div>
-                <Plug className="h-4 w-4 text-charcoal/40" />
+                <Plug className="h-4 w-4 text-ink/40" />
               </button>
             ))}
           </div>
-          <div className="mt-3 p-2.5 rounded-lg bg-saffron/5 border border-saffron/20 text-[11px] text-charcoal/70 flex items-start gap-2">
-            <AlertCircle className="h-3.5 w-3.5 text-saffron shrink-0 mt-0.5" />
+          <div className="mt-3 p-2.5 rounded-lg bg-yellow/5 border border-yellow/20 text-[11px] text-ink/70 flex items-start gap-2">
+            <AlertCircle className="h-3.5 w-3.5 text-yellow shrink-0 mt-0.5" />
             <span>
               Otomatik tarama Chrome 130+ gerektirir. Eski tarayıcılarda "Manuel seç" ile
               tarayıcı print dialog açılır ve yazıcıyı kendiniz seçersiniz.
@@ -455,10 +455,10 @@ export default function PrinterSettingsPage() {
       )}
 
       {/* Configuration */}
-      <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
+      <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
         <div className="flex items-center gap-3 mb-3">
-          <Settings2 className="h-4 w-4 text-saffron" />
-          <h3 className="font-display font-bold text-charcoal">Yapılandırma</h3>
+          <Settings2 className="h-4 w-4 text-yellow" />
+          <h3 className="font-display font-bold text-ink">Yapılandırma</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -479,7 +479,7 @@ export default function PrinterSettingsPage() {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-[10px] text-charcoal/50 mt-1">
+            <p className="text-[10px] text-ink/50 mt-1">
               ESC/POS yazıcılar için otomatik algılanır
             </p>
           </div>
@@ -490,7 +490,7 @@ export default function PrinterSettingsPage() {
               <button
                 onClick={() => setState((s) => ({ ...s, autoPrint: !s.autoPrint }))}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  state.autoPrint ? "bg-ember" : "bg-charcoal/15"
+                  state.autoPrint ? "bg-pink" : "bg-ink/15"
                 }`}
                 role="switch"
                 aria-checked={state.autoPrint}
@@ -501,7 +501,7 @@ export default function PrinterSettingsPage() {
                   }`}
                 />
               </button>
-              <span className="text-xs text-charcoal/70">
+              <span className="text-xs text-ink/70">
                 {state.autoPrint ? "Her siparişte otomatik yazdır" : "Manuel yazdır"}
               </span>
             </div>
@@ -510,11 +510,11 @@ export default function PrinterSettingsPage() {
       </Card>
 
       {/* Recent orders for manual print */}
-      <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
+      <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-ember" />
-            <h3 className="font-display font-bold text-charcoal">Son Siparişler — Yazdır</h3>
+            <FileText className="h-4 w-4 text-pink" />
+            <h3 className="font-display font-bold text-ink">Son Siparişler — Yazdır</h3>
           </div>
           <Button variant="outline" size="sm" onClick={loadOrders} disabled={loadingOrders}>
             <RefreshCw className={`h-3.5 w-3.5 mr-1 ${loadingOrders ? "animate-spin" : ""}`} />
@@ -523,19 +523,19 @@ export default function PrinterSettingsPage() {
         </div>
 
         {loadingOrders ? (
-          <div className="text-center py-6 text-charcoal/50 text-sm">Yükleniyor...</div>
+          <div className="text-center py-6 text-ink/50 text-sm">Yükleniyor...</div>
         ) : recentOrders.length === 0 ? (
-          <div className="text-center py-6 text-charcoal/50 text-sm">Henüz sipariş yok</div>
+          <div className="text-center py-6 text-ink/50 text-sm">Henüz sipariş yok</div>
         ) : (
           <div className="space-y-2">
             {recentOrders.map((order) => (
               <div
                 key={order.id}
-                className="flex items-center justify-between gap-3 p-3 rounded-lg border border-charcoal/8 hover:bg-cream/50 transition-colors"
+                className="flex items-center justify-between gap-3 p-3 rounded-lg border border-ink/8 hover:bg-paper/50 transition-colors"
               >
                 <div className="min-w-0">
-                  <div className="font-mono text-xs font-bold text-ember">{order.orderNumber}</div>
-                  <div className="text-[11px] text-charcoal/60 truncate mt-0.5">
+                  <div className="font-mono text-xs font-bold text-pink">{order.orderNumber}</div>
+                  <div className="text-[11px] text-ink/60 truncate mt-0.5">
                     {order.customerName} · {order.items.length} ürün · {new Date(order.createdAt).toLocaleString("tr-TR")}
                   </div>
                 </div>
@@ -562,12 +562,12 @@ export default function PrinterSettingsPage() {
       </Card>
 
       {/* Help section */}
-      <Card className="p-4 md:p-5 border-saffron/20 bg-saffron/5">
-        <h3 className="font-display font-bold text-charcoal mb-2 flex items-center gap-2 text-sm">
-          <AlertCircle className="h-4 w-4 text-saffron" />
+      <Card className="p-4 md:p-5 border-yellow/20 bg-yellow/5">
+        <h3 className="font-display font-bold text-ink mb-2 flex items-center gap-2 text-sm">
+          <AlertCircle className="h-4 w-4 text-yellow" />
           Kurulum Yardımı
         </h3>
-        <div className="text-xs text-charcoal/75 space-y-1.5">
+        <div className="text-xs text-ink/75 space-y-1.5">
           <p><strong>USB Yöntemi:</strong> ESC/POS destekleyen yazıcı (Epson TM, Bixolon, Star Micronics, Xprinter) USB ile bağlanır. Chrome/Edge gerekli. En hızlı ve otomatik yöntem.</p>
           <p><strong>Sistem Yazıcısı:</strong> Bilgisayara yüklü herhangi bir yazıcı (termal veya normal). Tarayıcı print dialog açılır. Her yazıcı için uyumlu.</p>
           <p><strong>Otomatik yazdırma:</strong> Açık konumda her yeni siparişte otomatik yazdırılır. Tarayıcı sekmesi açık kalmalıdır.</p>

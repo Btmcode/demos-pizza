@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = React.useState(true);
 
   const load = React.useCallback(() => {
-    fetch("/api/demos/stats", { cache: "no-store" })
+    fetch("/api/admin/stats", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
       .then((d) => setStats(d))
       .catch(() => {})
@@ -74,10 +74,10 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-charcoal">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">
             Merhaba! 👋
           </h1>
-          <p className="text-xs md:text-sm text-charcoal/60 mt-1">
+          <p className="text-xs md:text-sm text-ink/60 mt-1">
             {new Date().toLocaleDateString("tr-TR", {
               weekday: "long",
               day: "numeric",
@@ -127,13 +127,13 @@ export default function AdminDashboard() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4">
         {/* Daily orders chart */}
-        <Card className="lg:col-span-2 p-4 md:p-5 border-charcoal/8 shadow-sm">
+        <Card className="lg:col-span-2 p-4 md:p-5 border-ink/8 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-display font-bold text-charcoal">Haftalık Sipariş Trendi</h3>
-              <p className="text-xs text-charcoal/55">Son 7 günün sipariş sayısı</p>
+              <h3 className="font-display font-bold text-ink">Haftalık Sipariş Trendi</h3>
+              <p className="text-xs text-ink/55">Son 7 günün sipariş sayısı</p>
             </div>
-            <Badge variant="outline" className="text-ember border-ember/30">
+            <Badge variant="outline" className="text-pink border-pink/30">
               <Flame className="h-3 w-3 mr-1" />
               Canlı
             </Badge>
@@ -179,9 +179,9 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Popular items */}
-        <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm">
-          <h3 className="font-display font-bold text-charcoal mb-1">En Çok Satanlar</h3>
-          <p className="text-xs text-charcoal/55 mb-3">Son 30 gün</p>
+        <Card className="p-4 md:p-5 border-ink/8 shadow-sm">
+          <h3 className="font-display font-bold text-ink mb-1">En Çok Satanlar</h3>
+          <p className="text-xs text-ink/55 mb-3">Son 30 gün</p>
           {loading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -189,17 +189,17 @@ export default function AdminDashboard() {
               ))}
             </div>
           ) : (stats?.charts.popularItems?.length ?? 0) === 0 ? (
-            <p className="text-sm text-charcoal/50 py-8 text-center">Henüz veri yok</p>
+            <p className="text-sm text-ink/50 py-8 text-center">Henüz veri yok</p>
           ) : (
             <div className="space-y-2.5">
               {(stats?.charts.popularItems ?? []).slice(0, 6).map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-ember/10 text-ember flex items-center justify-center text-xs font-bold">
+                  <div className="w-6 h-6 rounded-full bg-pink/10 text-pink flex items-center justify-center text-xs font-bold">
                     {i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-charcoal truncate">{item.name}</div>
-                    <div className="text-[10px] text-charcoal/50">
+                    <div className="text-sm font-medium text-ink truncate">{item.name}</div>
+                    <div className="text-[10px] text-ink/50">
                       {item.count} adet · {Math.round(item.revenue / 100).toLocaleString("tr-TR")} ₺
                     </div>
                   </div>
@@ -238,24 +238,24 @@ function KpiCard({
   color: "ember" | "saffron" | "basil" | "charcoal";
 }) {
   const colors = {
-    ember: "bg-ember/10 text-ember",
-    saffron: "bg-saffron/10 text-saffron",
+    ember: "bg-pink/10 text-pink",
+    saffron: "bg-yellow/10 text-yellow",
     basil: "bg-basil/10 text-basil",
-    charcoal: "bg-charcoal/10 text-charcoal",
+    charcoal: "bg-ink/10 text-ink",
   };
   return (
-    <Card className="p-4 md:p-5 border-charcoal/8 shadow-sm card-hover">
+    <Card className="p-4 md:p-5 border-ink/8 shadow-sm card-hover">
       <div className="flex items-start justify-between mb-2.5 md:mb-3">
         <div className={`w-9 h-9 md:w-10 md:h-10 rounded-lg ${colors[color]} flex items-center justify-center`}>
           {icon}
         </div>
-        <Clock className="h-3.5 w-3.5 text-charcoal/30" />
+        <Clock className="h-3.5 w-3.5 text-ink/30" />
       </div>
-      <div className="font-display text-xl md:text-3xl font-bold text-charcoal leading-none">
+      <div className="font-display text-xl md:text-3xl font-bold text-ink leading-none">
         {value}
       </div>
-      <div className="text-xs text-charcoal/60 mt-1.5">{title}</div>
-      <div className="text-[10px] text-charcoal/40 mt-0.5">{sub}</div>
+      <div className="text-xs text-ink/60 mt-1.5">{title}</div>
+      <div className="text-[10px] text-ink/40 mt-0.5">{sub}</div>
     </Card>
   );
 }
@@ -274,16 +274,16 @@ function QuickAction({
   return (
     <a
       href={href}
-      className="group flex items-center gap-3 p-3 rounded-xl border border-charcoal/8 hover:border-ember/40 hover:bg-ember/5 transition-colors"
+      className="group flex items-center gap-3 p-3 rounded-xl border border-ink/8 hover:border-pink/40 hover:bg-pink/5 transition-colors"
     >
-      <div className="w-9 h-9 rounded-lg bg-charcoal/5 text-charcoal/70 group-hover:bg-ember group-hover:text-cream flex items-center justify-center transition-colors">
+      <div className="w-9 h-9 rounded-lg bg-ink/5 text-ink/70 group-hover:bg-pink group-hover:text-white flex items-center justify-center transition-colors">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-charcoal">{label}</div>
-        <div className="text-[10px] text-charcoal/50">{sub}</div>
+        <div className="text-sm font-medium text-ink">{label}</div>
+        <div className="text-[10px] text-ink/50">{sub}</div>
       </div>
-      <ArrowUpRight className="h-3.5 w-3.5 text-charcoal/30 group-hover:text-ember transition-colors" />
+      <ArrowUpRight className="h-3.5 w-3.5 text-ink/30 group-hover:text-pink transition-colors" />
     </a>
   );
 }

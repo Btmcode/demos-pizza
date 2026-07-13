@@ -39,7 +39,7 @@ export default function ReportsPage() {
 
   const load = React.useCallback(() => {
     setLoading(true);
-    fetch("/api/demos/stats", { cache: "no-store" })
+    fetch("/api/admin/stats", { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => setStats(d))
       .catch(() => toast.error("Raporlar yüklenemedi"))

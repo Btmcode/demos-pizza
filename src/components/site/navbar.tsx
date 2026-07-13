@@ -65,7 +65,7 @@ export function Navbar() {
               <img
                 src="/logo.png"
                 alt={`${BRAND.name}`}
-                className="h-16 md:h-20 w-auto"
+                className="h-20 md:h-24 w-auto"
               />
             </Link>
 
@@ -143,7 +143,7 @@ export function Navbar() {
           />
           <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-paper shadow-2xl flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-ink/10">
-              <img src="/logo.png" alt="Demos Pizza" className="h-10 w-auto" />
+              <img src="/logo.png" alt="Demos Pizza" className="h-12 w-auto" />
               <Button
                 size="icon"
                 variant="ghost"

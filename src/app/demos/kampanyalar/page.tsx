@@ -42,7 +42,7 @@ export default function AdminCampaignsPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/demos/campaigns", { cache: "no-store" });
+      const res = await fetch("/api/admin/campaigns", { cache: "no-store" });
       const data = await res.json();
       if (data.campaigns) setCampaigns(data.campaigns);
     } catch { toast.error("Kampanyalar yüklenemedi"); }
@@ -54,7 +54,7 @@ export default function AdminCampaignsPage() {
   const handleToggle = async (c: Campaign) => {
     setCampaigns((prev) => prev.map((x) => x.id === c.id ? { ...x, isActive: !c.isActive } : x));
     try {
-      await fetch(`/api/demos/campaigns/${c.id}`, {
+      await fetch(`/api/admin/campaigns/${c.id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !c.isActive }),
       });
@@ -65,7 +65,7 @@ export default function AdminCampaignsPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await fetch(`/api/demos/campaigns/${deleteTarget.id}`, { method: "DELETE" });
+      await fetch(`/api/admin/campaigns/${deleteTarget.id}`, { method: "DELETE" });
       toast.success("Kampanya silindi");
       setCampaigns((prev) => prev.filter((x) => x.id !== deleteTarget.id));
       setDeleteTarget(null);
@@ -180,7 +180,7 @@ function CampaignForm({ campaign, onClose, onSaved }: { campaign: Campaign | nul
         endsAt: form.endsAt || null,
         sortOrder: Number(form.sortOrder) || 0,
       };
-      const url = campaign ? `/api/demos/campaigns/${campaign.id}` : "/api/demos/campaigns";
+      const url = campaign ? `/api/admin/campaigns/${campaign.id}` : "/api/admin/campaigns";
       const res = await fetch(url, {
         method: campaign ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },

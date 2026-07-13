@@ -49,7 +49,7 @@ export default function AdminSettingsPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/demos/settings", { cache: "no-store" });
+      const res = await fetch("/api/admin/settings", { cache: "no-store" });
       const data = await res.json();
       if (data.settings) setSettings(data.settings);
     } catch {
@@ -66,7 +66,7 @@ export default function AdminSettingsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/demos/settings", {
+      const res = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings }),
@@ -84,10 +84,10 @@ export default function AdminSettingsPage() {
     <div className="space-y-5 max-w-3xl">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-charcoal">Ayarlar</h1>
-          <p className="text-sm text-charcoal/60 mt-1">Site genel ayarları</p>
+          <h1 className="font-display text-3xl font-bold text-ink">Ayarlar</h1>
+          <p className="text-sm text-ink/60 mt-1">Site genel ayarları</p>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="bg-ember hover:bg-ember/90 text-cream">
+        <Button onClick={handleSave} disabled={saving} className="bg-pink hover:bg-pink/90 text-white">
           {saving ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -106,14 +106,14 @@ export default function AdminSettingsPage() {
         <Skeleton className="h-96 w-full rounded-xl" />
       ) : (
         SETTING_GROUPS.map((group) => (
-          <Card key={group.title} className="p-5 border-charcoal/8 shadow-sm">
+          <Card key={group.title} className="p-5 border-ink/8 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-ember/10 text-ember flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-pink/10 text-pink flex items-center justify-center">
                 <SettingsIcon className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-charcoal">{group.title}</h3>
-                <p className="text-xs text-charcoal/55">{group.description}</p>
+                <h3 className="font-display font-bold text-ink">{group.title}</h3>
+                <p className="text-xs text-ink/55">{group.description}</p>
               </div>
             </div>
             <div className="space-y-3">
@@ -121,7 +121,7 @@ export default function AdminSettingsPage() {
                 <div key={k.key}>
                   <Label htmlFor={`set-${k.key}`} className="text-xs font-mono">
                     {k.key}
-                    <span className="ml-2 text-charcoal/40 normal-case font-sans">{k.label}</span>
+                    <span className="ml-2 text-ink/40 normal-case font-sans">{k.label}</span>
                   </Label>
                   <Input
                     id={`set-${k.key}`}
@@ -137,12 +137,12 @@ export default function AdminSettingsPage() {
         ))
       )}
 
-      <Card className="p-5 border-saffron/20 bg-saffron/5">
-        <h3 className="font-display font-bold text-charcoal mb-2">Güvenlik Bilgisi</h3>
-        <p className="text-xs text-charcoal/70 leading-relaxed">
+      <Card className="p-5 border-yellow/20 bg-yellow/5">
+        <h3 className="font-display font-bold text-ink mb-2">Güvenlik Bilgisi</h3>
+        <p className="text-xs text-ink/70 leading-relaxed">
           Tüm ayar değişiklikleri aktivite kaydına işlenir. Şifre değişikliği, yeni admin kullanıcısı
           ekleme gibi işlemler için veritabanı yöneticinize başvurun. Production ortamında
-          <code className="mx-1 px-1 py-0.5 bg-charcoal/10 rounded text-[10px]">ADMIN_BOOTSTRAP_*</code>
+          <code className="mx-1 px-1 py-0.5 bg-ink/10 rounded text-[10px]">ADMIN_BOOTSTRAP_*</code>
           env değişkenlerini kaldırdığınızdan emin olun.
         </p>
       </Card>

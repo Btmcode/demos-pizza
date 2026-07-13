@@ -31,11 +31,11 @@ const ACTION_ICON: Record<string, any> = {
 
 const ACTION_COLOR: Record<string, string> = {
   LOGIN: "text-basil",
-  LOGOUT: "text-charcoal/60",
+  LOGOUT: "text-ink/60",
   CREATE: "text-basil",
-  UPDATE: "text-saffron",
-  DELETE: "text-ember",
-  ARCHIVE: "text-saffron",
+  UPDATE: "text-yellow",
+  DELETE: "text-pink",
+  ARCHIVE: "text-yellow",
 };
 
 export default function AdminActivityPage() {
@@ -47,7 +47,7 @@ export default function AdminActivityPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/demos/activity?page=${page}&limit=50`, { cache: "no-store" });
+      const res = await fetch(`/api/admin/activity?page=${page}&limit=50`, { cache: "no-store" });
       const data = await res.json();
       if (data.logs) setLogs(data.logs);
       if (data.pagination) setTotal(data.pagination.total);
@@ -66,15 +66,15 @@ export default function AdminActivityPage() {
     <div className="space-y-5">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-charcoal">Aktivite Kaydı</h1>
-          <p className="text-sm text-charcoal/60 mt-1">{total} toplam kayıt · Sayfa {page}</p>
+          <h1 className="font-display text-3xl font-bold text-ink">Aktivite Kaydı</h1>
+          <p className="text-sm text-ink/60 mt-1">{total} toplam kayıt · Sayfa {page}</p>
         </div>
         <Button variant="outline" size="icon" onClick={load} disabled={loading}>
           <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
         </Button>
       </div>
 
-      <Card className="border-charcoal/8 shadow-sm overflow-hidden">
+      <Card className="border-ink/8 shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-4 space-y-2">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -82,8 +82,8 @@ export default function AdminActivityPage() {
             ))}
           </div>
         ) : logs.length === 0 ? (
-          <div className="p-12 text-center text-charcoal/50">
-            <Activity className="h-12 w-12 mx-auto mb-3 text-charcoal/20" />
+          <div className="p-12 text-center text-ink/50">
+            <Activity className="h-12 w-12 mx-auto mb-3 text-ink/20" />
             Kayıt yok
           </div>
         ) : (
@@ -91,8 +91,8 @@ export default function AdminActivityPage() {
             {logs.map((log) => {
               const Icon = ACTION_ICON[log.action] || Activity;
               return (
-                <div key={log.id} className="p-4 flex items-start gap-3 hover:bg-cream/50 transition-colors">
-                  <div className={`w-9 h-9 rounded-full bg-charcoal/5 flex items-center justify-center shrink-0 ${ACTION_COLOR[log.action] || "text-charcoal/60"}`}>
+                <div key={log.id} className="p-4 flex items-start gap-3 hover:bg-paper/50 transition-colors">
+                  <div className={`w-9 h-9 rounded-full bg-ink/5 flex items-center justify-center shrink-0 ${ACTION_COLOR[log.action] || "text-ink/60"}`}>
                     <Icon className="h-4 w-4" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -100,18 +100,18 @@ export default function AdminActivityPage() {
                       <Badge variant="outline" className="text-[10px] font-mono">
                         {log.action}
                       </Badge>
-                      <span className="text-sm font-medium text-charcoal">{log.entityType}</span>
+                      <span className="text-sm font-medium text-ink">{log.entityType}</span>
                       {log.adminEmail && (
-                        <span className="text-xs text-charcoal/60 flex items-center gap-1">
+                        <span className="text-xs text-ink/60 flex items-center gap-1">
                           <User className="h-3 w-3" />
                           {log.adminEmail}
                         </span>
                       )}
                     </div>
                     {log.details && (
-                      <p className="text-xs text-charcoal/70 mt-1">{log.details}</p>
+                      <p className="text-xs text-ink/70 mt-1">{log.details}</p>
                     )}
-                    <div className="text-[10px] text-charcoal/40 mt-1 font-mono">
+                    <div className="text-[10px] text-ink/40 mt-1 font-mono">
                       {new Date(log.createdAt).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "medium" })}
                       {log.ipAddress && ` · IP: ${log.ipAddress}`}
                       {log.entityId && ` · ID: ${log.entityId.slice(0, 8)}`}
@@ -129,7 +129,7 @@ export default function AdminActivityPage() {
           <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
             Önceki
           </Button>
-          <span className="text-sm text-charcoal/60">
+          <span className="text-sm text-ink/60">
             {page} / {Math.ceil(total / 50)}
           </span>
           <Button variant="outline" size="sm" disabled={page >= Math.ceil(total / 50)} onClick={() => setPage((p) => p + 1)}>

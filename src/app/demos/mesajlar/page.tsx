@@ -28,7 +28,7 @@ export default function AdminMessagesPage() {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const url = filter === "unread" ? "/api/demos/messages?unread=true&limit=100" : "/api/demos/messages?limit=100";
+      const url = filter === "unread" ? "/api/admin/messages?unread=true&limit=100" : "/api/admin/messages?limit=100";
       const res = await fetch(url, { cache: "no-store" });
       const data = await res.json();
       if (data.messages) setMessages(data.messages);
@@ -45,7 +45,7 @@ export default function AdminMessagesPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/demos/messages/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/messages/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       toast.success("Mesaj silindi");
       setMessages((prev) => prev.filter((m) => m.id !== id));
@@ -56,7 +56,7 @@ export default function AdminMessagesPage() {
 
   const markReplied = async (id: string) => {
     try {
-      const res = await fetch(`/api/demos/messages/${id}`, {
+      const res = await fetch(`/api/admin/messages/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isReplied: true }),
@@ -73,20 +73,20 @@ export default function AdminMessagesPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold text-charcoal">Mesajlar</h1>
-          <p className="text-sm text-charcoal/60 mt-1">{messages.length} mesaj</p>
+          <h1 className="font-display text-3xl font-bold text-ink">Mesajlar</h1>
+          <p className="text-sm text-ink/60 mt-1">{messages.length} mesaj</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex bg-charcoal/5 rounded-lg p-1">
+          <div className="flex bg-ink/5 rounded-lg p-1">
             <button
               onClick={() => setFilter("unread")}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${filter === "unread" ? "bg-ember text-cream" : "text-charcoal/70"}`}
+              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${filter === "unread" ? "bg-pink text-white" : "text-ink/70"}`}
             >
               Okunmamış
             </button>
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${filter === "all" ? "bg-ember text-cream" : "text-charcoal/70"}`}
+              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${filter === "all" ? "bg-pink text-white" : "text-ink/70"}`}
             >
               Tümü
             </button>
@@ -104,28 +104,28 @@ export default function AdminMessagesPage() {
           ))}
         </div>
       ) : messages.length === 0 ? (
-        <Card className="p-12 text-center border-charcoal/8">
-          <MessageSquare className="h-12 w-12 mx-auto text-charcoal/20 mb-3" />
-          <p className="text-charcoal/60">Mesaj yok</p>
+        <Card className="p-12 text-center border-ink/8">
+          <MessageSquare className="h-12 w-12 mx-auto text-ink/20 mb-3" />
+          <p className="text-ink/60">Mesaj yok</p>
         </Card>
       ) : (
         <div className="space-y-3">
           {messages.map((m) => (
-            <Card key={m.id} className={`p-4 md:p-5 border-charcoal/8 shadow-sm ${!m.isRead ? "border-l-4 border-l-ember" : ""}`}>
+            <Card key={m.id} className={`p-4 md:p-5 border-ink/8 shadow-sm ${!m.isRead ? "border-l-4 border-l-ember" : ""}`}>
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-charcoal">{m.subject}</h3>
-                    {!m.isRead && <Badge className="bg-ember text-cream text-[10px]">YENİ</Badge>}
+                    <h3 className="font-semibold text-ink">{m.subject}</h3>
+                    {!m.isRead && <Badge className="bg-pink text-white text-[10px]">YENİ</Badge>}
                     {m.isReplied && <Badge variant="outline" className="text-basil border-basil/30 text-[10px]">YANITLANDI</Badge>}
                   </div>
-                  <div className="text-xs text-charcoal/60 mt-1">
+                  <div className="text-xs text-ink/60 mt-1">
                     {m.name} · {new Date(m.createdAt).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </div>
                 </div>
               </div>
 
-              <p className="text-sm text-charcoal/80 bg-charcoal/5 rounded-lg p-3 my-3 whitespace-pre-wrap">
+              <p className="text-sm text-ink/80 bg-ink/5 rounded-lg p-3 my-3 whitespace-pre-wrap">
                 {m.message}
               </p>
 
@@ -145,7 +145,7 @@ export default function AdminMessagesPage() {
                   </a>
                 )}
                 <a href={`mailto:${m.email}?subject=RE: ${encodeURIComponent(m.subject)}`}>
-                  <Button size="sm" className="bg-ember hover:bg-ember/90 text-cream ml-auto">
+                  <Button size="sm" className="bg-pink hover:bg-pink/90 text-white ml-auto">
                     <Reply className="h-3.5 w-3.5 mr-1.5" />
                     Yanıtla
                   </Button>
@@ -155,7 +155,7 @@ export default function AdminMessagesPage() {
                     Yantlandı işaretle
                   </Button>
                 )}
-                <Button size="icon" variant="ghost" className="text-ember" onClick={() => handleDelete(m.id)}>
+                <Button size="icon" variant="ghost" className="text-pink" onClick={() => handleDelete(m.id)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>

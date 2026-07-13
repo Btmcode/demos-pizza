@@ -12,7 +12,7 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="bg-ink rounded-xl px-3 py-2 inline-block mb-4">
-              <img src="/logo.png" alt="Demos Pizza" className="h-10 md:h-12 w-auto" />
+              <img src="/logo.png" alt="Demos Pizza" className="h-12 md:h-14 w-auto" />
             </div>
             <p className="text-sm text-white/65 leading-relaxed max-w-xs">
               {BRAND.description}
