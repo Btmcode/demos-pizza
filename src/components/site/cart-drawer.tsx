@@ -10,6 +10,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useCart } from "./cart-context";
 import { CURRENCY, CONTACT } from "@/lib/constants";
 import { toast } from "sonner";
+import { modernToast } from "@/components/ui/sonner";
+import { playOrderJingle } from "@/lib/jingle";
 
 type Step = "cart" | "checkout" | "success";
 
@@ -44,7 +46,7 @@ export function CartDrawer() {
   // Geolocation — konum izni al, reverse geocode yap
   const useGeolocation = async () => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
-      toast.error("Tarayıcınız konum özelliğini desteklemiyor.");
+      modernToast("error", "Tarayıcınız konum özelliğini desteklemiyor.");
       return;
     }
     setLocating(true);
@@ -83,16 +85,12 @@ export function CartDrawer() {
               district: matchedArea || f.district,
               address: fullAddress || f.address,
             }));
-            toast.success("Konumunuz alındı!", {
-              description: matchedArea
-                ? `${matchedArea} bölgesi seçildi`
-                : "Adres alanı dolduruldu, bölge seçin",
-            });
+            modernToast("success", "Konumunuz alındı!", matchedArea ? `${matchedArea} bölgesi seçildi` : "Adres alanı dolduruldu");
           } else {
-            toast.info("Konum alındı ama adres çözümlenemedi. Lütfen elle girin.");
+            modernToast("info", "Konum alındı ama adres çözümlenemedi. Lütfen elle girin.");
           }
         } catch (e) {
-          toast.error("Adres çözümlenemedi. Lütfen elle girin.");
+          modernToast("error", "Adres çözümlenemedi. Lütfen elle girin.");
         } finally {
           setLocating(false);
         }
@@ -100,13 +98,13 @@ export function CartDrawer() {
       (error) => {
         setLocating(false);
         if (error.code === error.PERMISSION_DENIED) {
-          toast.error("Konum izni reddedildi. Tarayıcı ayarlarından izin verin.");
+          modernToast("error", "Konum izni reddedildi. Tarayıcı ayarlarından izin verin.");
         } else if (error.code === error.POSITION_UNAVAILABLE) {
-          toast.error("Konum bilgisi mevcut değil.");
+          modernToast("error", "Konum bilgisi mevcut değil.");
         } else if (error.code === error.TIMEOUT) {
-          toast.error("Konum alınamadı (zaman aşımı).");
+          modernToast("error", "Konum alınamadı (zaman aşımı).");
         } else {
-          toast.error("Konum alınamadı.");
+          modernToast("error", "Konum alınamadı.");
         }
       },
       {
@@ -179,7 +177,7 @@ export function CartDrawer() {
                     district: matchedArea || f.district,
                     address: fullAddress || f.address,
                   }));
-                  toast.success("Konumunuz otomatik alındı!");
+                  modernToast("success", "Konumunuz otomatik alındı!");
                 }
               } catch {}
             },
@@ -207,7 +205,7 @@ export function CartDrawer() {
         (c: any) => c.code?.toUpperCase() === couponCode.trim().toUpperCase() && c.isActive
       );
       if (!campaign) {
-        toast.error("Geçersiz veya süresi dolmuş kod");
+        modernToast("error", "Geçersiz veya süresi dolmuş kod");
         setCouponApplied(null);
         return;
       }
@@ -215,9 +213,9 @@ export function CartDrawer() {
         ? Math.round((totalCents * campaign.discountPct) / 100)
         : campaign.discountCents || 0;
       setCouponApplied({ code: campaign.code, discountPct: campaign.discountPct || 0, discountCents: discount });
-      toast.success(`%${campaign.discountPct || 0} indirim uygulandı!`);
+      modernToast("success", "`%${campaign.discountPct || 0} indirim uygulandı!`");
     } catch {
-      toast.error("Kod kontrol edilemedi");
+      modernToast("error", "Kod kontrol edilemedi");
     } finally {
       setCouponChecking(false);
     }
@@ -235,23 +233,27 @@ export function CartDrawer() {
 
   const handleCheckout = async () => {
     if (!form.name.trim() || !form.phone.trim()) {
-      toast.error("İsim ve telefon zorunlu");
+      modernToast("error", "İsim ve telefon zorunlu");
+      return;
+    }
+    if (form.phone.length !== 11) {
+      modernToast("error", "Telefon 11 hane olmalı", `${form.phone.length} hane girdiniz, 11 hane gerekli`);
       return;
     }
     if (orderType === "DELIVERY" && !form.street.trim()) {
-      toast.error("Sokak/Cadde girin");
+      modernToast("error", "Sokak/Cadde girin");
       return;
     }
     if (orderType === "DELIVERY" && !form.building.trim()) {
-      toast.error("Bina no girin");
+      modernToast("error", "Bina no girin");
       return;
     }
     if (orderType === "DELIVERY" && !form.district) {
-      toast.error("Lütfen bölgenizi seçin");
+      modernToast("error", "Lütfen bölgenizi seçin");
       return;
     }
     if (orderType === "DELIVERY" && !minMet) {
-      toast.error(`Minimum sipariş ${CONTACT.delivery.minOrder} ₺`);
+      modernToast("error", `Min. sipariş ${CONTACT.delivery.minOrder} ₺`);
       return;
     }
     setSubmitting(true);
@@ -283,7 +285,7 @@ export function CartDrawer() {
       });
       const data = await res.json();
       if (!res.ok) {
-        toast.error(data.error || "Sipariş oluşturulamadı");
+        modernToast("error", data.error || "Sipariş oluşturulamadı");
         return;
       }
       setOrderResult({
@@ -305,9 +307,11 @@ export function CartDrawer() {
         floor: form.floor,
         address: form.address,
       }));
-      toast.success("Siparişiniz alındı! WhatsApp'tan da onay gönderildi.");
+      // Modern toast + jingle
+      modernToast("success", "Siparişiniz Alındı!", "Afiyet olsun 🍕");
+      playOrderJingle();
     } catch {
-      toast.error("Bağlantı hatası. Lütfen tekrar deneyin.");
+      modernToast("error", "Bağlantı hatası. Lütfen tekrar deneyin.");
     } finally {
       setSubmitting(false);
     }
@@ -525,19 +529,41 @@ export function CartDrawer() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="co-phone" className="text-[11px] text-ink/60">Telefon *</Label>
+                  <Label htmlFor="co-phone" className="text-[11px] text-ink/60">Telefon (11 hane) *</Label>
                   <div className="relative mt-1">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
                     <Input
                       id="co-phone"
                       type="tel"
+                      inputMode="numeric"
                       value={form.phone}
-                      onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                      placeholder="+90 5XX XXX XX XX"
-                      maxLength={20}
-                      className="pl-9"
+                      onChange={(e) => {
+                        // Sadece rakam, 11 hane
+                        const cleaned = e.target.value.replace(/\D/g, "").slice(0, 11);
+                        setForm((f) => ({ ...f, phone: cleaned }));
+                      }}
+                      onBlur={(e) => {
+                        if (e.target.value && e.target.value.length !== 11) {
+                          modernToast("error", "Telefon 11 hane olmalı", `Şu an ${e.target.value.length} hane girdiniz`);
+                        }
+                      }}
+                      placeholder="0555 123 45 67"
+                      maxLength={11}
+                      className="pl-9 font-mono tracking-wide"
+                      aria-required="true"
+                      aria-invalid={form.phone.length > 0 && form.phone.length !== 11}
                     />
                   </div>
+                  {form.phone.length > 0 && form.phone.length !== 11 && (
+                    <p className="text-[10px] text-pink mt-1" role="alert">
+                      {form.phone.length}/11 hane — {11 - form.phone.length} hane daha gerekli
+                    </p>
+                  )}
+                  {form.phone.length === 11 && (
+                    <p className="text-[10px] text-basil mt-1 flex items-center gap-1" role="status">
+                      <CheckCircle2 className="h-3 w-3" /> Telefon numarası tamam
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="co-email" className="text-[11px] text-ink/60">E-posta (opsiyonel)</Label>
