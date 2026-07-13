@@ -26,14 +26,32 @@ export function Navbar() {
   // ESC ile search kapat
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSearchOpen(false);
-      if (e.key === "/" && !searchOpen && document.activeElement?.tagName !== "INPUT") {
+      if (e.key === "Escape") { setSearchOpen(false); setMobileOpen(false); }
+      if (e.key === "/" && !searchOpen && !mobileOpen && document.activeElement?.tagName !== "INPUT") {
         e.preventDefault();
         setSearchOpen(true);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, [searchOpen, mobileOpen]);
+
+  // Mobil geri tuşu — hamburger menü açıksa kapat, siteden çıkma
+  React.useEffect(() => {
+    if (!mobileOpen) return;
+    window.history.pushState({ mobileMenuOpen: true }, "");
+    const onPopState = () => setMobileOpen(false);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [mobileOpen]);
+
+  // Mobil geri tuşu — search açıkken kapat, siteden çıkma
+  React.useEffect(() => {
+    if (!searchOpen) return;
+    window.history.pushState({ searchOpen: true }, "");
+    const onPopState = () => setSearchOpen(false);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, [searchOpen]);
 
   return (
@@ -207,19 +225,20 @@ export function Navbar() {
             aria-hidden="true"
           />
           <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-ink shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-white/10">
               <img src="/logo.webp" alt="Demos Pizza" className="h-14 w-auto" />
-              <Button
-                size="icon"
-                variant="ghost"
+              <button
                 onClick={() => setMobileOpen(false)}
-                className="text-white"
+                className="w-10 h-10 flex items-center justify-center rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-colors"
                 aria-label="Kapat"
               >
                 <X className="h-5 w-5" />
-              </Button>
+              </button>
             </div>
-            <nav className="flex flex-col p-3 gap-0.5 flex-1">
+
+            {/* Nav links */}
+            <nav className="flex flex-col p-4 gap-1 flex-1">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
@@ -232,15 +251,22 @@ export function Navbar() {
                 </a>
               ))}
             </nav>
-            <div className="p-4 border-t border-white/10 space-y-2">
-              <a href={CONTACT.phoneHref}>
-                <Button className="w-full bg-white/10 hover:bg-white/15 text-white border border-white/20" size="sm">
-                  <Phone className="h-4 w-4 mr-2" />
-                  <span className="font-mono">{CONTACT.phone}</span>
-                </Button>
+
+            {/* Bottom actions — aralıklı, okunaklı */}
+            <div className="p-5 border-t border-white/10 space-y-3">
+              <a href={CONTACT.phoneHref} className="block">
+                <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-pink flex items-center justify-center shrink-0">
+                    <Phone className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider">Telefon</div>
+                    <div className="text-sm font-mono text-white truncate">{CONTACT.phone}</div>
+                  </div>
+                </div>
               </a>
               <a href="#menu" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow">
+                <Button className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow h-12 text-base font-semibold">
                   Sipariş Ver
                 </Button>
               </a>
