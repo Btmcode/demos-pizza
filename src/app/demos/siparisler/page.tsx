@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Search, RefreshCw, Phone, MapPin, Clock, ShoppingBag, Eye, Loader2, Trash2 } from "lucide-react";
+import { Search, RefreshCw, Phone, MapPin, Clock, ShoppingBag, Eye, Loader2, Trash2, Printer } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,6 +121,20 @@ function AdminOrdersContent() {
     const t = setTimeout(load, 100);
     return () => clearTimeout(t);
   }, [load]);
+
+  // Sipariş yazdır — termal fiş formatı
+  const printOrder = (order: any) => {
+    const items = order.items?.map((it: any) => `<tr><td>${it.quantity}x ${it.name}</td><td style="text-align:right">${(it.unitPriceCents * it.quantity / 100).toLocaleString("tr-TR")} ₺</td></tr>`).join("") || "";
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${order.orderNumber}</title><style>@page{size:80mm auto;margin:4mm}*{font-family:'Courier New',monospace;font-size:11px}body{padding:8px}h1{font-size:14px;text-align:center;margin:4px 0}.sep{border-top:1px dashed #000;margin:4px 0}table{width:100%}td{padding:1px 0}.total{font-weight:bold;font-size:13px}</style></head><body><h1>DEMOS PIZZA</h1><p style="text-align:center">Sipariş: ${order.orderNumber}</p><p style="text-align:center">${new Date(order.createdAt).toLocaleString("tr-TR")}</p><div class="sep"></div><p><b>Müşteri:</b> ${order.customerName}</p><p><b>Tel:</b> ${order.customerPhone}</p>${order.deliveryAddress ? `<p><b>Adres:</b> ${order.deliveryAddress}</p>` : ""}<div class="sep"></div><table>${items}</table><div class="sep"></div><table><tr class="total"><td>TOPLAM</td><td style="text-align:right">${(order.totalCents / 100).toLocaleString("tr-TR")} ₺</td></tr></table><div class="sep"></div><p style="text-align:center">Teşekkürler!</p><script>window.onload=()=>setTimeout(()=>window.print(),300)</script></body></html>`;
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+    doc.open(); doc.write(html); doc.close();
+    iframe.contentWindow?.focus();
+    setTimeout(() => { iframe.contentWindow?.print(); setTimeout(() => document.body.removeChild(iframe), 1000); }, 300);
+  };
 
   const updateStatus = async (id: string, status: string) => {
     setUpdating(id);
@@ -280,6 +294,15 @@ function AdminOrdersContent() {
                     </Button>
                     <Button
                       size="icon"
+                      variant="outline"
+                      className="hidden sm:flex"
+                      onClick={() => printOrder(order)}
+                      aria-label="Yazdır"
+                    >
+                      <Printer className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
                       variant="ghost"
                       className="text-pink hover:bg-pink/5"
                       onClick={async () => {
@@ -430,17 +453,24 @@ function AdminOrdersContent() {
                       variant={selectedOrder.status === key ? "default" : "outline"}
                       onClick={() => updateStatus(selectedOrder.id, key)}
                       disabled={updating === selectedOrder.id || selectedOrder.status === key}
-                      className={
-                        selectedOrder.status === key
-                          ? "bg-pink hover:bg-pink/90 text-white"
-                          : ""
-                      }
+                      className={selectedOrder.status === key ? "bg-pink hover:bg-pink-hover text-white" : ""}
                     >
                       {meta.label}
                     </Button>
                   ))}
                 </div>
               </div>
+
+              {/* Yazdır butonu */}
+              <Button
+                onClick={() => printOrder(selectedOrder)}
+                variant="outline"
+                className="w-full"
+                size="sm"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Yazdır
+              </Button>
             </div>
           )}
         </DialogContent>

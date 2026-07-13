@@ -1,27 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Bell, X, Pizza, Clock } from "lucide-react";
+import { Bell, X, Sparkles } from "lucide-react";
 
-/**
- * Açlık saati bildirimleri — KVKK uyumlu
- * 11:00-13:00 (öğle) ve 17:00-20:00 (akşam) saatlerinde
- * PWA yüklü kullanıcıya push notification gönderir
- *
- * KVKK Uyumluluk:
- * - Kullanıcı onayı gerekir (Notification.requestPermission)
- * - Bildirim içeriği kişisel veri içermez
- * - Kullanıcı istediği zaman kapatabilir (localStorage)
- * - Çerez politikasında bildirim izni açıklanır
- */
+const NOTIF_KEY = "demos-push-permission-v2";
 
-const NOTIF_KEY = "demos-push-permission";
-const NOTIF_DISMISSED = "demos-push-dismissed";
-
-// Açlık saatleri
 const HUNGER_TIMES = [
-  { start: 11, end: 13, title: "Öğle Molası! 🍕", body: "Taze pizza şimdi çıktı fırından. Sipariş ver, sıcacık gelsin!" },
-  { start: 17, end: 20, title: "Akşam Yemeği Vakti! 🍕", body: "Günün yorgunluğunu pizza ile at. 1 alana 1 bedava!" },
+  { start: 11, end: 13, title: "🍕 Öğle Molası!", body: "Taze pizza fırından çıktı. Sipariş ver, sıcacık gelsin!" },
+  { start: 17, end: 20, title: "🍕 Akşam Yemeği!", body: "Günün yorgunluğunu pizza ile at. 1 alana 1 bedava!" },
 ];
 
 export function PushNotificationPrompt() {
@@ -32,42 +18,37 @@ export function PushNotificationPrompt() {
     if (!("Notification" in window)) return;
     setPermission(Notification.permission);
 
-    const dismissed = localStorage.getItem(NOTIF_DISMISSED);
-    const granted = localStorage.getItem(NOTIF_KEY);
-    if (dismissed || granted === "granted") return;
+    // İzin zaten verildiyse veya reddedildiyse gösterme
+    const saved = localStorage.getItem(NOTIF_KEY);
+    if (saved === "granted" || saved === "denied") return;
+    if (Notification.permission === "granted" || Notification.permission === "denied") {
+      localStorage.setItem(NOTIF_KEY, Notification.permission);
+      return;
+    }
 
-    // 5 saniye sonra prompt göster
-    const t = setTimeout(() => setShow(true), 5000);
+    // 10 saniye sonra göster
+    const t = setTimeout(() => setShow(true), 10000);
     return () => clearTimeout(t);
   }, []);
 
-  // İzin verildiyse açlık saati kontrolü
+  // Açlık saati kontrolü
   React.useEffect(() => {
     if (permission !== "granted") return;
-
     const checkHungerTime = () => {
       const hour = new Date().getHours();
       const hunger = HUNGER_TIMES.find(h => hour >= h.start && hour < h.end);
       if (!hunger) return;
-
-      // Son bildirimden en az 2 saat geçmiş olmalı
       const lastNotif = localStorage.getItem("demos-last-notif");
       if (lastNotif && Date.now() - parseInt(lastNotif) < 2 * 60 * 60 * 1000) return;
-
       new Notification(hunger.title, {
         body: hunger.body,
         icon: "/icon-192.png",
         badge: "/icon-192.png",
         tag: "demos-hunger",
-        data: { url: "/" },
       });
-
       localStorage.setItem("demos-last-notif", Date.now().toString());
     };
-
-    // İlk kontrol
     checkHungerTime();
-    // Her 30 dakikada bir kontrol
     const interval = setInterval(checkHungerTime, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, [permission]);
@@ -75,11 +56,10 @@ export function PushNotificationPrompt() {
   const handleAccept = async () => {
     const result = await Notification.requestPermission();
     setPermission(result);
+    localStorage.setItem(NOTIF_KEY, result);
     if (result === "granted") {
-      localStorage.setItem(NOTIF_KEY, "granted");
-      // Hemen test bildirimi
       new Notification("Demos Pizza 🍕", {
-        body: "Bildirimler açık! Açlık saatlerinde sana haber vereceğiz.",
+        body: "Harika! Fırsatları kaçırmayacaksın.",
         icon: "/icon-192.png",
       });
     }
@@ -87,7 +67,7 @@ export function PushNotificationPrompt() {
   };
 
   const handleDismiss = () => {
-    localStorage.setItem(NOTIF_DISMISSED, "true");
+    localStorage.setItem(NOTIF_KEY, "denied");
     setShow(false);
   };
 
@@ -99,14 +79,14 @@ export function PushNotificationPrompt() {
         <div className="bg-ink text-white rounded-2xl shadow-2xl border border-yellow/30 overflow-hidden">
           <div className="flex items-center gap-3 p-3.5">
             <div className="w-10 h-10 rounded-xl bg-yellow flex items-center justify-center shrink-0">
-              <Bell className="h-5 w-5 text-ink" />
+              <Sparkles className="h-5 w-5 text-ink" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-display font-bold text-white text-sm leading-tight">
-                Açlık Saatleri Bildirimi
+                Fırsatları Yakala
               </h3>
               <p className="text-[11px] text-white/60 leading-snug mt-0.5">
-                Öğle ve akşam saatlerinde pizza hatırlatması al (KVKK uyumlu, istediğin zaman kapatabilirsin)
+                Kampanya ve fırsatlardan ilk sen haberdar ol. Sadece sana özel bildirimler.
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">

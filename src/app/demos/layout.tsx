@@ -71,7 +71,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-paper flex">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 bg-ink text-white/80 fixed inset-y-0 left-0 z-30">
+      <aside className="hidden lg:flex flex-col w-60 bg-ink text-white/80 fixed inset-y-0 left-0 z-30 shrink-0">
         <SidebarContent pathname={pathname} session={session} />
       </aside>
 
@@ -79,34 +79,34 @@ function AdminShell({ children }: { children: React.ReactNode }) {
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
           <div className="absolute inset-0 bg-ink/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="absolute left-0 inset-y-0 w-60 bg-ink text-white/80 flex flex-col">
+          <aside className="absolute left-0 inset-y-0 w-64 max-w-[80vw] bg-ink text-white/80 flex flex-col overflow-hidden">
             <SidebarContent pathname={pathname} session={session} onNavigate={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}
 
-      {/* Main */}
-      <div className="flex-1 lg:ml-60 flex flex-col min-h-screen">
+      {/* Main — responsive */}
+      <div className="flex-1 lg:ml-60 flex flex-col min-h-screen w-full min-w-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-paper border-b border-ink/10">
-          <div className="flex items-center justify-between px-4 md:px-6 h-14 md:h-16">
-            <div className="flex items-center gap-3">
+        <header className="sticky top-0 z-20 bg-paper border-b border-ink/10 shrink-0">
+          <div className="flex items-center justify-between px-3 md:px-6 h-14 md:h-16 gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <Button
                 size="icon"
                 variant="ghost"
-                className="lg:hidden"
+                className="lg:hidden shrink-0"
                 onClick={() => setSidebarOpen(true)}
                 aria-label="Menüyü aç"
               >
                 <MenuIcon className="h-5 w-5" />
               </Button>
-              <div className="font-display font-bold text-ink text-base md:text-lg">
+              <div className="font-display font-bold text-ink text-sm md:text-lg truncate">
                 {NAV.find((n) => (n.exact ? pathname === n.href : pathname.startsWith(n.href) && !n.exact))?.label || "Panel"}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Link href="/" target="_blank">
-                <Button size="sm" variant="outline" className="hidden sm:flex">
+            <div className="flex items-center gap-2 shrink-0">
+              <Link href="/" target="_blank" className="hidden sm:block">
+                <Button size="sm" variant="outline">
                   <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
                   Siteyi gör
                 </Button>
@@ -124,7 +124,8 @@ function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        {/* Main content — overflow-x-auto for tables */}
+        <main className="flex-1 p-3 md:p-6 overflow-x-hidden">{children}</main>
       </div>
     </div>
   );
