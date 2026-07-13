@@ -415,7 +415,7 @@ export function CartDrawer() {
                     }`}
                   >
                     <Truck className="h-4 w-4" />
-                    <span>Teslimat</span>
+                    <span>Adrese Teslim</span>
                     <span className="text-[10px] opacity-80">{CONTACT.delivery.deliveryTime}</span>
                   </button>
                   <button
@@ -534,7 +534,8 @@ export function CartDrawer() {
                 </div>
               )}
 
-              {/* Payment method */}
+              {/* Payment method — sadece Adrese Teslim'de */}
+              {orderType === "DELIVERY" && (
               <div>
                 <Label className="text-xs font-semibold mb-2 block">Ödeme Yöntemi</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -554,6 +555,7 @@ export function CartDrawer() {
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Notes */}
               <div>
@@ -580,7 +582,7 @@ export function CartDrawer() {
                 </div>
                 {orderType === "DELIVERY" && (
                   <div className="flex justify-between text-ink/70">
-                    <span>Teslimat</span>
+                    <span>Adrese Teslim</span>
                     <span>
                       {deliveryCents === 0 ? (
                         <span className="text-basil font-medium">Ücretsiz</span>
