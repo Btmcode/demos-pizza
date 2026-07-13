@@ -12,11 +12,6 @@ const handler = NextAuth(authOptions);
  *  - GET /api/auth/providers → 404 (provider listesi sızdırma)
  *  - GET /api/auth/error → 404 (error sayfası sızdırma)
  *  - Diğer NextAuth endpoint'leri (csrf, session, signout, callback) çalışır
- *
- * Bu sayede:
- *  - NextAuth'un default signin sayfası erişilemez
- *  - Provider bilgileri sızdırılmaz
- *  - Saldırgan login formunu göremez
  */
 async function customHandler(req: Request) {
   const url = new URL(req.url);
@@ -24,20 +19,22 @@ async function customHandler(req: Request) {
 
   // /api/auth/signin — sadece POST izinli (login attempt)
   // GET ise 404 — NextAuth'un signin sayfasını gizle
-  if (pathname === "/api/auth/signin" && req.method === "GET") {
+  if (pathname.endsWith("/api/auth/signin") && req.method === "GET") {
     return NextResponse.json({ error: "Not Found" }, { status: 404 });
   }
 
   // /api/auth/providers — provider listesini sızdırma
-  if (pathname === "/api/auth/providers" && req.method === "GET") {
+  if (pathname.endsWith("/api/auth/providers") && req.method === "GET") {
     return NextResponse.json({ error: "Not Found" }, { status: 404 });
   }
 
   // /api/auth/error — error sayfasını sızdırma
-  if (pathname === "/api/auth/error" && req.method === "GET") {
+  if (pathname.endsWith("/api/auth/error") && req.method === "GET") {
     return NextResponse.json({ error: "Not Found" }, { status: 404 });
   }
 
+  // Diğer tüm NextAuth endpoint'leri normal çalışsın
+  // (csrf, session, signout, callback)
   return handler(req);
 }
 
