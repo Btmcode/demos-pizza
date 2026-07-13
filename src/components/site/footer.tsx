@@ -132,6 +132,8 @@ export function Footer() {
             <Link href="/teslimat" className="hover:text-yellow">Teslimat</Link>
             <span className="text-white/20">·</span>
             <Link href="/iade" className="hover:text-yellow">İade</Link>
+            <span className="text-white/20">·</span>
+            <Link href="/takip" className="hover:text-yellow">Sipariş Takibi</Link>
           </div>
         </div>
       </div>

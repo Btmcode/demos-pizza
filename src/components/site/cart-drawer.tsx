@@ -28,11 +28,18 @@ export function CartDrawer() {
     phone: "",
     email: "",
     district: (CONTACT.delivery.serviceAreas[0] as string) || "",
+    street: "",
+    building: "",
+    apartment: "",
+    floor: "",
     address: "",
     notes: "",
   });
   const [submitting, setSubmitting] = React.useState(false);
   const [locating, setLocating] = React.useState(false);
+  const [couponCode, setCouponCode] = React.useState("");
+  const [couponApplied, setCouponApplied] = React.useState<{ code: string; discountPct: number; discountCents: number } | null>(null);
+  const [couponChecking, setCouponChecking] = React.useState(false);
 
   // Geolocation — konum izni al, reverse geocode yap
   const useGeolocation = async () => {
@@ -130,6 +137,10 @@ export function CartDrawer() {
           phone: customer.phone || "",
           email: customer.email || "",
           district: customer.district || (CONTACT.delivery.serviceAreas[0] as string) || "",
+          street: customer.street || "",
+          building: customer.building || "",
+          apartment: customer.apartment || "",
+          floor: customer.floor || "",
           address: customer.address || "",
         }));
       } catch {}
@@ -185,13 +196,41 @@ export function CartDrawer() {
     }
   }, [step, orderType, form.address]);
 
+  // İndirim kodu kontrol
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponChecking(true);
+    try {
+      const res = await fetch("/api/campaigns", { cache: "no-store" });
+      const data = await res.json();
+      const campaign = (data.campaigns || []).find(
+        (c: any) => c.code?.toUpperCase() === couponCode.trim().toUpperCase() && c.isActive
+      );
+      if (!campaign) {
+        toast.error("Geçersiz veya süresi dolmuş kod");
+        setCouponApplied(null);
+        return;
+      }
+      const discount = campaign.discountPct
+        ? Math.round((totalCents * campaign.discountPct) / 100)
+        : campaign.discountCents || 0;
+      setCouponApplied({ code: campaign.code, discountPct: campaign.discountPct || 0, discountCents: discount });
+      toast.success(`%${campaign.discountPct || 0} indirim uygulandı!`);
+    } catch {
+      toast.error("Kod kontrol edilemedi");
+    } finally {
+      setCouponChecking(false);
+    }
+  };
+
+  const couponDiscount = couponApplied?.discountCents || 0;
   const deliveryCents =
     orderType === "DELIVERY"
       ? totalCents >= CONTACT.delivery.freeDeliveryThreshold * 100
         ? 0
         : CONTACT.delivery.deliveryFee * 100
       : 0;
-  const grandTotal = totalCents + deliveryCents;
+  const grandTotal = totalCents - couponDiscount + deliveryCents;
   const minMet = totalCents >= CONTACT.delivery.minOrder * 100;
 
   const handleCheckout = async () => {
@@ -199,8 +238,12 @@ export function CartDrawer() {
       toast.error("İsim ve telefon zorunlu");
       return;
     }
-    if (orderType === "DELIVERY" && !form.address.trim()) {
-      toast.error("Lütfen adresinizi girin");
+    if (orderType === "DELIVERY" && !form.street.trim()) {
+      toast.error("Sokak/Cadde girin");
+      return;
+    }
+    if (orderType === "DELIVERY" && !form.building.trim()) {
+      toast.error("Bina no girin");
       return;
     }
     if (orderType === "DELIVERY" && !form.district) {
@@ -228,7 +271,9 @@ export function CartDrawer() {
           notes: i.notes,
         })),
         deliveryDistrict: orderType === "DELIVERY" ? form.district : undefined,
-        deliveryAddress: orderType === "DELIVERY" ? form.address.trim() : undefined,
+        deliveryAddress: orderType === "DELIVERY"
+          ? [form.street, form.building && `No:${form.building}`, form.apartment && `Daire:${form.apartment}`, form.floor && `Kat:${form.floor}`, form.address].filter(Boolean).join(" · ").trim()
+          : undefined,
         notes: form.notes.trim() || undefined,
       };
       const res = await fetch("/api/orders", {
@@ -254,6 +299,10 @@ export function CartDrawer() {
         phone: form.phone,
         email: form.email,
         district: form.district,
+        street: form.street,
+        building: form.building,
+        apartment: form.apartment,
+        floor: form.floor,
         address: form.address,
       }));
       toast.success("Siparişiniz alındı! WhatsApp'tan da onay gönderildi.");
@@ -504,7 +553,7 @@ export function CartDrawer() {
                 </div>
               </div>
 
-              {/* Delivery address — only for DELIVERY */}
+              {/* Delivery address — yapılandırılmış, Domino's tarzı */}
               {orderType === "DELIVERY" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -522,7 +571,8 @@ export function CartDrawer() {
                       {locating ? "Konum alınıyor..." : "Konumumu Kullan"}
                     </button>
                   </div>
-                  {/* District dropdown */}
+
+                  {/* Bölge seçimi */}
                   <div>
                     <Label htmlFor="co-district" className="text-[11px] text-ink/60">Bölge / Mahalle *</Label>
                     <div className="relative mt-1">
@@ -533,26 +583,76 @@ export function CartDrawer() {
                         onChange={(e) => setForm((f) => ({ ...f, district: e.target.value }))}
                         className="w-full pl-9 pr-3 py-2.5 rounded-md border border-ink/15 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-pink/30 focus:border-pink"
                       >
-                        <option value="" disabled>Bölge seçin</option>
+                        <option value="" disabled>Bölge seç</option>
                         {CONTACT.delivery.serviceAreas.map((area) => (
                           <option key={area} value={area}>{area}</option>
                         ))}
                       </select>
                     </div>
-                    <p className="text-[10px] text-ink/50 mt-1">
-                      Listedeki bölgelere teslimat yapıyoruz
-                    </p>
                   </div>
-                  {/* Full address */}
+
+                  {/* Sokak + Bina No */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-2">
+                      <Label htmlFor="co-street" className="text-[11px] text-ink/60">Sokak / Cadde *</Label>
+                      <Input
+                        id="co-street"
+                        value={form.street || ""}
+                        onChange={(e) => setForm((f) => ({ ...f, street: e.target.value }))}
+                        placeholder="Örn: Atatürk Sk."
+                        maxLength={100}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="co-building" className="text-[11px] text-ink/60">Bina No *</Label>
+                      <Input
+                        id="co-building"
+                        value={form.building || ""}
+                        onChange={(e) => setForm((f) => ({ ...f, building: e.target.value }))}
+                        placeholder="12/A"
+                        maxLength={20}
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Daire + Kat */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label htmlFor="co-apartment" className="text-[11px] text-ink/60">Daire</Label>
+                      <Input
+                        id="co-apartment"
+                        value={form.apartment || ""}
+                        onChange={(e) => setForm((f) => ({ ...f, apartment: e.target.value }))}
+                        placeholder="5"
+                        maxLength={10}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="co-floor" className="text-[11px] text-ink/60">Kat</Label>
+                      <Input
+                        id="co-floor"
+                        value={form.floor || ""}
+                        onChange={(e) => setForm((f) => ({ ...f, floor: e.target.value }))}
+                        placeholder="3"
+                        maxLength={10}
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Ek tarif */}
                   <div>
-                    <Label htmlFor="co-addr" className="text-[11px] text-ink/60">Tam Adres *</Label>
+                    <Label htmlFor="co-addr" className="text-[11px] text-ink/60">Ek Adres Tarifi (opsiyonel)</Label>
                     <Textarea
                       id="co-addr"
                       value={form.address}
                       onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-                      placeholder="Mahalle, sokak, bina no, daire no, kat, ek tarif..."
-                      maxLength={500}
-                      rows={3}
+                      placeholder="Kırmızı bina, çiçekçi karşısı, zil çalmayın vs."
+                      maxLength={300}
+                      rows={2}
                       className="mt-1"
                     />
                   </div>
@@ -600,11 +700,56 @@ export function CartDrawer() {
             </div>
 
             <div className="border-t border-ink/8 p-4 bg-white space-y-3">
+              {/* İndirim kodu */}
+              {!couponApplied ? (
+                <div className="flex gap-2">
+                  <Input
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="İndirim kodu"
+                    className="flex-1 font-mono text-sm uppercase"
+                    maxLength={30}
+                  />
+                  <Button
+                    onClick={applyCoupon}
+                    disabled={couponChecking || !couponCode.trim()}
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                  >
+                    {couponChecking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Uygula"}
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-basil/10 border border-basil/20">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-basil" />
+                    <div>
+                      <div className="text-xs font-semibold text-basil">{couponApplied.code}</div>
+                      <div className="text-[10px] text-basil/60">%{couponApplied.discountPct} indirim</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setCouponApplied(null); setCouponCode(""); }}
+                    className="text-ink/30 hover:text-ink text-xs"
+                  >
+                    Kaldır
+                  </button>
+                </div>
+              )}
+
+              {/* Özet */}
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between text-ink/70">
                   <span>Ara toplam</span>
                   <span>{CURRENCY.formatShort(totalCents)}</span>
                 </div>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-basil">
+                    <span>İndirim (%{couponApplied?.discountPct})</span>
+                    <span>−{CURRENCY.formatShort(couponDiscount)}</span>
+                  </div>
+                )}
                 {orderType === "DELIVERY" && (
                   <div className="flex justify-between text-ink/70">
                     <span>Adrese Teslim</span>
@@ -686,7 +831,7 @@ export function CartDrawer() {
                 closeCart();
                 setStep("cart");
                 setOrderResult(null);
-                setForm({ name: "", phone: "", email: "", district: (CONTACT.delivery.serviceAreas[0] as string) || "", address: "", notes: "" });
+                setForm({ name: "", phone: "", email: "", district: (CONTACT.delivery.serviceAreas[0] as string) || "", street: "", building: "", apartment: "", floor: "", address: "", notes: "" });
               }}
               className="w-full mt-6 bg-pink hover:bg-pink/90 text-white"
             >
