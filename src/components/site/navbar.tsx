@@ -234,7 +234,7 @@ export function Navbar() {
             </nav>
             <div className="p-4 border-t border-white/10 space-y-2">
               <a href={CONTACT.phoneHref}>
-                <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/5" size="sm">
+                <Button className="w-full bg-white/10 hover:bg-white/15 text-white border border-white/20" size="sm">
                   <Phone className="h-4 w-4 mr-2" />
                   <span className="font-mono">{CONTACT.phone}</span>
                 </Button>
