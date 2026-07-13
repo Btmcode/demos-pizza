@@ -118,6 +118,73 @@ export function CartDrawer() {
     }
   }, [isOpen]);
 
+  // Müşteri tanıma — telefon ile kayıtlı müşteri bilgilerini yükle
+  React.useEffect(() => {
+    const saved = localStorage.getItem("demos-customer");
+    if (saved) {
+      try {
+        const customer = JSON.parse(saved);
+        setForm((f) => ({
+          ...f,
+          name: customer.name || "",
+          phone: customer.phone || "",
+          email: customer.email || "",
+          district: customer.district || (CONTACT.delivery.serviceAreas[0] as string) || "",
+          address: customer.address || "",
+        }));
+      } catch {}
+    }
+  }, []);
+
+  // Checkout adımına geçince otomatik konum izni iste
+  React.useEffect(() => {
+    if (step === "checkout" && orderType === "DELIVERY" && !form.address) {
+      // Sadece adres boşsa konum iste
+      const timeout = setTimeout(() => {
+        if (navigator.geolocation && !localStorage.getItem("demos-location-denied")) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              try {
+                const res = await fetch(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=tr`,
+                  { headers: { Accept: "application/json" } }
+                );
+                const data = await res.json();
+                if (data?.address) {
+                  const addr = data.address;
+                  const street = addr.road || addr.pedestrian || "";
+                  const houseNumber = addr.house_number || "";
+                  const neighborhood = addr.suburb || addr.neighbourhood || "";
+                  const fullAddress = [street, houseNumber && `No:${houseNumber}`, neighborhood].filter(Boolean).join(" ");
+                  const matchedArea = CONTACT.delivery.serviceAreas.find(
+                    (area) => {
+                      const district = addr.city_district || addr.town || addr.city || "";
+                      return district.toLowerCase().includes(area.toLowerCase()) || neighborhood.toLowerCase().includes(area.toLowerCase());
+                    }
+                  );
+                  setForm((f) => ({
+                    ...f,
+                    district: matchedArea || f.district,
+                    address: fullAddress || f.address,
+                  }));
+                  toast.success("Konumunuz otomatik alındı!");
+                }
+              } catch {}
+            },
+            (error) => {
+              if (error.code === error.PERMISSION_DENIED) {
+                localStorage.setItem("demos-location-denied", "true");
+              }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+          );
+        }
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [step, orderType, form.address]);
+
   const deliveryCents =
     orderType === "DELIVERY"
       ? totalCents >= CONTACT.delivery.freeDeliveryThreshold * 100
@@ -181,6 +248,14 @@ export function CartDrawer() {
       });
       setStep("success");
       clear();
+      // Müşteri bilgilerini kaydet — geri döndüğünde hatırlasın
+      localStorage.setItem("demos-customer", JSON.stringify({
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        district: form.district,
+        address: form.address,
+      }));
       toast.success("Siparişiniz alındı! WhatsApp'tan da onay gönderildi.");
     } catch {
       toast.error("Bağlantı hatası. Lütfen tekrar deneyin.");
@@ -201,7 +276,7 @@ export function CartDrawer() {
               {step === "success" && "Sipariş Onayı"}
             </SheetTitle>
             {itemCount > 0 && step === "cart" && (
-              <span className="text-xs text-cream/70">{itemCount} ürün</span>
+              <span className="text-xs text-white/70">{itemCount} ürün</span>
             )}
           </div>
         </SheetHeader>
@@ -212,11 +287,11 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto custom-scroll p-4">
               {items.length === 0 ? (
                 <div className="text-center py-16">
-                  <div className="w-20 h-20 mx-auto rounded-full bg-charcoal/5 flex items-center justify-center mb-4">
-                    <ShoppingBag className="h-8 w-8 text-charcoal/30" />
+                  <div className="w-20 h-20 mx-auto rounded-full bg-ink/5 flex items-center justify-center mb-4">
+                    <ShoppingBag className="h-8 w-8 text-ink/30" />
                   </div>
-                  <p className="text-charcoal/60 font-medium">Sepetiniz boş</p>
-                  <p className="text-xs text-charcoal/40 mt-1">Birkaç lezzetli pizza ekleyin!</p>
+                  <p className="text-ink/60 font-medium">Sepetiniz boş</p>
+                  <p className="text-xs text-ink/40 mt-1">Birkaç lezzetli pizza ekleyin!</p>
                   <Button onClick={closeCart} variant="outline" className="mt-4">
                     Menüyü gör
                   </Button>
@@ -252,17 +327,17 @@ export function CartDrawer() {
                           </div>
                           <button
                             onClick={() => removeItem(item.id)}
-                            className="text-charcoal/30 hover:text-ember transition-colors"
+                            className="text-ink/30 hover:text-pink transition-colors"
                             aria-label="Kaldır"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                         <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-1.5 bg-charcoal/5 rounded-lg p-0.5">
+                          <div className="flex items-center gap-1.5 bg-ink/5 rounded-lg p-0.5">
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              className="w-6 h-6 flex items-center justify-center rounded hover:bg-charcoal/10"
+                              className="w-6 h-6 flex items-center justify-center rounded hover:bg-ink/10"
                               aria-label="Azalt"
                             >
                               <Minus className="h-3 w-3" />
@@ -270,13 +345,13 @@ export function CartDrawer() {
                             <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="w-6 h-6 flex items-center justify-center rounded hover:bg-charcoal/10"
+                              className="w-6 h-6 flex items-center justify-center rounded hover:bg-ink/10"
                               aria-label="Artır"
                             >
                               <Plus className="h-3 w-3" />
                             </button>
                           </div>
-                          <span className="font-display font-bold text-ember text-sm">
+                          <span className="font-display font-bold text-pink text-sm">
                             {CURRENCY.formatShort(
                               (item.unitPriceCents + item.extras.reduce((s, e) => s + e.priceCents, 0)) *
                                 item.quantity
@@ -291,7 +366,7 @@ export function CartDrawer() {
             </div>
 
             {items.length > 0 && (
-              <div className="border-t border-charcoal/8 p-4 bg-white space-y-3">
+              <div className="border-t border-ink/8 p-4 bg-white space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-ink/70">Ara toplam</span>
                   <span className="font-medium">{CURRENCY.formatShort(totalCents)}</span>
@@ -322,7 +397,7 @@ export function CartDrawer() {
         {step === "checkout" && (
           <>
             <div className="flex-1 overflow-y-auto custom-scroll p-4 space-y-5">
-              <button onClick={() => setStep("cart")} className="text-xs text-charcoal/60 hover:text-ember flex items-center gap-1">
+              <button onClick={() => setStep("cart")} className="text-xs text-ink/60 hover:text-pink flex items-center gap-1">
                 <ArrowLeft className="h-3 w-3" />
                 Sepete dön
               </button>
@@ -335,8 +410,8 @@ export function CartDrawer() {
                     onClick={() => setOrderType("DELIVERY")}
                     className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
                       orderType === "DELIVERY"
-                        ? "bg-ember text-cream border-ember shadow-md"
-                        : "bg-white border-charcoal/15 hover:border-ember/40"
+                        ? "bg-pink text-white border-pink shadow-md"
+                        : "bg-white border-ink/15 hover:border-pink/40"
                     }`}
                   >
                     <Truck className="h-4 w-4" />
@@ -347,8 +422,8 @@ export function CartDrawer() {
                     onClick={() => setOrderType("PICKUP")}
                     className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
                       orderType === "PICKUP"
-                        ? "bg-ember text-cream border-ember shadow-md"
-                        : "bg-white border-charcoal/15 hover:border-ember/40"
+                        ? "bg-pink text-white border-pink shadow-md"
+                        : "bg-white border-ink/15 hover:border-pink/40"
                     }`}
                   >
                     <Store className="h-4 w-4" />
@@ -362,9 +437,9 @@ export function CartDrawer() {
               <div className="space-y-3">
                 <Label className="text-xs font-semibold">Müşteri Bilgileri</Label>
                 <div>
-                  <Label htmlFor="co-name" className="text-[11px] text-charcoal/60">Ad Soyad *</Label>
+                  <Label htmlFor="co-name" className="text-[11px] text-ink/60">Ad Soyad *</Label>
                   <div className="relative mt-1">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
                     <Input
                       id="co-name"
                       value={form.name}
@@ -376,9 +451,9 @@ export function CartDrawer() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="co-phone" className="text-[11px] text-charcoal/60">Telefon *</Label>
+                  <Label htmlFor="co-phone" className="text-[11px] text-ink/60">Telefon *</Label>
                   <div className="relative mt-1">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
                     <Input
                       id="co-phone"
                       type="tel"
@@ -391,7 +466,7 @@ export function CartDrawer() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="co-email" className="text-[11px] text-charcoal/60">E-posta (opsiyonel)</Label>
+                  <Label htmlFor="co-email" className="text-[11px] text-ink/60">E-posta (opsiyonel)</Label>
                   <Input
                     id="co-email"
                     type="email"
@@ -424,14 +499,14 @@ export function CartDrawer() {
                   </div>
                   {/* District dropdown */}
                   <div>
-                    <Label htmlFor="co-district" className="text-[11px] text-charcoal/60">Bölge / Mahalle *</Label>
+                    <Label htmlFor="co-district" className="text-[11px] text-ink/60">Bölge / Mahalle *</Label>
                     <div className="relative mt-1">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal/40 z-10" />
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40 z-10" />
                       <select
                         id="co-district"
                         value={form.district}
                         onChange={(e) => setForm((f) => ({ ...f, district: e.target.value }))}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-md border border-charcoal/15 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-pink/30 focus:border-pink"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-md border border-ink/15 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-pink/30 focus:border-pink"
                       >
                         <option value="" disabled>Bölge seçin</option>
                         {CONTACT.delivery.serviceAreas.map((area) => (
@@ -439,13 +514,13 @@ export function CartDrawer() {
                         ))}
                       </select>
                     </div>
-                    <p className="text-[10px] text-charcoal/50 mt-1">
+                    <p className="text-[10px] text-ink/50 mt-1">
                       Listedeki bölgelere teslimat yapıyoruz
                     </p>
                   </div>
                   {/* Full address */}
                   <div>
-                    <Label htmlFor="co-addr" className="text-[11px] text-charcoal/60">Tam Adres *</Label>
+                    <Label htmlFor="co-addr" className="text-[11px] text-ink/60">Tam Adres *</Label>
                     <Textarea
                       id="co-addr"
                       value={form.address}
@@ -469,8 +544,8 @@ export function CartDrawer() {
                       onClick={() => setPaymentMethod(m as "CASH_ON_DELIVERY" | "CARD_ON_DELIVERY")}
                       className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
                         paymentMethod === m
-                          ? "bg-charcoal text-cream border-charcoal"
-                          : "bg-white border-charcoal/15 hover:border-ember/40"
+                          ? "bg-ink text-white border-ink"
+                          : "bg-white border-ink/15 hover:border-pink/40"
                       }`}
                     >
                       <CreditCard className="h-4 w-4" />
@@ -482,7 +557,7 @@ export function CartDrawer() {
 
               {/* Notes */}
               <div>
-                <Label htmlFor="co-notes" className="text-[11px] text-charcoal/60 flex items-center gap-1">
+                <Label htmlFor="co-notes" className="text-[11px] text-ink/60 flex items-center gap-1">
                   <MessageSquare className="h-3 w-3" /> Sipariş Notu (opsiyonel)
                 </Label>
                 <Textarea
@@ -497,14 +572,14 @@ export function CartDrawer() {
               </div>
             </div>
 
-            <div className="border-t border-charcoal/8 p-4 bg-white space-y-3">
+            <div className="border-t border-ink/8 p-4 bg-white space-y-3">
               <div className="space-y-1 text-sm">
-                <div className="flex justify-between text-charcoal/70">
+                <div className="flex justify-between text-ink/70">
                   <span>Ara toplam</span>
                   <span>{CURRENCY.formatShort(totalCents)}</span>
                 </div>
                 {orderType === "DELIVERY" && (
-                  <div className="flex justify-between text-charcoal/70">
+                  <div className="flex justify-between text-ink/70">
                     <span>Teslimat</span>
                     <span>
                       {deliveryCents === 0 ? (
@@ -515,15 +590,15 @@ export function CartDrawer() {
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-base text-charcoal pt-1 border-t border-dashed border-charcoal/15">
+                <div className="flex justify-between font-bold text-base text-ink pt-1 border-t border-dashed border-ink/15">
                   <span>Toplam</span>
-                  <span className="text-ember">{CURRENCY.formatShort(grandTotal)}</span>
+                  <span className="text-pink">{CURRENCY.formatShort(grandTotal)}</span>
                 </div>
               </div>
               <Button
                 onClick={handleCheckout}
                 disabled={submitting}
-                className="w-full bg-ember hover:bg-ember/90 text-cream h-12"
+                className="w-full bg-pink hover:bg-pink/90 text-white h-12"
               >
                 {submitting ? (
                   <>
@@ -537,7 +612,7 @@ export function CartDrawer() {
                   </>
                 )}
               </Button>
-              <p className="text-[10px] text-charcoal/50 text-center">
+              <p className="text-[10px] text-ink/50 text-center">
                 Sipariş verdiğinizde <a href="/teslimat" className="underline">Teslimat Sözleşmesi</a>'ni kabul etmiş olursunuz
               </p>
             </div>
@@ -550,33 +625,33 @@ export function CartDrawer() {
             <div className="w-20 h-20 mx-auto rounded-full bg-basil/15 text-basil flex items-center justify-center mb-5">
               <CheckCircle2 className="h-10 w-10" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-charcoal">Siparişiniz alındı!</h3>
-            <p className="mt-2 text-charcoal/70">
+            <h3 className="font-display text-2xl font-bold text-ink">Siparişiniz alındı!</h3>
+            <p className="mt-2 text-ink/70">
               Sipariş numaranız:{" "}
-              <span className="font-mono font-bold text-ember">{orderResult.orderNumber}</span>
+              <span className="font-mono font-bold text-pink">{orderResult.orderNumber}</span>
             </p>
-            <div className="mt-6 bg-white border border-charcoal/8 rounded-xl p-4 text-left space-y-2">
+            <div className="mt-6 bg-white border border-ink/8 rounded-xl p-4 text-left space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-charcoal/70">Tahmini süre</span>
+                <span className="text-ink/70">Tahmini süre</span>
                 <span className="font-medium">{orderResult.estimatedTime}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-charcoal/70">Toplam</span>
-                <span className="font-bold text-ember">{orderResult.totalDisplay}</span>
+                <span className="text-ink/70">Toplam</span>
+                <span className="font-bold text-pink">{orderResult.totalDisplay}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-charcoal/70">Ödeme</span>
+                <span className="text-ink/70">Ödeme</span>
                 <span className="font-medium">{PAYMENT_LABELS[paymentMethod]}</span>
               </div>
             </div>
-            <div className="mt-4 p-3 bg-basil/5 border border-basil/20 rounded-xl text-sm text-charcoal/70">
+            <div className="mt-4 p-3 bg-basil/5 border border-basil/20 rounded-xl text-sm text-ink/70">
               <MessageSquare className="h-4 w-4 inline mr-1 text-basil" />
               Siparişinizi WhatsApp'tan da takip edebilirsiniz:{" "}
               <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="text-basil font-semibold underline">
                 {CONTACT.whatsapp}
               </a>
             </div>
-            <p className="mt-4 text-xs text-charcoal/55">
+            <p className="mt-4 text-xs text-ink/55">
               Sipariş onaylandığında telefon ile haber vereceğiz. Teşekkür ederiz! 🍕
             </p>
             <Button
@@ -586,7 +661,7 @@ export function CartDrawer() {
                 setOrderResult(null);
                 setForm({ name: "", phone: "", email: "", district: (CONTACT.delivery.serviceAreas[0] as string) || "", address: "", notes: "" });
               }}
-              className="w-full mt-6 bg-ember hover:bg-ember/90 text-cream"
+              className="w-full mt-6 bg-pink hover:bg-pink/90 text-white"
             >
               Tamam, kapat
             </Button>

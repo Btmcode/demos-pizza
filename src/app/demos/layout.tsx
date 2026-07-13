@@ -28,7 +28,6 @@ const NAV = [
   { href: "/demos/siparisler", label: "Siparişler", icon: ShoppingBag },
   { href: "/demos/menu", label: "Ürünler", icon: UtensilsCrossed },
   { href: "/demos/kampanyalar", label: "Kampanyalar", icon: Tag },
-  { href: "/demos/yazici", label: "Yazıcı", icon: Printer },
   { href: "/demos/raporlar", label: "Raporlar", icon: BarChart3 },
   { href: "/demos/mesajlar", label: "Mesajlar", icon: MessageSquare },
   { href: "/demos/ayarlar", label: "Ayarlar", icon: Settings },

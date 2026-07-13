@@ -29,11 +29,11 @@ const SITE_URL = "https://demospizza.com.tr";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Demos Pizza · Fatih Pizza Sipariş · Haseki Online",
+    default: "Demos Pizza · Fatih Haseki Pizza Sipariş · 30 Dakika Teslimat",
     template: "%s · Demos Pizza",
   },
   description:
-    "Fatih Haseki'de günlük taze hamur, endüstriyel fırında pişen İtalyan pizza. 30-45 dk kurye teslimat. 1 alana 1 bedava! Haseki, Aksaray, Fındıkzade, Çapa.",
+    "Fatih Haseki'de günlük taze el yapımı hamur, endüstriyel fırında pişen İtalyan pizza. 30 dk kurye teslimat. 1 alana 1 bedava! Aksaray, Fındıkzade, Çapa, Samatya.",
   keywords: [
     "Demos Pizza", "Fatih pizza", "Haseki pizza", "Aksaray pizza",
     "Fındıkzade pizza", "Çapa pizza", "İstanbul pizza sipariş",
@@ -41,7 +41,8 @@ export const metadata: Metadata = {
     "günlük taze hamur pizza", "endüstriyel fırın pizza",
     "İtalyan pizza İstanbul", "1 alana 1 bedava pizza",
     "paket servis pizza Fatih", "kurye pizza İstanbul",
-    "pizza sipariş Haseki", "Demospizza",
+    "pizza sipariş Haseki", "Demospizza", "demospizza.com.tr",
+    "pizza Fatih Haseki", "en iyi pizza Fatih", "pizza kampanya İstanbul",
   ],
   authors: [{ name: "Demos Pizza" }],
   creator: "Demos Pizza",
