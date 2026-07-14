@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { AddressPicker } from "./address-picker";
 import { useCart } from "./cart-context";
 import { CURRENCY, CONTACT } from "@/lib/constants";
 import { toast } from "sonner";
@@ -579,24 +580,15 @@ export function CartDrawer() {
                 </div>
               </div>
 
-              {/* Delivery address — yapılandırılmış, Domino's tarzı */}
+              {/* Delivery address — Emlakjet tarzı harita + yapılandırılmış form */}
               {orderType === "DELIVERY" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-semibold">Teslimat Adresi</Label>
-                    <button
-                      onClick={useGeolocation}
-                      disabled={locating}
-                      className="inline-flex items-center gap-1.5 text-[11px] font-medium text-pink hover:text-pink-hover transition-colors disabled:opacity-50"
-                    >
-                      {locating ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      ) : (
-                        <Navigation className="h-3.5 w-3.5" />
-                      )}
-                      {locating ? "Konum alınıyor..." : "Konumumu Kullan"}
-                    </button>
                   </div>
+
+                  {/* Harita tabanlı konum seçici */}
+                  <AddressPicker form={form} setForm={setForm} />
 
                   {/* Bölge seçimi */}
                   <div>
