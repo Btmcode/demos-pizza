@@ -2,11 +2,15 @@
 
 import * as React from "react";
 
-const SPLASH_KEY = "demos-splash-v3";
+const SPLASH_KEY = "demos-splash-v4";
 
 /**
- * Cinematic Splash Screen — pizza arka planı + alev + duman animasyonu
- * Uygulama ikonu gösterilmez, sadece marka adı + iştah kabartıcı görsel
+ * Splash Screen — Minimal, modern (Uber/e-Devlet tarzı)
+ * - Siyah arka plan
+ * - Dönen çok renkli halka (loading spinner)
+ * - Merkezde pizza ikonu
+ * - Altında marka adı + slogan
+ * - Alt ilerleme çubuğu
  */
 export function Splashscreen() {
   const [show, setShow] = React.useState(false);
@@ -16,7 +20,7 @@ export function Splashscreen() {
     if (!shown) {
       setShow(true);
       sessionStorage.setItem(SPLASH_KEY, "true");
-      const t = setTimeout(() => setShow(false), 2800);
+      const t = setTimeout(() => setShow(false), 2500);
       return () => clearTimeout(t);
     }
   }, []);
@@ -25,121 +29,119 @@ export function Splashscreen() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] overflow-hidden flex flex-col items-center justify-center"
-      style={{
-        animation: "splash-fade-out 0.5s ease 2.3s forwards",
-        background: "linear-gradient(180deg, #1a0a00 0%, #0d0500 50%, #000000 100%)",
-      }}
+      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center"
+      style={{ animation: "splash-fade-out 0.4s ease 2.1s forwards" }}
     >
-      {/* Pizza arka plan görseli — blur'lu, koyu */}
+      {/* Ana konteyner — dönen halka + merkez ikon */}
       <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: "url(/images/hero-pizza-main.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(8px) brightness(0.5)",
-          transform: "scale(1.1)",
-        }}
-      />
-
-      {/* Duman partikülleri — yükselen */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              left: `${10 + i * 11}%`,
-              bottom: "10%",
-              width: `${30 + i * 8}px`,
-              height: `${30 + i * 8}px`,
-              background: "radial-gradient(circle, rgba(255,200,100,0.15) 0%, transparent 70%)",
-              animation: `smoke-rise ${3 + i * 0.3}s ease-in-out ${i * 0.4}s infinite`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Alev efektleri — alttan yükselen */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none overflow-hidden">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute bottom-0"
-            style={{
-              left: `${(i * 8.5) - 2}%`,
-              width: `${60 + (i % 3) * 20}px`,
-              height: `${80 + (i % 4) * 30}px`,
-              background: `radial-gradient(ellipse at bottom, rgba(255,${100 + (i % 3) * 50},0,0.6) 0%, rgba(255,60,0,0.3) 40%, transparent 80%)`,
-              borderRadius: "50% 50% 30% 30%",
-              filter: "blur(4px)",
-              animation: `flame-dance ${0.8 + (i % 3) * 0.2}s ease-in-out ${i * 0.05}s infinite alternate`,
-              transformOrigin: "bottom center",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Ana içerik — marka adı + slogan */}
-      <div
-        className="relative z-10 flex flex-col items-center"
-        style={{ animation: "splash-scale-in 0.7s cubic-bezier(0.22,1,0.36,1) forwards" }}
+        className="relative flex flex-col items-center"
+        style={{ animation: "splash-scale-in 0.5s cubic-bezier(0.22,1,0.36,1) forwards" }}
       >
-        {/* Parıldayan marka adı */}
-        <h1
-          className="font-display text-4xl md:text-6xl font-black text-center tracking-tight"
-          style={{
-            background: "linear-gradient(180deg, #FFE082 0%, #FFC400 40%, #FF8F00 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            filter: "drop-shadow(0 0 20px rgba(255,180,0,0.5))",
-            animation: "glow-pulse 2s ease-in-out infinite",
-          }}
-        >
-          DEMOS PIZZA
-        </h1>
+        {/* Dönen halka — çok renkli segmentler */}
+        <div className="relative w-28 h-28 mb-6">
+          {/* Halka 1 — sarı segment (dönen) */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: "conic-gradient(from 0deg, #FFC400 0deg, #FFC400 90deg, transparent 90deg, transparent 360deg)",
+              animation: "splash-spin 1.2s linear infinite",
+              maskImage: "radial-gradient(circle, transparent 60%, black 62%)",
+              WebkitMaskImage: "radial-gradient(circle, transparent 60%, black 62%)",
+            }}
+          />
+          {/* Halka 2 — pembe segment (ters yönde) */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: "conic-gradient(from 180deg, #FF2D8D 0deg, #FF2D8D 90deg, transparent 90deg, transparent 360deg)",
+              animation: "splash-spin 1.5s linear infinite reverse",
+              maskImage: "radial-gradient(circle, transparent 60%, black 62%)",
+              WebkitMaskImage: "radial-gradient(circle, transparent 60%, black 62%)",
+            }}
+          />
+          {/* Halka 3 — turuncu segment (farklı hızda) */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: "conic-gradient(from 270deg, #FF6B00 0deg, #FF6B00 60deg, transparent 60deg, transparent 360deg)",
+              animation: "splash-spin 1s linear infinite",
+              maskImage: "radial-gradient(circle, transparent 60%, black 62%)",
+              WebkitMaskImage: "radial-gradient(circle, transparent 60%, black 62%)",
+            }}
+          />
 
-        {/* Alt çizgi — alev renkli */}
-        <div
-          className="h-0.5 w-32 mt-3 rounded-full"
-          style={{
-            background: "linear-gradient(90deg, transparent, #FF6B00, #FFC400, #FF6B00, transparent)",
-            animation: "line-shimmer 2s ease-in-out infinite",
-          }}
-        />
+          {/* Merkez daire — siyah, içinde pizza ikonu */}
+          <div className="absolute inset-6 rounded-full bg-black flex items-center justify-center">
+            {/* Pizza dilimi SVG — minimal, ikonik */}
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 64 64"
+              fill="none"
+              style={{ animation: "splash-pulse 1.5s ease-in-out infinite" }}
+            >
+              {/* Pizza kabuğu — sarı */}
+              <path
+                d="M32 8 L 52 48 L 12 48 Z"
+                fill="#FFC400"
+                stroke="#FFB300"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+              {/* Pizza içi — açık sarı */}
+              <path
+                d="M32 14 L 47 44 L 17 44 Z"
+                fill="#FFE082"
+              />
+              {/* Pepperoni noktaları — pembe */}
+              <circle cx="27" cy="32" r="3" fill="#FF2D8D" />
+              <circle cx="37" cy="36" r="2.5" fill="#FF2D8D" />
+              <circle cx="32" cy="26" r="2" fill="#FF2D8D" />
+              {/* Bazı yeşil fesleğen noktaları */}
+              <circle cx="30" cy="40" r="1.5" fill="#16A34A" />
+              <circle cx="36" cy="30" r="1" fill="#16A34A" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Marka adı */}
+        <h2
+          className="font-display text-2xl font-bold text-white text-center tracking-tight"
+          style={{ animation: "splash-text-up 0.6s ease 0.3s forwards", opacity: 0 }}
+        >
+          Demos Pizza
+        </h2>
 
         {/* Slogan */}
         <p
-          className="text-sm md:text-base text-orange-200/80 mt-4 font-medium tracking-wide"
-          style={{ animation: "splash-text-up 0.8s ease 0.4s forwards", opacity: 0 }}
+          className="text-sm text-yellow mt-1.5 text-center font-medium"
+          style={{ animation: "splash-text-up 0.6s ease 0.5s forwards", opacity: 0 }}
         >
           Sıcacık pizzalar, sevdiklerinle
         </p>
       </div>
 
-      {/* Alt yükleme çizgisi */}
+      {/* Alt ilerleme çubuğu */}
       <div
-        className="absolute bottom-16 w-48 h-1 bg-white/10 rounded-full overflow-hidden"
-        style={{ animation: "splash-text-up 0.6s ease 0.6s forwards", opacity: 0 }}
+        className="absolute bottom-20 w-44 h-1 bg-white/10 rounded-full overflow-hidden"
+        style={{ animation: "splash-text-up 0.5s ease 0.7s forwards", opacity: 0 }}
       >
         <div
           className="h-full rounded-full"
           style={{
-            background: "linear-gradient(90deg, #FF6B00, #FFC400)",
-            animation: "splash-progress 2.2s ease forwards",
+            background: "linear-gradient(90deg, #FFC400, #FF2D8D)",
+            animation: "splash-progress 1.8s ease forwards",
           }}
         />
       </div>
 
       <style>{`
         @keyframes splash-scale-in {
-          from { transform: scale(0.8); opacity: 0; }
+          from { transform: scale(0.85); opacity: 0; }
           to { transform: scale(1); opacity: 1; }
         }
         @keyframes splash-text-up {
-          from { transform: translateY(15px); opacity: 0; }
+          from { transform: translateY(10px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
         }
         @keyframes splash-progress {
@@ -150,39 +152,13 @@ export function Splashscreen() {
           from { opacity: 1; }
           to { opacity: 0; visibility: hidden; }
         }
-        @keyframes glow-pulse {
-          0%, 100% { filter: drop-shadow(0 0 20px rgba(255,180,0,0.5)); }
-          50% { filter: drop-shadow(0 0 35px rgba(255,180,0,0.8)); }
+        @keyframes splash-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
-        @keyframes line-shimmer {
-          0%, 100% { opacity: 0.6; transform: scaleX(1); }
-          50% { opacity: 1; transform: scaleX(1.1); }
-        }
-        @keyframes smoke-rise {
-          0% {
-            transform: translateY(0) scale(0.5);
-            opacity: 0;
-          }
-          20% {
-            opacity: 0.6;
-          }
-          80% {
-            opacity: 0.3;
-          }
-          100% {
-            transform: translateY(-300px) scale(1.5);
-            opacity: 0;
-          }
-        }
-        @keyframes flame-dance {
-          0% {
-            transform: scaleY(1) scaleX(1) translateY(0);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scaleY(1.3) scaleX(0.9) translateY(-5px);
-            opacity: 1;
-          }
+        @keyframes splash-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.08); }
         }
       `}</style>
     </div>
