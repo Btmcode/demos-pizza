@@ -223,3 +223,64 @@ Stage Summary:
 - Tüm platformlar destekleniyor: PWA, Apple, Android, favicon
 - WebP + PNG dual format (modern + legacy browser support)
 - Toplam dosya boyutu: ~440KB (önceki: ~800KB+)
+
+---
+Task ID: ux-icon-splash-fix
+Agent: Super Z (main)
+Task: Telefon ikonu, alt menü, uygulama ikonu, splash screen düzeltmeleri
+
+WORK LOG:
+
+1. FloatingCallButton (telefon ikonu):
+   - bottom-20 right-4 (alt bar'ın hemen üstünde)
+   - Pulse-ring animasyonu kaldırıldı (görsel sorun)
+   - Temiz shadow, active:scale-95 feedback
+   - Artık yarım gözükmüyor, kötü konumda değil
+
+2. MobileBottomBar — tüm sayfalarda çalışıyor:
+   - <a href='#anasayfa'> → <Link href='/'> (Next.js Link)
+   - <a href='#menu'> → <Link href='/#menu'>
+   - usePathname() ile aktif sayfa tespiti
+   - Scroll-based active state sadece ana sayfada
+   - Ürün detayında butonlar artık çalışıyor!
+
+3. MobileStickyBar (ürün detay):
+   - right-20: FloatingCallButton için yer açıldı
+   - Çakışma çözüldü
+
+4. Uygulama ikonu — maskable + any:
+   - Any purpose: şeffaf arka plan, %95 içerik (modern tarayıcılar)
+   - Maskable purpose: solid #0d0500 arka plan, %75 safe area (Android/iOS)
+   - Beyaz arka plan sorunu çözüldü (maskable solid bg)
+   - WebP + PNG dual format
+   - Boyutlar: 16, 32, 180, 192, 512, 1024
+
+5. Splash screen — sinematik:
+   - Uygulama ikonu/logo kaldırıldı
+   - Pizza arka plan görseli (blur'lu, koyu)
+   - 12 alev animasyonu (alttan yükselen, dans eden)
+   - 8 duman partikülü (yükselen)
+   - Marka adı: altın gradient + glow pulse
+   - Turuncu shimmer çizgi
+   - Loading bar (alev gradient)
+   - Süre: 2.8 saniye
+   - Arka plan: #0d0500 (manifest ile uyumlu)
+
+6. Manifest + theme color:
+   - background_color: #0d0500
+   - theme_color: #0d0500
+   - Maskable + any icon'lar ayrı
+
+VERIFICATION:
+- Maskable icon corners: ✓ solid (13,5,0) = #0d0500
+- Any icon corners: ✓ transparent (alpha=0)
+- Home page: 200 ✓
+- Product detail: 200 ✓
+- All icon files deployed ✓
+
+Stage Summary:
+- Build başarılı, deploy edildi
+- Telefon ikonu düzgün konumda
+- Alt menü tüm sayfalarda çalışıyor
+- Uygulama ikonu büyük + beyaz arka plan yok
+- Splash screen sinematik (alev + duman + pizza bg)
