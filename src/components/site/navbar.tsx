@@ -2,14 +2,23 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, ShoppingBag, Phone, MapPin, X, Flame, Clock, Search, ChevronRight, Truck, MessageCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, ShoppingBag, Phone, MapPin, X, Flame, Clock, Search, ChevronRight, MessageCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { NAV_LINKS, CONTACT, BRAND } from "@/lib/constants";
 import { useCart } from "./cart-context";
-import { toast } from "sonner";
 
+/**
+ * Professional Navbar — Premium design
+ * - Large logo
+ * - Clean desktop navigation with pill-style links
+ * - Top utility bar (phone, address, hours, promo)
+ * - Scroll-aware: transparent → solid on scroll
+ * - Mobile: slide-in drawer
+ * - Search overlay
+ */
 export function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
@@ -17,13 +26,12 @@ export function Navbar() {
   const { toggleCart, itemCount } = useCart();
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ESC ile search kapat
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { setSearchOpen(false); setMobileOpen(false); }
@@ -36,7 +44,6 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, [searchOpen, mobileOpen]);
 
-  // Mobil geri tuşu — hamburger menü açıksa kapat, siteden çıkma
   React.useEffect(() => {
     if (!mobileOpen) return;
     window.history.pushState({ mobileMenuOpen: true }, "");
@@ -45,7 +52,6 @@ export function Navbar() {
     return () => window.removeEventListener("popstate", onPopState);
   }, [mobileOpen]);
 
-  // Mobil geri tuşu — search açıkken kapat, siteden çıkma
   React.useEffect(() => {
     if (!searchOpen) return;
     window.history.pushState({ searchOpen: true }, "");
@@ -54,17 +60,19 @@ export function Navbar() {
     return () => window.removeEventListener("popstate", onPopState);
   }, [searchOpen]);
 
+  const isHome = pathname === "/";
+
   return (
     <>
-      {/* Top utility strip */}
-      <div className="hidden md:block bg-ink text-white text-xs">
-        <div className="container mx-auto flex items-center justify-between px-6 py-2">
+      {/* Top utility bar — desktop only */}
+      <div className="hidden md:block bg-ink-2 text-white/70 text-xs border-b border-white/5">
+        <div className="container mx-auto flex items-center justify-between px-6 h-9">
           <div className="flex items-center gap-5">
-            <a href={CONTACT.phoneHref} className="flex items-center gap-1.5 hover:text-yellow transition-colors">
+            <a href={CONTACT.phoneHref} className="flex items-center gap-1.5 hover:text-yellow transition-colors font-medium">
               <Phone className="h-3 w-3" />
-              <span className="font-mono">{CONTACT.phone}</span>
+              <span className="font-mono tracking-wide">{CONTACT.phone}</span>
             </a>
-            <span className="flex items-center gap-1.5 text-white/60">
+            <span className="flex items-center gap-1.5 text-white/50">
               <MapPin className="h-3 w-3" />
               {CONTACT.address.district} · {CONTACT.address.city}
             </span>
@@ -76,64 +84,63 @@ export function Navbar() {
                 {CONTACT.promo.text}
               </span>
             )}
-            <span className="text-white/30">·</span>
-            <span className="flex items-center gap-1.5 text-white/60">
+            <span className="text-white/20">|</span>
+            <span className="flex items-center gap-1.5 text-white/50">
               <Clock className="h-3 w-3" />
-              Açık · {CONTACT.delivery.deliveryTime} teslimat
+              Açık · {CONTACT.delivery.deliveryTime}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Ana navbar — Apple tarzı: cam efekt, minimal, zarif */}
+      {/* Main header */}
       <header
-        className={`sticky top-0 z-40 w-full border-b transition-all duration-300 ${
+        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           scrolled
-            ? "bg-ink/80 backdrop-blur border-white/10"
-            : "bg-ink border-white/5"
+            ? "bg-ink/95 backdrop-blur-lg shadow-2xl border-b border-white/10"
+            : "bg-ink border-b border-white/5"
         }`}
       >
-        <div className="container mx-auto px-3 md:px-6">
-          <div className="flex items-center justify-between h-[80px] md:h-24 gap-4">
-            {/* Logo */}
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-between h-[72px] md:h-[88px] gap-4">
+            {/* Logo — bigger, prominent */}
             <Link href="/" className="flex items-center shrink-0" aria-label="Demos Pizza ana sayfa">
               <img
                 src="/logo.webp"
                 alt={`${BRAND.name}`}
-                className="h-[72px] md:h-[96px] w-auto"
+                className="h-[60px] md:h-[80px] w-auto transition-opacity hover:opacity-90"
               />
             </Link>
 
-            {/* Desktop nav — Apple tarzı: orta hizalı, geniş aralıklı */}
+            {/* Desktop nav — pill style, centered */}
             <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
               {NAV_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors relative group"
+                  className="px-4 py-2.5 text-sm font-medium text-white/70 hover:text-white hover:bg-white/8 rounded-full transition-all duration-200"
                 >
                   {link.label}
-                  <span className="absolute inset-x-4 -bottom-0.5 h-0.5 bg-yellow scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-full" />
-                </a>
+                </Link>
               ))}
             </nav>
 
-            {/* Right actions — Apple tarzı: ikonlar, sade */}
-            <div className="flex items-center gap-1 md:gap-2 shrink-0">
+            {/* Right actions */}
+            <div className="flex items-center gap-2 md:gap-3 shrink-0">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all"
+                className="p-2.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all"
                 aria-label="Ara"
               >
                 <Search className="h-5 w-5" />
               </button>
 
-              {/* Sepet */}
+              {/* Cart */}
               <Button
                 onClick={toggleCart}
                 size="icon"
-                className="relative bg-pink hover:bg-pink-hover text-white shadow-pink-glow btn-premium h-11 w-11 md:h-10 md:w-10 rounded-full"
+                className="relative bg-pink hover:bg-pink-hover text-white shadow-pink-glow h-11 w-11 rounded-full transition-transform hover:scale-105"
                 aria-label={`Sepetim, ${itemCount} ürün`}
               >
                 <ShoppingBag className="h-5 w-5" />
@@ -147,7 +154,15 @@ export function Navbar() {
                 )}
               </Button>
 
-              {/* Mobile menu */}
+              {/* Order button — desktop only */}
+              <Link href="/#menu" className="hidden md:block">
+                <Button className="bg-yellow hover:bg-yellow/90 text-ink font-semibold h-11 px-5 rounded-full shadow-lg transition-transform hover:scale-105">
+                  <Truck className="h-4 w-4 mr-1.5" />
+                  Sipariş Ver
+                </Button>
+              </Link>
+
+              {/* Mobile menu trigger */}
               <Button
                 onClick={() => setMobileOpen(true)}
                 size="icon"
@@ -162,14 +177,13 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Search overlay — Apple tarzı: tam ekran cam efekt */}
+      {/* Search overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-ink/60 " onClick={() => setSearchOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-ink/70 backdrop-blur-sm" onClick={() => setSearchOpen(false)}>
           <div
             className="w-full max-w-2xl mx-4 bg-paper rounded-2xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Search input */}
             <div className="flex items-center gap-3 p-4 border-b border-ink/8">
               <Search className="h-5 w-5 text-ink/40 shrink-0" />
               <input
@@ -190,8 +204,6 @@ export function Navbar() {
                 ESC
               </button>
             </div>
-
-            {/* Search results */}
             <div className="max-h-[50vh] overflow-y-auto custom-scroll">
               {searchQuery.trim().length > 1 ? (
                 <SearchResults query={searchQuery} onSelect={() => setSearchOpen(false)} />
@@ -216,16 +228,15 @@ export function Navbar() {
         </div>
       )}
 
-      {/* Mobile drawer — Apple tarzı: slide-in, full height */}
+      {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
           <div
-            className="absolute inset-0 bg-ink/60 "
+            className="absolute inset-0 bg-ink/70 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
           />
           <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-ink shadow-2xl flex flex-col">
-            {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-white/10">
               <img src="/logo.webp" alt="Demos Pizza" className="h-14 w-auto" />
               <button
@@ -237,10 +248,9 @@ export function Navbar() {
               </button>
             </div>
 
-            {/* Nav links */}
             <nav className="flex flex-col p-4 gap-1 flex-1">
               {NAV_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
@@ -248,39 +258,38 @@ export function Navbar() {
                 >
                   {link.label}
                   <ChevronRight className="h-4 w-4 opacity-30" />
-                </a>
+                </Link>
               ))}
             </nav>
 
-            {/* Bottom actions — kurumsal aralıklı, marka renkleri */}
-            <div className="p-5 border-t border-white/10 space-y-4">
+            <div className="p-5 border-t border-white/10 space-y-3">
               <a href={CONTACT.phoneHref} className="block">
-                <div className="flex items-center gap-3.5 px-4 py-4 rounded-xl bg-yellow/10 border border-yellow/20 hover:bg-yellow/15 transition-colors">
-                  <div className="w-11 h-11 rounded-full bg-yellow flex items-center justify-center shrink-0">
-                    <Phone className="h-5 w-5 text-ink" />
+                <div className="flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-yellow/10 border border-yellow/20 hover:bg-yellow/15 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-yellow flex items-center justify-center shrink-0">
+                    <Phone className="h-4 w-4 text-ink" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[10px] text-yellow/60 uppercase tracking-wider font-medium">Hemen Ara</div>
-                    <div className="text-base font-mono text-white truncate font-semibold">{CONTACT.phone}</div>
+                    <div className="text-sm font-mono text-white truncate font-semibold">{CONTACT.phone}</div>
                   </div>
                 </div>
               </a>
               <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="block">
-                <div className="flex items-center gap-3.5 px-4 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-                  <div className="w-11 h-11 rounded-full bg-[#25D366] flex items-center justify-center shrink-0">
-                    <MessageCircle className="h-5 w-5 text-white" />
+                <div className="flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center shrink-0">
+                    <MessageCircle className="h-4 w-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[10px] text-white/40 uppercase tracking-wider font-medium">WhatsApp</div>
-                    <div className="text-base text-white truncate font-semibold">Sipariş & Destek</div>
+                    <div className="text-sm text-white truncate font-semibold">Sipariş & Destek</div>
                   </div>
                 </div>
               </a>
-              <a href="#menu" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow h-13 text-base font-semibold">
+              <Link href="/#menu" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow h-12 text-base font-semibold">
                   Sipariş Ver
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -289,9 +298,6 @@ export function Navbar() {
   );
 }
 
-// ============================================================
-// Search Results Component — API'den sonuç getir
-// ============================================================
 function SearchResults({ query, onSelect }: { query: string; onSelect: () => void }) {
   const [results, setResults] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -341,7 +347,7 @@ function SearchResults({ query, onSelect }: { query: string; onSelect: () => voi
   return (
     <div className="p-2">
       {results.map((item) => (
-        <a
+        <Link
           key={item.id}
           href={`/menu/${item.slug}`}
           onClick={onSelect}
@@ -360,7 +366,7 @@ function SearchResults({ query, onSelect }: { query: string; onSelect: () => voi
             {Math.round(item.priceCents / 100).toLocaleString("tr-TR")} ₺
           </div>
           <ChevronRight className="h-4 w-4 text-ink/20 group-hover:text-pink transition-colors shrink-0" />
-        </a>
+        </Link>
       ))}
     </div>
   );

@@ -103,11 +103,11 @@ export const STATS = [
 ] as const;
 
 export const NAV_LINKS = [
-  { href: "#anasayfa", label: "Anasayfa" },
-  { href: "#menu", label: "Menü" },
-  { href: "#kampanyalar", label: "Kampanyalar" },
-  { href: "#hakkimizda", label: "Hakkımızda" },
-  { href: "#iletisim", label: "İletişim" },
+  { href: "/#anasayfa", label: "Anasayfa" },
+  { href: "/#menu", label: "Menü" },
+  { href: "/#kampanyalar", label: "Kampanyalar" },
+  { href: "/#hakkimizda", label: "Hakkımızda" },
+  { href: "/#iletisim", label: "İletişim" },
 ] as const;
 
 /** Marka renkleri — Premium palette per spec. */
