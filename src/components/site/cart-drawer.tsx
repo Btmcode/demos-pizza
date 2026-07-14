@@ -580,17 +580,15 @@ export function CartDrawer() {
                 </div>
               </div>
 
-              {/* Delivery address — Emlakjet tarzı harita + yapılandırılmış form */}
+              {/* Delivery address — Emlakjet tarzı: Konum Al → otomatik doldur */}
               {orderType === "DELIVERY" && (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs font-semibold">Teslimat Adresi</Label>
-                  </div>
+                  <Label className="text-xs font-semibold">Teslimat Adresi</Label>
 
-                  {/* Harita tabanlı konum seçici */}
+                  {/* Konum Al butonu + seçilen adres özeti */}
                   <AddressPicker form={form} setForm={setForm} />
 
-                  {/* Bölge seçimi */}
+                  {/* Bölge — otomatik dolu, değiştirilebilir */}
                   <div>
                     <Label htmlFor="co-district" className="text-[11px] text-ink/60">Bölge / Mahalle *</Label>
                     <div className="relative mt-1">
@@ -609,19 +607,21 @@ export function CartDrawer() {
                     </div>
                   </div>
 
-                  {/* Sokak + Bina No */}
+                  {/* Sokak — otomatik dolu */}
+                  <div>
+                    <Label htmlFor="co-street" className="text-[11px] text-ink/60">Sokak / Cadde *</Label>
+                    <Input
+                      id="co-street"
+                      value={form.street || ""}
+                      onChange={(e) => setForm((f) => ({ ...f, street: e.target.value }))}
+                      placeholder="Konum al veya elle yaz"
+                      maxLength={100}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  {/* Bina No + Daire + Kat — manuel giriş */}
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="col-span-2">
-                      <Label htmlFor="co-street" className="text-[11px] text-ink/60">Sokak / Cadde *</Label>
-                      <Input
-                        id="co-street"
-                        value={form.street || ""}
-                        onChange={(e) => setForm((f) => ({ ...f, street: e.target.value }))}
-                        placeholder="Örn: Atatürk Sk."
-                        maxLength={100}
-                        className="mt-1"
-                      />
-                    </div>
                     <div>
                       <Label htmlFor="co-building" className="text-[11px] text-ink/60">Bina No *</Label>
                       <Input
@@ -633,10 +633,6 @@ export function CartDrawer() {
                         className="mt-1"
                       />
                     </div>
-                  </div>
-
-                  {/* Daire + Kat */}
-                  <div className="grid grid-cols-2 gap-2">
                     <div>
                       <Label htmlFor="co-apartment" className="text-[11px] text-ink/60">Daire</Label>
                       <Input
