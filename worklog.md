@@ -184,3 +184,42 @@ Stage Summary:
 - Header overlap sorunu çözüldü
 - Card içerikleri mobilde artık düzgün diziliyor
 - Butonlar mobilde daha küçük ve sığıyor
+
+---
+Task ID: app-icon-transparent-v2
+Agent: Super Z (main)
+Task: Mobil uygulama ikonu — şeffaf arka plan, tam ikon (büyük markalar gibi)
+
+Work Log:
+- Kaynak: /home/z/my-project/upload/Demo's Pizza mobil uygulama simgesi.png (1024x1536, RGBA)
+- Arka plan zaten şeffaf (alfa kanalı 0) — sadece kareye kırpıldı
+- Merkezden kare kırpma: 1024x1024 (portre → kare)
+- Tüm ikon boyutları üretildi (şeffaflık korundu):
+  - icon-192.png (27KB) + icon-192.webp (9KB)
+  - icon-512.png (163KB) + icon-512.webp (48KB)
+  - icon-1024.webp (188KB) — og:image / Apple splash
+  - apple-icon.png (25KB) — Apple touch icon
+  - icon-32.png + icon-16.png — favicon boyutları
+- manifest.json güncellendi:
+  - 'any' ve 'maskable' purpose ayrı girişler
+  - Hem PNG hem WebP format
+  - Şeffaf arka plan korundu
+- layout.tsx icons metadata güncellendi:
+  - 7 farklı boyut (16, 32, 192, 512 PNG + 192, 512 WebP + SVG)
+  - apple-icon.png Apple touch icon olarak
+
+Verification (production):
+- icon-192.png: 200 ✓ (RGBA, corners transparent)
+- icon-512.png: 200 ✓
+- icon-192.webp: 200 ✓ (9KB — %68 küçülme)
+- icon-512.webp: 200 ✓ (48KB — %71 küçülme)
+- apple-icon.png: 200 ✓
+- icon-1024.webp: 200 ✓
+- Köşe pikselleri kontrolü: 4/4 köşe şeffaf ✓
+
+Stage Summary:
+- Build başarılı, deploy edildi
+- İkon tamamen şeffaf arka planla (RGBA mode)
+- Tüm platformlar destekleniyor: PWA, Apple, Android, favicon
+- WebP + PNG dual format (modern + legacy browser support)
+- Toplam dosya boyutu: ~440KB (önceki: ~800KB+)
