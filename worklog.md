@@ -375,3 +375,66 @@ Stage Summary:
 - Navigasyon tüm sayfalarda çalışıyor
 - Header profesyonel, büyük logo
 - İkon orijinal görsel, tam alan dolduruyor
+
+---
+Task ID: address-picker-v2
+Agent: Super Z (main)
+Task: Adres seçici — tam adres parsing + otomatik form doldurma
+
+ROOT CAUSE:
+- Reverse geocoding sadece 'suburb' (mahalle) alıyordu
+- Diğer bileşenler (street, district, postcode) yok sayılıyordu
+- Form alanları otomatik dolmuyordu
+- OpenStreetMap Türkiye'de bina numaraları nadir ama sokak/mahalle/ilçe mevcut
+
+FIXES:
+
+1. parseAddress() — tüm bileşenleri çıkarır:
+   - street: road/pedestrian/footway/path
+   - houseNumber: house_number (when available)
+   - neighborhood: neighbourhood/suburb/quarter
+   - district: town/county (Fatih)
+   - city: city/state/region
+   - postcode
+   - fullAddress: display_name
+
+2. matchServiceArea() — parsed adres'i servis bölgeleriyle eşleştir
+
+3. reverseGeocode() — tüm form alanlarını doldurur:
+   - district → matched service area
+   - street → parsed street
+   - building → parsed house_number (nadir)
+   - address → formatted full address
+
+4. UX — "Konum Al" butonu (eski "Haritayı Aç"):
+   - Ana CTA: siyah "Konum Al" butonu
+   - Konum alındıktan sonra: yeşil başarı kartı (sokak + mahalle + ilçe)
+   - Harita modal: arama + GPS + tıkla-seç
+   - Haritada: 🍕 restoran marker + 1.5km teslimat dairesi
+   - Footer: seçilen adres detayı + koordinat
+   - "Bu Konumu Kullan" onay butonu
+   - İpucu: "Bina no, daire, kat bilgisini formdan girebilirsin"
+
+5. Form düzeni:
+   - Konum Al butonu (üstte)
+   - Bölge (otomatik dolu, düzenlenebilir)
+   - Sokak (otomatik dolu, düzenlenebilir)
+   - Bina No + Daire + Kat (tek satırda, manuel)
+   - Ek Adres Tarifi
+
+VERIFICATION (production):
+- Test: Demos Pizza konumu (41.0096, 28.9471)
+- Street: Turgut Özal Millet Caddesi ✓
+- Neighborhood: Haseki Sultan Mahallesi ✓
+- District: Fatih ✓
+- Postcode: 34096 ✓
+- Form auto-fill çalışıyor ✓
+
+AKIŞ (Emlakjet gibi):
+1. "Konum Al" → harita açılır
+2. GPS / arama / tıkla-seç
+3. Reverse geocode → tüm alanlar dolar
+4. "Bu Konumu Kullan" → modal kapanır
+5. Form: bölge + sokak dolu
+6. Kullanıcı: bina no, daire, kat girer
+7. Sipariş hazır
