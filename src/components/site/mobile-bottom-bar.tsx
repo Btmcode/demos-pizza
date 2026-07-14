@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Phone, MessageCircle, ShoppingBag, Home, Menu as MenuIcon, Truck } from "lucide-react";
 import { CONTACT } from "@/lib/constants";
 import { useCart } from "./cart-context";
@@ -10,17 +12,23 @@ import { useCart } from "./cart-context";
  * Sadece mobil cihazlarda görünür (md:hidden)
  *
  * 5 ana buton:
- * 1. Ana Sayfa
- * 2. Menü
- * 3. Sipariş Ver (orta, vurgulu)
- * 4. Sepet (badge ile)
- * 5. WhatsApp
+ * 1. Ana Sayfa → / (Link ile, tüm sayfalarda çalışır)
+ * 2. Menü → /#menu (Link ile)
+ * 3. Sipariş Ver (orta, vurgulu) → /#menu
+ * 4. Sepet (badge ile) → toggleCart
+ * 5. WhatsApp → external link
  */
 export function MobileBottomBar() {
   const { itemCount, toggleCart } = useCart();
+  const pathname = usePathname();
   const [active, setActive] = React.useState("home");
 
   React.useEffect(() => {
+    // Sadece ana sayfada scroll-based active state çalışır
+    if (pathname !== "/") {
+      setActive("home");
+      return;
+    }
     const sections = ["anasayfa", "menu", "hakkimizda", "iletisim"];
     const onScroll = () => {
       const scrollY = window.scrollY + 100;
@@ -35,7 +43,7 @@ export function MobileBottomBar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   return (
     <nav
@@ -44,8 +52,8 @@ export function MobileBottomBar() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="grid grid-cols-5 h-16">
-        <a
-          href="#anasayfa"
+        <Link
+          href="/"
           className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
             active === "anasayfa" ? "text-yellow" : "text-white/60"
           }`}
@@ -53,10 +61,10 @@ export function MobileBottomBar() {
         >
           <Home className="h-5 w-5" />
           <span className="text-[9px] font-medium">Anasayfa</span>
-        </a>
+        </Link>
 
-        <a
-          href="#menu"
+        <Link
+          href="/#menu"
           className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
             active === "menu" ? "text-yellow" : "text-white/60"
           }`}
@@ -64,11 +72,11 @@ export function MobileBottomBar() {
         >
           <MenuIcon className="h-5 w-5" />
           <span className="text-[9px] font-medium">Menü</span>
-        </a>
+        </Link>
 
         {/* Sipariş Ver — orta, vurgulu */}
-        <a
-          href="#menu"
+        <Link
+          href="/#menu"
           className="flex flex-col items-center justify-center gap-0.5 text-white/60 hover:text-yellow transition-colors"
           aria-label="Sipariş Ver"
         >
@@ -76,7 +84,7 @@ export function MobileBottomBar() {
             <Truck className="h-5 w-5 text-white" />
           </div>
           <span className="text-[9px] font-medium">Sipariş</span>
-        </a>
+        </Link>
 
         <button
           onClick={toggleCart}
@@ -111,24 +119,17 @@ export function MobileBottomBar() {
 
 /**
  * Floating Call Button — sağ alt, mobilde
- * Pulse-ring efekti <a>'nın arkasında, ikon önde (z-10) — ikonun görünürlüğünü bozmaz
- * bottom-32: MobileBottomBar (h-16) + MobileStickyBar (h-16) üstünde
+ * Tüm sayfalarda görünür, alt bar'ın hemen üstünde
+ * bottom-20: MobileBottomBar (h-16=4rem) + 1rem boşluk
  */
 export function FloatingCallButton() {
   return (
     <a
       href={CONTACT.phoneHref}
-      className="md:hidden fixed bottom-32 right-4 z-30 w-12 h-12 rounded-full bg-pink hover:bg-pink-hover text-white shadow-pink-glow flex items-center justify-center btn-premium relative overflow-visible"
+      className="md:hidden fixed bottom-20 right-4 z-30 w-12 h-12 rounded-full bg-pink hover:bg-pink-hover text-white shadow-lg flex items-center justify-center transition-transform active:scale-95"
       aria-label="Telefon ile sipariş"
     >
-      {/* Pulse ring — arka planda, ikonu kapatmaz */}
-      <span
-        aria-hidden="true"
-        className="absolute inset-0 rounded-full bg-pink pulse-ring pointer-events-none"
-        style={{ zIndex: 0 }}
-      />
-      {/* Telefon ikonu — önde */}
-      <Phone className="h-5 w-5 relative" style={{ zIndex: 1 }} />
+      <Phone className="h-5 w-5" />
     </a>
   );
 }

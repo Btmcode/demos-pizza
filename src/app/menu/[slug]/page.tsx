@@ -569,8 +569,8 @@ function MobileStickyBar({
 
   return (
     // bottom-16: MobileBottomBar (h-16) üstünde
-    // pr-16: FloatingCallButton (right-4, w-12) için yer aç
-    <div className="md:hidden fixed bottom-16 left-3 right-3 z-30 animate-in slide-in-from-bottom-4 duration-300">
+    // right-20: FloatingCallButton (right-4, w-12) için yer aç
+    <div className="md:hidden fixed bottom-16 left-3 right-20 z-30 animate-in slide-in-from-bottom-4 duration-300">
       <div className="mb-2 bg-ink rounded-2xl shadow-2xl p-3 flex items-center gap-3">
         <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1 shrink-0">
           <span className="font-display font-bold text-lg text-white w-8 text-center">{quantity}</span>
