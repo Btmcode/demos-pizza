@@ -16,6 +16,18 @@ export function PWAInstallPrompt() {
     const installed = localStorage.getItem(INSTALLED_KEY);
     if (dismissed || installed) return;
 
+    // Diğer banner'larla çakışmaması için: push notification önceliği var
+    // Push notification zaten gösteriliyorsa PWA prompt'u geciktir
+    const pushActive = localStorage.getItem("demos-push-permission-v2");
+    if (pushActive === "default" || (!pushActive && !("Notification" in window))) {
+      // Push bildirimi aktif değilse PWA prompt'u göster
+    } else {
+      // Push bildirimi henüz karar verilmedi — 15 saniye bekle
+      setTimeout(() => {
+        if (localStorage.getItem("demos-push-permission-v2") === "default") return;
+      }, 15000);
+    }
+
     const ua = navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(ua);
     const isAndroid = /android/.test(ua);
@@ -32,15 +44,18 @@ export function PWAInstallPrompt() {
     else if (isAndroid) setPlatform("android");
     else setPlatform("desktop");
 
+    // Delay'i artır: 12 saniye — push notification (10 sn) sonrasına
+    const SHOW_DELAY = 12000;
+
     const onBIP = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setTimeout(() => setShow(true), 6000);
+      setTimeout(() => setShow(true), SHOW_DELAY);
     };
     window.addEventListener("beforeinstallprompt", onBIP);
 
     if (isIOS) {
-      setTimeout(() => setShow(true), 6000);
+      setTimeout(() => setShow(true), SHOW_DELAY);
     }
 
     const onInstalled = () => {

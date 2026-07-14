@@ -32,7 +32,9 @@ export function CookieBanner() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 animate-in slide-in-from-bottom-4 duration-500">
+    // Mobilde alt bar'ın (h-16) üstünde, desktop'ta altta
+    // bottom-16 mobilde = 4rem (alt bar yüksekliği), bottom-0 desktop'ta
+    <div className="fixed bottom-16 md:bottom-0 inset-x-0 z-50 animate-in slide-in-from-bottom-4 duration-500">
       {/* Mobil: tam genişlik kart, Desktop: ortalanmış */}
       <div className="mx-auto max-w-3xl m-3 md:m-4">
         <div className="bg-ink text-white rounded-2xl shadow-2xl border border-white/10 overflow-hidden">

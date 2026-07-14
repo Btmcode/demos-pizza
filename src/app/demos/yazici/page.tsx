@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { THERMAL_PRINTER } from "@/lib/constants";
 import { toast } from "sonner";
+import { DateDisplay } from "@/components/shared/date-display";
 
 /**
  * Termal Yazıcı Entegrasyonu — Gelişmiş
@@ -325,7 +326,7 @@ export default function PrinterSettingsPage() {
               )}
               {state.lastTestAt && (
                 <div className="text-[10px] text-ink/40 mt-1">
-                  Son test: {new Date(state.lastTestAt).toLocaleString("tr-TR")}
+                  Son test: <DateDisplay date={state.lastTestAt} />
                 </div>
               )}
             </div>
@@ -543,7 +544,7 @@ export default function PrinterSettingsPage() {
                 <div className="min-w-0">
                   <div className="font-mono text-xs font-bold text-pink">{order.orderNumber}</div>
                   <div className="text-[11px] text-ink/60 truncate mt-0.5">
-                    {order.customerName} · {order.items.length} ürün · {new Date(order.createdAt).toLocaleString("tr-TR")}
+                    {order.customerName} · {order.items.length} ürün · <DateDisplay date={order.createdAt} />
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

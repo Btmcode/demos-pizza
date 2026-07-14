@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CURRENCY } from "@/lib/constants";
 import { toast } from "sonner";
+import { DateDisplay } from "@/components/shared/date-display";
 
 const STATUS_FLOW = [
   { key: "PENDING", label: "Sipariş Alındı", icon: Clock, color: "text-yellow" },
@@ -100,7 +101,7 @@ export default function TrackPage() {
               <div>
                 <div className="font-mono text-lg font-bold text-pink">{order.orderNumber}</div>
                 <div className="text-xs text-ink/50 mt-0.5">
-                  {new Date(order.createdAt).toLocaleString("tr-TR")}
+                  <DateDisplay date={order.createdAt} />
                 </div>
               </div>
               <Badge className={

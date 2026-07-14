@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
 import { toast } from "sonner";
+import { DateDisplay } from "@/components/shared/date-display";
 
 interface Stats {
   counts: {
@@ -205,7 +206,7 @@ export default function ReportsPage() {
             <tbody>
               {stats.charts.dailyOrders.map((d, i) => (
                 <tr key={i} className="border-t border-ink/5">
-                  <td className="px-4 py-3">{new Date(d.date).toLocaleDateString("tr-TR", { day: "numeric", month: "long", weekday: "short" })}</td>
+                  <td className="px-4 py-3"><DateDisplay date={d.date} options={{ day: "numeric", month: "long", weekday: "short" }} /></td>
                   <td className="px-4 py-3">{d.count}</td>
                   <td className="px-4 py-3 font-display font-bold text-pink">{(d.revenue / 100).toLocaleString("tr-TR")} ₺</td>
                 </tr>

@@ -24,6 +24,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { CURRENCY } from "@/lib/constants";
+import { DateDisplay } from "@/components/shared/date-display";
 import { toast } from "sonner";
 
 interface OrderItem {
@@ -228,12 +229,7 @@ function AdminOrdersContent() {
                     <div className="font-mono text-sm font-bold text-pink">{order.orderNumber}</div>
                     <div className="text-[11px] text-ink/50 flex items-center gap-1 mt-0.5">
                       <Clock className="h-3 w-3" />
-                      {new Date(order.createdAt).toLocaleString("tr-TR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      <DateDisplay date={order.createdAt} options={{ day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }} />
                     </div>
                   </div>
 
@@ -482,3 +478,4 @@ function AdminOrdersContent() {
     </div>
   );
 }
+

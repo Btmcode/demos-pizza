@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { DateDisplay } from "@/components/shared/date-display";
 
 interface Log {
   id: string;
@@ -112,7 +113,7 @@ export default function AdminActivityPage() {
                       <p className="text-xs text-ink/70 mt-1">{log.details}</p>
                     )}
                     <div className="text-[10px] text-ink/40 mt-1 font-mono">
-                      {new Date(log.createdAt).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "medium" })}
+                      <DateDisplay date={log.createdAt} options={{ dateStyle: "short", timeStyle: "medium" }} />
                       {log.ipAddress && ` · IP: ${log.ipAddress}`}
                       {log.entityId && ` · ID: ${log.entityId.slice(0, 8)}`}
                     </div>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { DateDisplay } from "@/components/shared/date-display";
 
 interface Message {
   id: string;
@@ -120,7 +121,7 @@ export default function AdminMessagesPage() {
                     {m.isReplied && <Badge variant="outline" className="text-basil border-basil/30 text-[10px]">YANITLANDI</Badge>}
                   </div>
                   <div className="text-xs text-ink/60 mt-1">
-                    {m.name} · {new Date(m.createdAt).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    {m.name} · <DateDisplay date={m.createdAt} options={{ day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }} />
                   </div>
                 </div>
               </div>
