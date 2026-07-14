@@ -323,3 +323,55 @@ VERIFICATION:
 - Center: (255,220,100) = yellow pizza ✓
 - Splash: deployed ✓
 - Home: 200 ✓
+
+---
+Task ID: nav-header-icon-fix
+Agent: Super Z (main)
+Task: Navigasyon fix + header yeniden tasarım + ikon alan doldurma
+
+ROOT CAUSE: NAV_LINKS anchor linkler (#anasayfa) kullanıyordu — sadece
+ana sayfada çalışıyordu. /takip, /kvkk, /bolge sayfalarında tıklayınca
+hiçbir şey olmuyordu.
+
+FIXES:
+
+1. NAV_LINKS (constants.ts):
+   - #anasayfa → /#anasayfa (tüm sayfalarda çalışır)
+   - #menu → /#menu
+   - #kampanyalar → /#kampanyalar
+   - #hakkimizda → /#hakkimizda
+   - #iletisim → /#iletisim
+
+2. Navbar yeniden tasarım (navbar.tsx):
+   - Tüm <a> → <Link> (client-side navigation)
+   - Desktop: pill-style nav links (rounded-full, hover bg)
+   - Desktop: 'Sipariş Ver' CTA butonu (sarı, belirgin)
+   - Logo: h-80px desktop
+   - Top utility bar: daha temiz, kompakt
+   - Scroll: shadow-2xl + backdrop-blur-lg
+   - Search: backdrop-blur-sm
+   - Mobile drawer: backdrop-blur-sm
+
+3. Mobil navigasyon — tüm sayfalara eklendi:
+   - /takip/layout.tsx — yeni (Navbar + MobileBottomBar + CartDrawer)
+   - /bolge/[slug]/layout.tsx — yeni (tam navigasyon)
+   - LegalLayout — CartProvider + CartDrawer + MobileBottomBar + FloatingCallButton
+   - Artık HER sayfadan ana sayfaya, menüye, sepete dönülebilir
+
+4. Uygulama ikonu — orijinal görsel, tam alan:
+   - Kullanıcının yüklediği orijinal ikon kullanılır
+   - İçerik %100 alanı doldurur (padding yok)
+   - Solid #0d0500 arka plan (beyaz görünmez)
+   - Tüm köşeler solid (13,5,0,255)
+
+VERIFICATION:
+- 9 sayfa test edildi, hepsi 200 ✓
+- İkon köşeleri: 4/4 solid ✓
+- NAV_LINKS: /# prefix ile çalışıyor ✓
+- /takip, /bolge, /kvkk artık navigasyon içeriyor ✓
+
+Stage Summary:
+- Build başarılı, deploy edildi
+- Navigasyon tüm sayfalarda çalışıyor
+- Header profesyonel, büyük logo
+- İkon orijinal görsel, tam alan dolduruyor
