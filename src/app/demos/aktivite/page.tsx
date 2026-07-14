@@ -65,12 +65,12 @@ export default function AdminActivityPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-end justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Aktivite Kaydı</h1>
-          <p className="text-sm text-ink/60 mt-1">{total} toplam kayıt · Sayfa {page}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">Aktivite Kaydı</h1>
+          <p className="text-xs md:text-sm text-ink/60 mt-1">{total} toplam kayıt · Sayfa {page}</p>
         </div>
-        <Button variant="outline" size="icon" onClick={load} disabled={loading}>
+        <Button variant="outline" size="icon" onClick={load} disabled={loading} className="shrink-0">
           <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
         </Button>
       </div>

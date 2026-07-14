@@ -133,34 +133,39 @@ export default function AdminMenuPage() {
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Ürün Yönetimi</h1>
-          <p className="text-sm text-ink/60 mt-1">{items.length} toplam ürün</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ara..." className="pl-9 w-48" />
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">Ürün Yönetimi</h1>
+            <p className="text-xs md:text-sm text-ink/60 mt-1">{items.length} toplam ürün</p>
           </div>
-          <Select value={catFilter} onValueChange={setCatFilter}>
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Tüm kategoriler</SelectItem>
-              {CATEGORIES.map((c) => (
-                <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="icon" onClick={load} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          </Button>
-          <Button onClick={() => setCreating(true)} className="bg-pink hover:bg-pink/90 text-white">
+          <Button onClick={() => setCreating(true)} className="bg-pink hover:bg-pink/90 text-white shrink-0" size="sm">
             <Plus className="h-4 w-4 mr-1.5" />
-            Yeni Ürün
+            <span className="hidden sm:inline">Yeni Ürün</span>
+            <span className="sm:hidden">Yeni</span>
           </Button>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative flex-1 min-w-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ara..." className="pl-9 w-full" />
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Select value={catFilter} onValueChange={setCatFilter}>
+              <SelectTrigger className="w-full sm:w-44">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Tüm kategoriler</SelectItem>
+                {CATEGORIES.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="icon" onClick={load} disabled={loading} className="shrink-0">
+              <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            </Button>
+          </div>
         </div>
       </div>
 

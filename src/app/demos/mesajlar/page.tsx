@@ -72,27 +72,27 @@ export default function AdminMessagesPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Mesajlar</h1>
-          <p className="text-sm text-ink/60 mt-1">{messages.length} mesaj</p>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">Mesajlar</h1>
+          <p className="text-xs md:text-sm text-ink/60 mt-1">{messages.length} mesaj</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex bg-ink/5 rounded-lg p-1">
+          <div className="flex bg-ink/5 rounded-lg p-1 shrink-0">
             <button
               onClick={() => setFilter("unread")}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${filter === "unread" ? "bg-pink text-white" : "text-ink/70"}`}
+              className={`px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors ${filter === "unread" ? "bg-pink text-white" : "text-ink/70"}`}
             >
               Okunmamış
             </button>
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${filter === "all" ? "bg-pink text-white" : "text-ink/70"}`}
+              className={`px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors ${filter === "all" ? "bg-pink text-white" : "text-ink/70"}`}
             >
               Tümü
             </button>
           </div>
-          <Button variant="outline" size="icon" onClick={load} disabled={loading}>
+          <Button variant="outline" size="icon" onClick={load} disabled={loading} className="shrink-0 ml-auto">
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </Button>
         </div>

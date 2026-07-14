@@ -165,13 +165,13 @@ function AdminOrdersContent() {
   return (
     <div className="space-y-5">
       {/* Header + filters */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Siparişler</h1>
-          <p className="text-sm text-ink/60 mt-1">{total} toplam sipariş</p>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">Siparişler</h1>
+          <p className="text-xs md:text-sm text-ink/60 mt-1">{total} toplam sipariş</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative flex-1 min-w-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/40" />
             <Input
               value={q}
@@ -180,32 +180,34 @@ function AdminOrdersContent() {
                 setPage(1);
               }}
               placeholder="İsim, telefon, sipariş no..."
-              className="pl-9 w-56"
+              className="pl-9 w-full"
             />
           </div>
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => {
-              setStatusFilter(v);
-              setPage(1);
-            }}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Tümü</SelectItem>
-              <SelectItem value="PENDING">Bekleyen</SelectItem>
-              <SelectItem value="CONFIRMED">Onaylanan</SelectItem>
-              <SelectItem value="PREPARING">Hazırlanan</SelectItem>
-              <SelectItem value="OUT_FOR_DELIVERY">Yolda</SelectItem>
-              <SelectItem value="DELIVERED">Teslim Edilen</SelectItem>
-              <SelectItem value="CANCELLED">İptal</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="icon" onClick={load} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setStatusFilter(v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Tümü</SelectItem>
+                <SelectItem value="PENDING">Bekleyen</SelectItem>
+                <SelectItem value="CONFIRMED">Onaylanan</SelectItem>
+                <SelectItem value="PREPARING">Hazırlanan</SelectItem>
+                <SelectItem value="OUT_FOR_DELIVERY">Yolda</SelectItem>
+                <SelectItem value="DELIVERED">Teslim Edilen</SelectItem>
+                <SelectItem value="CANCELLED">İptal</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="icon" onClick={load} disabled={loading} className="shrink-0">
+              <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -222,50 +224,49 @@ function AdminOrdersContent() {
           orders.map((order) => {
             const next = NEXT_STATUS[order.status];
             return (
-              <Card key={order.id} className="p-4 md:p-5 border-ink/8 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
-                  {/* Order number + time */}
-                  <div className="md:w-44 shrink-0">
-                    <div className="font-mono text-sm font-bold text-pink">{order.orderNumber}</div>
-                    <div className="text-[11px] text-ink/50 flex items-center gap-1 mt-0.5">
-                      <Clock className="h-3 w-3" />
-                      <DateDisplay date={order.createdAt} options={{ day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }} />
+              <Card key={order.id} className="p-3 md:p-5 border-ink/8 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex flex-col gap-3">
+                  {/* Top row: order number + status + total */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="font-mono text-sm font-bold text-pink truncate">{order.orderNumber}</div>
+                      <div className="text-[11px] text-ink/50 flex items-center gap-1 mt-0.5">
+                        <Clock className="h-3 w-3 shrink-0" />
+                        <DateDisplay date={order.createdAt} options={{ day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }} />
+                      </div>
                     </div>
+                    <Badge variant="outline" className={`${STATUS_META[order.status]?.cls} shrink-0`}>
+                      {STATUS_META[order.status]?.label}
+                    </Badge>
                   </div>
 
-                  {/* Customer */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-ink">{order.customerName}</div>
-                    <div className="text-xs text-ink/60 flex items-center gap-1 mt-0.5">
-                      <Phone className="h-3 w-3" />
-                      {order.customerPhone}
+                  {/* Middle: customer info */}
+                  <div className="min-w-0">
+                    <div className="font-medium text-ink text-sm md:text-base truncate">{order.customerName}</div>
+                    <div className="text-xs text-ink/60 flex items-center gap-1 mt-0.5 flex-wrap">
+                      <Phone className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{order.customerPhone}</span>
                       {order.orderType === "DELIVERY" && order.deliveryAddress && (
                         <>
-                          <span className="mx-1">·</span>
-                          <MapPin className="h-3 w-3" />
+                          <span className="mx-1 shrink-0">·</span>
+                          <MapPin className="h-3 w-3 shrink-0" />
                           <span className="truncate">{order.deliveryAddress.slice(0, 60)}</span>
                         </>
                       )}
                     </div>
                   </div>
 
-                  {/* Items count + total */}
-                  <div className="md:text-right shrink-0">
-                    <div className="text-xs text-ink/50">{order.items.length} ürün · {ORDER_TYPE_LABEL[order.orderType]}</div>
-                    <div className="font-display font-bold text-lg text-ink">
-                      {CURRENCY.formatShort(order.totalCents)}
+                  {/* Bottom: total + actions */}
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-ink/5">
+                    <div className="min-w-0">
+                      <div className="text-[10px] text-ink/50">{order.items.length} ürün · {ORDER_TYPE_LABEL[order.orderType]}</div>
+                      <div className="font-display font-bold text-base md:text-lg text-ink">
+                        {CURRENCY.formatShort(order.totalCents)}
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Status badge */}
-                  <div className="shrink-0">
-                    <Badge variant="outline" className={STATUS_META[order.status]?.cls}>
-                      {STATUS_META[order.status]?.label}
-                    </Badge>
-                  </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
+                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
                     {next && (
                       <Button
                         size="sm"
@@ -321,6 +322,7 @@ function AdminOrdersContent() {
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
+                  </div>
                   </div>
                 </div>
               </Card>

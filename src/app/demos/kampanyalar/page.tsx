@@ -74,13 +74,15 @@ export default function AdminCampaignsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Kampanyalar</h1>
-          <p className="text-sm text-ink/60 mt-1">{campaigns.length} kampanya</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">Kampanyalar</h1>
+          <p className="text-xs md:text-sm text-ink/60 mt-1">{campaigns.length} kampanya</p>
         </div>
-        <Button onClick={() => setCreating(true)} className="bg-pink hover:bg-pink-hover text-white">
-          <Plus className="h-4 w-4 mr-1.5" /> Yeni Kampanya
+        <Button onClick={() => setCreating(true)} className="bg-pink hover:bg-pink-hover text-white shrink-0" size="sm">
+          <Plus className="h-4 w-4 mr-1.5" />
+          <span className="hidden sm:inline">Yeni Kampanya</span>
+          <span className="sm:hidden">Yeni</span>
         </Button>
       </div>
 

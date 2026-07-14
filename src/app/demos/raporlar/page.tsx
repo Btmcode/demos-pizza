@@ -86,12 +86,12 @@ export default function ReportsPage() {
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Raporlar</h1>
-          <p className="text-sm text-ink/60 mt-1">Detaylı satış ve performans analizi</p>
+      <div className="flex flex-col gap-3">
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">Raporlar</h1>
+          <p className="text-xs md:text-sm text-ink/60 mt-1">Detaylı satış ve performans analizi</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Button variant="outline" size="sm" onClick={exportCSV}>
             <Download className="h-3.5 w-3.5 mr-1.5" />
             CSV İndir

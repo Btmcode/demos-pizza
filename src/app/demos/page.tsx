@@ -94,8 +94,8 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-5 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="font-display text-2xl md:text-3xl font-bold text-ink">
             Merhaba! 👋
           </h1>
@@ -103,9 +103,9 @@ export default function AdminDashboard() {
             {todayStr || "Yükleniyor..."}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Sipariş ses bildirimi */}
-          <div className="flex items-center gap-1.5 bg-ink/5 rounded-xl p-1">
+          <div className="flex items-center gap-1 bg-ink/5 rounded-xl p-1 shrink-0">
             <button
               onClick={() => {
                 const newEnabled = !soundEnabled;
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
               <Settings2 className="h-4 w-4" />
             </button>
           </div>
-          <Badge className="bg-basil/10 text-basil border-basil/25">
+          <Badge className="bg-basil/10 text-basil border-basil/25 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-basil mr-1.5 pulse-dot" />
             Sistem aktif
           </Badge>
@@ -143,8 +143,8 @@ export default function AdminDashboard() {
       {showSoundSettings && (
         <Card className="p-4 border-ink/8 shadow-sm">
           <h3 className="font-display font-bold text-ink text-sm mb-3">Sipariş Ses Bildirimi</h3>
-          <div className="flex flex-wrap items-center gap-3">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+            <div className="min-w-0">
               <label className="text-xs text-ink/60 mb-1 block">Ses Tipi</label>
               <Select
                 value={soundType}
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
                   setTimeout(() => playSound(v as any), 100);
                 }}
               >
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -169,12 +169,12 @@ export default function AdminDashboard() {
               variant="outline"
               size="sm"
               onClick={() => playSound()}
-              className="mt-5"
+              className="shrink-0"
             >
               <Volume2 className="h-3.5 w-3.5 mr-1.5" />
               Test Et
             </Button>
-            <p className="text-xs text-ink/50 mt-5">
+            <p className="text-xs text-ink/50 sm:flex-1">
               Yeni sipariş geldiğinde otomatik ses çalar. Her 15 saniyede kontrol edilir.
             </p>
           </div>
@@ -333,18 +333,18 @@ function KpiCard({
     charcoal: "bg-ink/10 text-ink",
   };
   return (
-    <Card className="p-4 md:p-5 border-ink/8 shadow-sm card-hover">
-      <div className="flex items-start justify-between mb-2.5 md:mb-3">
-        <div className={`w-9 h-9 md:w-10 md:h-10 rounded-lg ${colors[color]} flex items-center justify-center`}>
+    <Card className="p-3 md:p-5 border-ink/8 shadow-sm card-hover overflow-hidden">
+      <div className="flex items-start justify-between mb-2 md:mb-3">
+        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg ${colors[color]} flex items-center justify-center shrink-0`}>
           {icon}
         </div>
-        <Clock className="h-3.5 w-3.5 text-ink/30" />
+        <Clock className="h-3 w-3 md:h-3.5 md:w-3.5 text-ink/30 shrink-0" />
       </div>
-      <div className="font-display text-xl md:text-3xl font-bold text-ink leading-none">
+      <div className="font-display text-lg md:text-3xl font-bold text-ink leading-none truncate">
         {value}
       </div>
-      <div className="text-xs text-ink/60 mt-1.5">{title}</div>
-      <div className="text-[10px] text-ink/40 mt-0.5">{sub}</div>
+      <div className="text-[11px] md:text-xs text-ink/60 mt-1 md:mt-1.5 truncate">{title}</div>
+      <div className="text-[9px] md:text-[10px] text-ink/40 mt-0.5 truncate">{sub}</div>
     </Card>
   );
 }
@@ -363,16 +363,16 @@ function QuickAction({
   return (
     <a
       href={href}
-      className="group flex items-center gap-3 p-3 rounded-xl border border-ink/8 hover:border-pink/40 hover:bg-pink/5 transition-colors"
+      className="group flex items-center gap-2 md:gap-3 p-2.5 md:p-3 rounded-xl border border-ink/8 hover:border-pink/40 hover:bg-pink/5 transition-colors"
     >
-      <div className="w-9 h-9 rounded-lg bg-ink/5 text-ink/70 group-hover:bg-pink group-hover:text-white flex items-center justify-center transition-colors">
+      <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-ink/5 text-ink/70 group-hover:bg-pink group-hover:text-white flex items-center justify-center transition-colors shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-ink">{label}</div>
-        <div className="text-[10px] text-ink/50">{sub}</div>
+        <div className="text-xs md:text-sm font-medium text-ink truncate">{label}</div>
+        <div className="text-[9px] md:text-[10px] text-ink/50 truncate">{sub}</div>
       </div>
-      <ArrowUpRight className="h-3.5 w-3.5 text-ink/30 group-hover:text-pink transition-colors" />
+      <ArrowUpRight className="h-3 w-3 md:h-3.5 md:w-3.5 text-ink/30 group-hover:text-pink transition-colors shrink-0" />
     </a>
   );
 }

@@ -89,7 +89,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
       {/* Main — responsive */}
       <div className="flex-1 lg:ml-60 flex flex-col min-h-screen w-full min-w-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-paper border-b border-ink/10 shrink-0">
+        <header className="sticky top-0 z-20 bg-paper/95 backdrop-blur-sm border-b border-ink/10 shrink-0">
           <div className="flex items-center justify-between px-3 md:px-6 h-14 md:h-16 gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <Button
@@ -105,7 +105,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                 {NAV.find((n) => (n.exact ? pathname === n.href : pathname.startsWith(n.href) && !n.exact))?.label || "Panel"}
               </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               <Link href="/" target="_blank" className="hidden sm:block">
                 <Button size="sm" variant="outline">
                   <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
@@ -118,7 +118,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                 onClick={() => signOut({ callbackUrl: "/demos/giris" })}
                 className="text-ink/70 hover:text-pink"
               >
-                <LogOut className="h-3.5 w-3.5 mr-1.5" />
+                <LogOut className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Çıkış</span>
               </Button>
             </div>
