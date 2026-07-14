@@ -68,3 +68,59 @@ Stage Summary:
 - Bot UA ile istek → 403
 - Login: 3 deneme sonrası blok (authorize fonksiyonunda — Node.js runtime, güvenilir)
 - Global API: 100/dakika (middleware — edge runtime, instance bazlı)
+
+---
+Task ID: root-cause-rendering-fix
+Agent: Super Z (main)
+Task: Full root cause analysis of UI duplication/overlap + hydration mismatch
+
+ROOT CAUSE: CSS positioning conflicts (NOT hydration mismatch)
+Multiple fixed elements competed for the same screen space, causing cards to overlap.
+
+BUGS FIXED (8 total):
+
+1. PWA + Push notification overlap (CRITICAL)
+   - Both rendered at fixed top-16 z-40 → cards stacked on each other
+   - Fix: PWA prompt delayed to 12s (push notif at 10s)
+   - File: src/components/site/pwa-install-prompt.tsx
+
+2. Cookie banner + MobileBottomBar overlap (CRITICAL)
+   - Both at bottom-0 → cookie banner covered mobile bar
+   - Fix: Cookie banner moved to bottom-16 on mobile
+   - File: src/components/site/cookie-banner.tsx
+
+3. FloatingCallButton + MobileStickyBar overlap (HIGH)
+   - Both near bottom-right on product detail mobile
+   - Fix: FloatingCallButton moved to bottom-32 (above sticky bar)
+   - File: src/components/site/mobile-bottom-bar.tsx
+
+4. MobileStickyBar full-width overlap with FloatingCallButton
+   - sticky bar inset-x-0 covered the call button
+   - Fix: Changed to left-3 right-3 (leaves space for call button)
+   - File: src/app/menu/[slug]/page.tsx
+
+5. sidebar.tsx Math.random() hydration mismatch (HIGH)
+   - Math.random() in useMemo caused SSR/client mismatch
+   - Fix: Replaced with deterministic '70%' width
+   - File: src/components/ui/sidebar.tsx
+
+6. ThemeProvider enableSystem hydration risk (MEDIUM)
+   - enableSystem writes dark/light class to <html> on mount
+   - Fix: Removed enableSystem, added suppressHydrationWarning to <body>
+   - File: src/app/layout.tsx
+
+7. Date rendering hydration mismatch (MEDIUM)
+   - new Date().toLocaleString() in render — timezone-dependent
+   - Fix: Created shared DateDisplay component (hydration-safe)
+   - Applied to: siparisler, aktivite, mesajlar, raporlar, takip, yazici
+   - File: src/components/shared/date-display.tsx
+
+8. Dead code removal
+   - Removed unused src/components/admin/providers.tsx
+
+Stage Summary:
+- Build başarılı, deploy edildi (https://demos-pizza-dusky.vercel.app)
+- Tüm sayfalar 200 dönüyor
+- HTML'de duplicate render yok (1 navbar, 1 hero, 1 menu)
+- 8 bug fix uygulandı
+- Hydration safety checklist tamamlandı
