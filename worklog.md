@@ -284,3 +284,42 @@ Stage Summary:
 - Alt menü tüm sayfalarda çalışıyor
 - Uygulama ikonu büyük + beyaz arka plan yok
 - Splash screen sinematik (alev + duman + pizza bg)
+
+---
+Task ID: minimal-icon-splash
+Agent: Super Z (main)
+Task: Uber/e-Devlet tarzı minimal ikon + sade splash screen
+
+WORK LOG:
+
+1. App Icon — minimal, professional (Uber/e-Devlet tarzı):
+   - Solid siyah arka plan (#0d0500)
+   - Tek sembol: pizza dilimi (sarı kabuk + pembe pepperoni)
+   - Yazı yok, karmaşık logo yok
+   - Uber: siyah bg + beyaz "Uber" yazısı
+   - e-Devlet: kırmızı bg + beyaz yıldız
+   - Demos Pizza: siyah bg + sarı pizza dilimi
+   - Tüm köşeler solid (13,5,0,255) = #0d0500
+   - Merkez (96,96): (255,220,100) = sarı pizza
+   - Dosya boyutu: 2KB-7KB (önceki: 23KB-137KB)
+
+2. Splash Screen — sade, modern:
+   - Siyah arka plan
+   - Dönen çok renkli halka:
+     - Sarı segment (1.2sn)
+     - Pembe segment (1.5sn, ters yön)
+     - Turuncu segment (1sn)
+   - Merkez: siyah daire + pizza SVG ikonu (pulse animasyonu)
+   - Altında: "Demos Pizza" + "Sıcacık pizzalar, sevdiklerinle"
+   - En altta: ilerleme çubuğu (sarı→pembe gradient)
+   - Süre: 2.5 saniye
+   - Kullanıcının gösterdiği ekran ile aynı tasarım
+
+VERIFICATION:
+- icon-192.png: 2.2KB, solid bg ✓
+- icon-512.png: 6.5KB, solid bg ✓
+- apple-icon.png: 2.0KB, solid bg ✓
+- Corners: (13,5,0,255) = solid #0d0500 ✓
+- Center: (255,220,100) = yellow pizza ✓
+- Splash: deployed ✓
+- Home: 200 ✓
