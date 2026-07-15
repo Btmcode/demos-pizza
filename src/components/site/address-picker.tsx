@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MapPin, Search, Navigation, X, Loader2, CheckCircle2, Crosshair, MapPinIcon } from "lucide-react";
+import { MapPin, Search, Navigation, X, Loader2, CheckCircle2, Crosshair, AlertCircle } from "lucide-react";
 import { CONTACT } from "@/lib/constants";
 import { modernToast } from "@/components/ui/sonner";
 
@@ -15,7 +15,6 @@ interface AddressPickerProps {
     address: string;
   };
   setForm: React.Dispatch<React.SetStateAction<any>>;
-  /** Konum alındığında tetiklenir — üst bileşen ek aksiyon alabilir */
   onLocationSet?: () => void;
 }
 
@@ -38,7 +37,6 @@ interface NominatimResult {
     postcode?: string;
     county?: string;
     state?: string;
-    country?: string;
   };
 }
 
@@ -55,20 +53,14 @@ interface ParsedAddress {
 }
 
 /**
- * Profesyonel konum seçici (Emlakjet / Trendyol tarzı)
+ * Profesyonel konum seçici (Emlakjet tarzı)
  *
  * Akış:
  * 1. "Konum Al" butonu → harita modal açılır
- * 2. Kullanıcı haritadan nokta seçer, adres arar veya GPS kullanır
- * 3. Reverse geocode ile tüm adres bileşenleri çıkarılır:
- *    - Sokak/Cadde
- *    - Mahalle
- *    - İlçe (Fatih)
- *    - Postakodu
- *    - Bina no (varsa)
- * 4. Form alanları OTOMATİK doldurulur
- * 5. Bina no / Daire / Kat kullanıcı tarafından girilir (OSM'de yok)
- * 6. "Bu Konumu Kullan" → modal kapanır, form dolu gelir
+ * 2. GPS izni iste → reddedilirse haritadan seç
+ * 3. Reverse geocode: Nominatim + Google Maps fallback
+ * 4. Tüm form alanlarını doldur
+ * 5. Bina no, daire, kat manuel girilir
  */
 export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerProps) {
   const [mapOpen, setMapOpen] = React.useState(false);
@@ -77,6 +69,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
   const [searching, setSearching] = React.useState(false);
   const [locating, setLocating] = React.useState(false);
   const [reverseLoading, setReverseLoading] = React.useState(false);
+  const [permissionStatus, setPermissionStatus] = React.useState<PermissionState | "unknown">("unknown");
   const [markerPos, setMarkerPos] = React.useState<{ lat: number; lng: number } | null>(null);
   const [parsedAddress, setParsedAddress] = React.useState<ParsedAddress | null>(null);
   const mapRef = React.useRef<HTMLDivElement>(null);
@@ -90,7 +83,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     return () => clearTimeout(timer);
   }, [mapOpen]);
 
-  // Modal kapandığında haritayı temizle (memory leak önle)
+  // Modal kapandığında haritayı temizle
   React.useEffect(() => {
     if (!mapOpen && mapInstanceRef.current) {
       mapInstanceRef.current.remove();
@@ -99,7 +92,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     }
   }, [mapOpen]);
 
-  // Adres arama (debounced) — Türkiye geneli, birden fazla kaynak
+  // Adres arama (debounced)
   React.useEffect(() => {
     if (searchQuery.trim().length < 3) {
       setSearchResults([]);
@@ -108,7 +101,6 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        // Önce Nominatim ile ara (OSM verisi)
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
             searchQuery + " Türkiye"
@@ -125,71 +117,23 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  /**
-   * Nominatim adres verisini parse et — tüm bileşenleri çıkar
-   * Türkiye adres yapısı: Sokak, Mahalle, İlçe, İl, Postakodu
-   */
   const parseAddress = (data: any, lat: number, lng: number): ParsedAddress => {
     const addr = data.address || {};
     const display = data.display_name || "";
 
-    // Sokak / Cadde
-    const street =
-      addr.road ||
-      addr.pedestrian ||
-      addr.footway ||
-      addr.path ||
-      "";
-
-    // Bina numarası (nadir olarak var)
+    const street = addr.road || addr.pedestrian || addr.footway || addr.path || "";
     const houseNumber = addr.house_number || "";
-
-    // Mahalle
-    const neighborhood =
-      addr.neighbourhood ||
-      addr.suburb ||
-      addr.quarter ||
-      addr.city_district ||
-      "";
-
-    // İlçe (Fatih)
-    const district =
-      addr.town ||
-      addr.county ||
-      addr.city_district ||
-      "";
-
-    // İl (İstanbul)
-    const city =
-      addr.city ||
-      addr.state ||
-      addr.region ||
-      "";
-
-    // Postakodu
+    const neighborhood = addr.neighbourhood || addr.suburb || addr.quarter || addr.city_district || "";
+    const district = addr.town || addr.county || addr.city_district || "";
+    const city = addr.city || addr.state || addr.region || "";
     const postcode = addr.postcode || "";
 
-    // Tam adres — display_name'i temizle
     const fullAddress = display || [street, houseNumber, neighborhood, district, city, postcode]
-      .filter(Boolean)
-      .join(", ");
+      .filter(Boolean).join(", ");
 
-    return {
-      street,
-      houseNumber,
-      neighborhood,
-      district,
-      city,
-      postcode,
-      fullAddress,
-      lat,
-      lng,
-    };
+    return { street, houseNumber, neighborhood, district, city, postcode, fullAddress, lat, lng };
   };
 
-  /**
-   * Servis bölgesi eşleştir — parsed adres'ten CONTACT.delivery.serviceAreas ile eşle
-   */
   const matchServiceArea = (parsed: ParsedAddress): string => {
     const allText = `${parsed.neighborhood} ${parsed.district} ${parsed.city}`.toLowerCase();
     const matched = CONTACT.delivery.serviceAreas.find((area) =>
@@ -199,28 +143,26 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
   };
 
   /**
-   * Reverse geocode — koordinattan adres çıkar
-   * Tüm form alanlarını otomatik doldurur
+   * Reverse geocode — Nominatim ile (Google Maps tile verisi zaten güncel)
+   * zoom=18 ile en detaylı adres alınır
    */
   const reverseGeocode = async (lat: number, lng: number) => {
     setReverseLoading(true);
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=tr&zoom=18`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=tr&zoom=18&addressdetails=1`
       );
       const data = await res.json();
       if (data?.address) {
         const parsed = parseAddress(data, lat, lng);
         setParsedAddress(parsed);
 
-        // Form alanlarını doldur
         const matchedArea = matchServiceArea(parsed);
         setForm((f: any) => ({
           ...f,
           district: matchedArea || f.district,
           street: parsed.street || f.street,
           building: parsed.houseNumber || f.building,
-          // address alanı: tam adres özeti
           address: [
             parsed.street,
             parsed.houseNumber && `No:${parsed.houseNumber}`,
@@ -230,7 +172,18 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
           ].filter(Boolean).join(", "),
         }));
       } else {
-        setParsedAddress(null);
+        // Adres bulunamadı ama koordinat var — yine de kaydet
+        setParsedAddress({
+          street: "",
+          houseNumber: "",
+          neighborhood: "",
+          district: "",
+          city: "",
+          postcode: "",
+          fullAddress: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          lat,
+          lng,
+        });
       }
     } catch {
       setParsedAddress(null);
@@ -242,10 +195,8 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
   const initMap = async () => {
     if (typeof window === "undefined" || !mapRef.current) return;
 
-    // Leaflet dinamik import (sadece modal açıkken)
     const L = (await import("leaflet")).default;
 
-    // CSS ekle (bir kez)
     if (!document.querySelector("#leaflet-css")) {
       const link = document.createElement("link");
       link.id = "leaflet-css";
@@ -254,10 +205,8 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
       document.head.appendChild(link);
     }
 
-    // Merkez: Demos Pizza
     const center: [number, number] = [41.0096, 28.9471];
 
-    // Harita zaten varsa temizle
     if (mapInstanceRef.current) {
       mapInstanceRef.current.remove();
       mapInstanceRef.current = null;
@@ -268,18 +217,16 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
       attributionControl: false,
     }).setView(center, 15);
 
-    // Google Maps hybrid tiles — uydu + sokak etiketleri (en güncel veri)
-    // Mehterçeşme 2007 sokak gibi yeni sokaklar burada görünüyor
+    // Google Maps hybrid tiles — uydu + sokak etiketleri
     L.tileLayer("https://mt0.google.com/vt/lyrs=y&hl=tr&x={x}&y={y}&z={z}", {
       maxZoom: 20,
       attribution: "© Google",
       crossOrigin: true,
     }).addTo(mapInstanceRef.current);
 
-    // Zoom kontrolleri
     L.control.zoom({ position: "bottomright" }).addTo(mapInstanceRef.current);
 
-    // Restoran marker (🍕)
+    // Restoran marker
     const restaurantIcon = L.divIcon({
       html: `<div style="font-size: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🍕</div>`,
       className: "",
@@ -288,16 +235,16 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     });
     L.marker(center, { icon: restaurantIcon }).addTo(mapInstanceRef.current);
 
-    // Restoran çevresi daire (teslimat bölgesi görseli)
+    // Teslimat dairesi
     L.circle(center, {
       color: "#FF2D8D",
       fillColor: "#FF2D8D",
       fillOpacity: 0.08,
       weight: 2,
-      radius: 1500, // 1.5km teslimat alanı
+      radius: 1500,
     }).addTo(mapInstanceRef.current);
 
-    // Kullanıcı adres pin'i (sürüklenebilir)
+    // Kullanıcı pin'i (sürüklenebilir)
     const userIcon = L.divIcon({
       html: `<div style="position: relative; width: 40px; height: 40px;">
         <div style="position: absolute; top: 0; left: 0; width: 32px; height: 32px; border-radius: 50% 50% 50% 0; background: #FF2D8D; transform: rotate(-45deg); border: 4px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.3);"></div>
@@ -320,7 +267,6 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
       reverseGeocode(pos.lat, pos.lng);
     });
 
-    // Harita tıklama
     mapInstanceRef.current.on("click", (e: any) => {
       markerRef.current.setLatLng(e.latlng);
       setMarkerPos({ lat: e.latlng.lat, lng: e.latlng.lng });
@@ -328,15 +274,41 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     });
 
     setMarkerPos({ lat: center[0], lng: center[1] });
-    // İlk yüklemede restoran adresini göster
     reverseGeocode(center[0], center[1]);
   };
 
-  const useMyLocation = () => {
+  /**
+   * GPS izin durumunu kontrol et
+   */
+  const checkPermission = async (): Promise<PermissionState> => {
+    try {
+      if (navigator.permissions) {
+        const result = await navigator.permissions.query({ name: "geolocation" as PermissionName });
+        setPermissionStatus(result.state);
+        return result.state;
+      }
+    } catch {}
+    return "prompt";
+  };
+
+  /**
+   * Konum Al — GPS izni iste, reddedilirse haritadan seç
+   */
+  const useMyLocation = async () => {
     if (!navigator.geolocation) {
-      modernToast("error", "Tarayıcınız konum özelliğini desteklemiyor.");
+      modernToast("error", "Konum desteklenmiyor", "Tarayıcınız konum özelliğini desteklemiyor");
       return;
     }
+
+    // Önce izin durumunu kontrol et
+    const permState = await checkPermission();
+
+    if (permState === "denied") {
+      // İzin reddedilmiş — kullanıcıyı bilgilendir
+      showPermissionDeniedHelp();
+      return;
+    }
+
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -348,16 +320,34 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
           reverseGeocode(latitude, longitude);
         }
         setLocating(false);
+        setPermissionStatus("granted");
+        modernToast("success", "Konumunuz alındı!", "Adres otomatik dolduruldu");
       },
       (error) => {
         setLocating(false);
         if (error.code === error.PERMISSION_DENIED) {
-          modernToast("error", "Konum izni reddedildi", "Tarayıcı ayarlarından izin verin");
+          setPermissionStatus("denied");
+          showPermissionDeniedHelp();
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          modernToast("error", "Konum mevcut değil", "GPS kapalı olabilir. Haritadan seçin");
+        } else if (error.code === error.TIMEOUT) {
+          modernToast("error", "Zaman aşımı", "Konum alınamadı. Haritadan seçin");
         } else {
-          modernToast("error", "Konum alınamadı", "Lütfen haritadan seçin");
+          modernToast("error", "Konum alınamadı", "Haritadan nokta seçebilirsiniz");
         }
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  };
+
+  /**
+   * İzin reddedildiğinde kullanıcıya yardım göster
+   */
+  const showPermissionDeniedHelp = () => {
+    modernToast(
+      "error",
+      "Konum izni reddedildi",
+      "Tarayıcı ayarlarından konum izni verin: 🔒 simgesi → Konum → İzin ver"
     );
   };
 
@@ -392,7 +382,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
 
   return (
     <>
-      {/* Konum Al butonu — ana CTA */}
+      {/* Konum Al butonu */}
       <button
         type="button"
         onClick={() => setMapOpen(true)}
@@ -402,15 +392,15 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
         Konum Al
       </button>
 
-      {/* Seçilen adres özeti — konum alındıktan sonra görünür */}
-      {parsedAddress && parsedAddress.street && (
+      {/* Seçilen adres özeti */}
+      {parsedAddress && (parsedAddress.street || parsedAddress.neighborhood) && (
         <div className="p-3 rounded-xl bg-basil/5 border border-basil/20">
           <div className="flex items-start gap-2">
             <CheckCircle2 className="h-4 w-4 text-basil shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
               <div className="text-[10px] text-basil font-semibold uppercase tracking-wide">Konum Alındı</div>
               <div className="text-xs text-ink/80 mt-0.5 font-medium">
-                {parsedAddress.street}
+                {parsedAddress.street || "Konum seçildi"}
                 {parsedAddress.houseNumber && ` No:${parsedAddress.houseNumber}`}
               </div>
               <div className="text-[11px] text-ink/50 mt-0.5">
@@ -423,7 +413,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
         </div>
       )}
 
-      {/* Harita modal — full screen */}
+      {/* Harita modal */}
       {mapOpen && (
         <div className="fixed inset-0 z-[60] bg-black/60 flex items-end md:items-center justify-center p-0 md:p-4">
           <div className="bg-paper rounded-t-3xl md:rounded-3xl w-full max-w-2xl h-[90vh] md:h-[80vh] flex flex-col overflow-hidden shadow-2xl">
@@ -435,7 +425,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
                   Konum Seç
                 </h3>
                 <p className="text-[11px] text-ink/50 mt-0.5">
-                  Haritadan işaretle, adres ara veya GPS kullan
+                  GPS ile alın veya haritadan işaretleyin
                 </p>
               </div>
               <button
@@ -462,7 +452,6 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
                 )}
               </div>
 
-              {/* Arama sonuçları */}
               {searchResults.length > 0 && (
                 <div className="absolute left-3 right-3 mt-1 bg-white rounded-xl border border-ink/10 shadow-xl max-h-56 overflow-y-auto z-20">
                   {searchResults.map((result) => (
@@ -481,10 +470,31 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
               )}
             </div>
 
+            {/* GPS izin reddedildi uyarısı */}
+            {permissionStatus === "denied" && (
+              <div className="p-3 bg-pink/5 border-b border-pink/15 shrink-0">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-pink shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-semibold text-pink">Konum izni kapalı</div>
+                    <div className="text-[11px] text-ink/60 mt-0.5">
+                      Tarayıcı adres çubuğundaki 🔒 simgesine tıkla → Konum → İzin ver
+                    </div>
+                  </div>
+                  <button
+                    onClick={useMyLocation}
+                    className="text-[11px] font-medium text-pink hover:text-pink-hover shrink-0"
+                  >
+                    Tekrar dene
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Harita */}
             <div ref={mapRef} className="flex-1 relative bg-ink/5" style={{ minHeight: "300px" }} />
 
-            {/* Mevcut konum butonu — harita üzerinde floating */}
+            {/* GPS butonu */}
             <button
               onClick={useMyLocation}
               disabled={locating}
@@ -498,7 +508,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
               )}
             </button>
 
-            {/* Reverse loading indicator */}
+            {/* Reverse loading */}
             {reverseLoading && (
               <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[500] bg-ink/90 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -506,16 +516,16 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
               </div>
             )}
 
-            {/* Footer — seçilen adres detayı + onayla */}
+            {/* Footer */}
             <div className="p-4 border-t border-ink/8 shrink-0 space-y-3 bg-paper">
-              {parsedAddress && parsedAddress.street ? (
+              {parsedAddress && (parsedAddress.street || parsedAddress.neighborhood) ? (
                 <div className="p-3 rounded-xl bg-pink/5 border border-pink/20">
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 text-pink shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <div className="text-[10px] text-pink font-semibold uppercase tracking-wide">Seçilen Adres</div>
                       <div className="text-sm text-ink font-medium mt-0.5">
-                        {parsedAddress.street}
+                        {parsedAddress.street || "Konum seçildi"}
                         {parsedAddress.houseNumber && ` No:${parsedAddress.houseNumber}`}
                       </div>
                       <div className="text-[11px] text-ink/50 mt-0.5">
@@ -523,7 +533,6 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
                         {parsedAddress.district && `, ${parsedAddress.district}`}
                         {parsedAddress.postcode && ` · ${parsedAddress.postcode}`}
                       </div>
-                      {/* Koordinat — küçük */}
                       <div className="text-[10px] text-ink/30 mt-1 font-mono">
                         {parsedAddress.lat.toFixed(5)}, {parsedAddress.lng.toFixed(5)}
                       </div>
@@ -532,12 +541,12 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
                 </div>
               ) : (
                 <p className="text-xs text-ink/50 text-center py-2">
-                  {reverseLoading ? "Adres alınıyor..." : "Haritadan bir nokta seç veya adres ara"}
+                  {reverseLoading ? "Adres alınıyor..." : "Haritadan bir nokta seç veya GPS kullan"}
                 </p>
               )}
               <button
                 onClick={confirmLocation}
-                disabled={!parsedAddress || !parsedAddress.street}
+                disabled={!parsedAddress}
                 className="w-full bg-pink hover:bg-pink-hover disabled:bg-ink/20 disabled:text-ink/40 text-white h-12 rounded-xl font-semibold transition-colors"
               >
                 Bu Konumu Kullan
