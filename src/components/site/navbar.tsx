@@ -103,12 +103,12 @@ export function Navbar() {
       >
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-[72px] md:h-[88px] gap-4">
-            {/* Logo — %50 bigger: mobile 90px, desktop 120px (header height unchanged) */}
-            <Link href="/" className="flex items-center shrink-0 -my-2" aria-label="Demos Pizza ana sayfa">
+            {/* Logo — mobile 95px, desktop 126px (header height unchanged) */}
+            <Link href="/" className="flex items-center shrink-0 -my-3" aria-label="Demos Pizza ana sayfa">
               <img
                 src="/logo.webp"
                 alt={`${BRAND.name}`}
-                className="h-[90px] md:h-[120px] w-auto transition-opacity hover:opacity-90"
+                className="h-[95px] md:h-[126px] w-auto transition-opacity hover:opacity-90"
               />
             </Link>
 

@@ -33,10 +33,11 @@ export default function MapClient() {
       scrollWheelZoom={true}
       attributionControl={true}
     >
-      {/* CartoDB Positron tile — modern, temiz görünüm */}
+      {/* Google Maps hybrid tiles — uydu + sokak etiketleri (en güncel veri) */}
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://mt0.google.com/vt/lyrs=y&hl=tr&x={x}&y={y}&z={z}"
+        attribution="&copy; Google"
+        maxZoom={20}
       />
 
       {/* Teslimat bölgesi dairesi (500m yarıçap) */}

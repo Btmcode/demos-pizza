@@ -99,7 +99,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     }
   }, [mapOpen]);
 
-  // Adres arama (debounced) — Türkiye geneli, Fatih ile sınırlı değil
+  // Adres arama (debounced) — Türkiye geneli, birden fazla kaynak
   React.useEffect(() => {
     if (searchQuery.trim().length < 3) {
       setSearchResults([]);
@@ -108,7 +108,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        // Türkiye'de ara, sınır yok — kullanıcı "Mehterçeşme 2007 sokak" yazınca bulunsun
+        // Önce Nominatim ile ara (OSM verisi)
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
             searchQuery + " Türkiye"
@@ -268,9 +268,12 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
       attributionControl: false,
     }).setView(center, 15);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: "© OpenStreetMap",
+    // Google Maps hybrid tiles — uydu + sokak etiketleri (en güncel veri)
+    // Mehterçeşme 2007 sokak gibi yeni sokaklar burada görünüyor
+    L.tileLayer("https://mt0.google.com/vt/lyrs=y&hl=tr&x={x}&y={y}&z={z}", {
+      maxZoom: 20,
+      attribution: "© Google",
+      crossOrigin: true,
     }).addTo(mapInstanceRef.current);
 
     // Zoom kontrolleri
