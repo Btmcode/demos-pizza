@@ -158,6 +158,17 @@ export const adminCreateSchema = z.object({
   role: z.enum(["ADMIN", "EDITOR"]).default("EDITOR"),
 });
 
+// Rezervasyon şeması
+export const reservationSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  phone: z.string().trim().min(10).max(20),
+  email: z.string().trim().toLowerCase().email().max(254).optional().or(z.literal("")),
+  date: z.string().trim().min(1).max(20),
+  time: z.string().trim().min(1).max(10),
+  partySize: z.number().int().min(1).max(20),
+  notes: z.string().trim().max(500).optional().or(z.literal("")),
+});
+
 // ============================================================
 //  Type exports
 // ============================================================

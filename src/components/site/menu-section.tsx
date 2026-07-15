@@ -53,6 +53,28 @@ export function MenuSection() {
   const [active, setActive] = React.useState<string>("SIGNATURE");
   const [search, setSearch] = React.useState("");
 
+  // GSAP stagger — kartlar sırayla ekrana girer
+  const gridRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (loading || !gridRef.current) return;
+    const ctx = (async () => {
+      const { gsap } = await import("@/hooks/use-gsap");
+      gsap.fromTo(
+        gridRef.current?.children || [],
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: "power2.out",
+        }
+      );
+    })();
+    return () => { ctx.catch(() => {}); };
+  }, [loading, active]);
+
   React.useEffect(() => {
     let mounted = true;
     fetch("/api/menu", { cache: "no-store" })
@@ -150,7 +172,7 @@ export function MenuSection() {
             <p>Aramanızla eşleşen ürün bulunamadı.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-stretch">
+          <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-stretch">
             {filtered.map((item) => (
               <MenuCard key={item.id} item={item} />
             ))}

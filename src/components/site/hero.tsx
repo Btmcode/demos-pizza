@@ -5,11 +5,12 @@ import { ArrowRight, Star, Flame, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { STATS, CONTACT, BRAND } from "@/lib/constants";
+import { useGsapReveal } from "@/hooks/use-gsap";
 
 /**
- * Premium Hero — Canvas tabanlı duman efekti + scroll parallax
+ * Premium Hero — Canvas duman + GSAP scroll animations + scroll parallax
  * - Scroll'a göre pizza görseli parallax ile hareket eder
- * - Canvas üstünde duman particle efekti
+ * - Canvas üstünde duman particle efekti (sıcak altın renkler)
  * - Scroll ilerledikçe pizza dilimi zoom-out efekti
  */
 export function Hero() {
@@ -17,6 +18,9 @@ export function Hero() {
   const heroRef = React.useRef<HTMLElement>(null);
   const imgRef = React.useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = React.useState(0);
+
+  // GSAP reveal için content ref
+  const contentRef = useGsapReveal<HTMLDivElement>({ delay: 0.2, y: 30, duration: 1 });
 
   // Scroll parallax
   React.useEffect(() => {
@@ -164,8 +168,9 @@ export function Hero() {
         style={{ width: "100%", height: "100%" }}
       />
 
-      {/* Content */}
+      {/* Content — GSAP reveal animasyonu */}
       <div
+        ref={contentRef}
         className="relative z-20 container mx-auto px-4 md:px-6 py-16 md:py-24"
         style={{
           opacity: contentOpacity,
