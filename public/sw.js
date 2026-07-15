@@ -1,66 +1,89 @@
-// Demos Pizza Service Worker — PWA
-// Offline cache + push notification foundation
+// Demos Pizza Service Worker — PWA v2 (auto-update)
+// Cache version changes on every deploy → triggers auto-update
 
-const CACHE_NAME = "demos-pizza-v1";
+const SW_VERSION = "demos-pizza-v2-20250715";
+const CACHE_NAME = SW_VERSION;
 const OFFLINE_URL = "/offline";
 
 // Critical assets to precache
 const PRECACHE_URLS = [
   "/",
-  "/offline",
-  "/logo.svg",
-  "/favicon.svg",
   "/manifest.json",
-  "/images/hero-pizza.png",
-  "/images/demos-storefront.png",
+  "/logo.webp",
+  "/favicon.svg",
 ];
 
-// Install — precache
+// Install — precache + skip waiting (auto-activate new SW)
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_URLS).catch(() => {});
     })
   );
+  // Yeni SW hemen aktif olsun — kullanıcı güncellemeyi beklemesin
   self.skipWaiting();
 });
 
-// Activate — cleanup old caches
+// Activate — cleanup old caches + claim clients
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
           .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+          .map((name) => {
+            console.log("[SW] Deleting old cache:", name);
+            return caches.delete(name);
+          })
       );
     })
   );
+  // Tüm client'ları hemen yeni SW'ye bağla
   self.clients.claim();
+  
+  // Tüm client'lara "güncellendi" mesajı gönder → sayfa yenilensin
+  self.clients.matchAll({ type: "window" }).then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({ type: "SW_UPDATED", version: SW_VERSION });
+    });
+  });
 });
 
-// Fetch — stale-while-revalidate strategy
+// Fetch — network-first for navigation, stale-while-revalidate for assets
 self.addEventListener("fetch", (event) => {
   const { request } = event;
 
-  // Skip non-GET requests
   if (request.method !== "GET") return;
 
-  // Skip API requests (always network-first)
+  // API istekleri her zaman network-first
   if (request.url.includes("/api/")) {
     event.respondWith(fetch(request).catch(() => caches.match(OFFLINE_URL)));
     return;
   }
 
-  // Skip cross-origin requests
+  // Cross-origin istekleri atla
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Navigation istekleri — network-first (her zaman güncel HTML)
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        })
+        .catch(() => caches.match(request).then((r) => r || caches.match(OFFLINE_URL)))
+    );
+    return;
+  }
+
+  // Statik assetler — stale-while-revalidate
   event.respondWith(
     caches.match(request).then((cached) => {
       const fetchPromise = fetch(request)
         .then((response) => {
-          // Cache valid responses
           if (response && response.status === 200) {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
@@ -69,7 +92,7 @@ self.addEventListener("fetch", (event) => {
           }
           return response;
         })
-        .catch(() => cached || caches.match(OFFLINE_URL));
+        .catch(() => cached);
 
       return cached || fetchPromise;
     })
@@ -105,5 +128,12 @@ self.addEventListener("notificationclick", (event) => {
     event.waitUntil(
       clients.openWindow(event.notification.data.url || "/")
     );
+  }
+});
+
+// Message listener — client'tan gelen mesajları dinle
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
   }
 });

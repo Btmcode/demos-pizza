@@ -5,6 +5,10 @@ import * as React from "react";
 /**
  * Sipariş ses bildirimi — premium, yüksek sesli
  * Web Audio API ile multi-tone melodi çalar
+ *
+ * FIX: lastOrderCount artık ref olarak tutuluyor — state değil.
+ * Bu sayede checkNewOrders her render'da yeni referans almaz,
+ * load callback'i stabil kalır, setInterval gereksiz yere re-create olmaz.
  */
 
 const SOUND_TYPES = {
@@ -57,9 +61,22 @@ const SOUND_TYPES = {
 export type SoundType = keyof typeof SOUND_TYPES;
 
 export function useOrderSound() {
-  const [lastOrderCount, setLastOrderCount] = React.useState<number | null>(null);
+  // FIX: lastOrderCount ref olarak tutuluyor — state değişikliği re-render tetiklemesin
+  const lastOrderCountRef = React.useRef<number | null>(null);
+  const soundEnabledRef = React.useRef(true);
+  const soundTypeRef = React.useRef<SoundType>("bell");
+
   const [soundEnabled, setSoundEnabled] = React.useState(true);
   const [soundType, setSoundType] = React.useState<SoundType>("bell");
+
+  // Ref'leri state ile senkronize et
+  React.useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
+
+  React.useEffect(() => {
+    soundTypeRef.current = soundType;
+  }, [soundType]);
 
   React.useEffect(() => {
     const saved = localStorage.getItem("demos-order-sound");
@@ -72,14 +89,16 @@ export function useOrderSound() {
     }
   }, []);
 
-  const saveSettings = (enabled: boolean, type: SoundType) => {
+  const saveSettings = React.useCallback((enabled: boolean, type: SoundType) => {
     setSoundEnabled(enabled);
     setSoundType(type);
     localStorage.setItem("demos-order-sound", JSON.stringify({ enabled, type }));
-  };
+  }, []);
 
-  const playSound = React.useCallback((type: SoundType = soundType) => {
-    const config = SOUND_TYPES[type];
+  // FIX: playSound artık stabil — hiçbir state'e bağlı değil
+  const playSound = React.useCallback((type?: SoundType) => {
+    const actualType = type || soundTypeRef.current;
+    const config = SOUND_TYPES[actualType];
     try {
       const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
       let delay = 0;
@@ -100,23 +119,23 @@ export function useOrderSound() {
         delay += note.dur * 0.9;
       }
 
-      // Cleanup
       setTimeout(() => ctx.close(), (delay + 0.5) * 1000);
     } catch (e) {
       // AudioContext not available
     }
-  }, [soundType]);
+  }, []);
 
-  const checkNewOrders = React.useCallback(async (currentCount: number) => {
-    if (lastOrderCount === null) {
-      setLastOrderCount(currentCount);
+  // FIX: checkNewOrders artık stabil — ref kullanıyor, state bağımlılığı yok
+  const checkNewOrders = React.useCallback((currentCount: number) => {
+    if (lastOrderCountRef.current === null) {
+      lastOrderCountRef.current = currentCount;
       return;
     }
-    if (currentCount > lastOrderCount && soundEnabled) {
+    if (currentCount > lastOrderCountRef.current && soundEnabledRef.current) {
       playSound();
     }
-    setLastOrderCount(currentCount);
-  }, [lastOrderCount, soundEnabled, playSound]);
+    lastOrderCountRef.current = currentCount;
+  }, [playSound]);
 
   return {
     soundEnabled,

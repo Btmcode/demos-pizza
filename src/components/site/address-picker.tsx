@@ -99,7 +99,7 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     }
   }, [mapOpen]);
 
-  // Adres arama (debounced)
+  // Adres arama (debounced) — Türkiye geneli, Fatih ile sınırlı değil
   React.useEffect(() => {
     if (searchQuery.trim().length < 3) {
       setSearchResults([]);
@@ -108,10 +108,11 @@ export function AddressPicker({ form, setForm, onLocationSet }: AddressPickerPro
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
+        // Türkiye'de ara, sınır yok — kullanıcı "Mehterçeşme 2007 sokak" yazınca bulunsun
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            searchQuery + " Fatih İstanbul Türkiye"
-          )}&limit=5&addressdetails=1&accept-language=tr`
+            searchQuery + " Türkiye"
+          )}&limit=8&addressdetails=1&accept-language=tr&countrycodes=tr`
         );
         const data = await res.json();
         setSearchResults(data);

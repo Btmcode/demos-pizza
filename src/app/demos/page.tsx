@@ -74,6 +74,8 @@ export default function AdminDashboard() {
     year: "numeric",
   });
 
+  // FIX: load artık tamamen stabil — checkNewOrders ref kullandığı için
+  // hiçbir zaman yeni referans almaz, setInterval gereksiz re-create olmaz
   const load = React.useCallback(() => {
     fetch("/api/admin/stats", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
@@ -87,7 +89,7 @@ export default function AdminDashboard() {
 
   React.useEffect(() => {
     load();
-    const i = setInterval(load, 15000); // 15 saniyede bir kontrol
+    const i = setInterval(load, 15000);
     return () => clearInterval(i);
   }, [load]);
 

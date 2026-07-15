@@ -47,9 +47,43 @@ function ScrollRevealer() {
 function useServiceWorker() {
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
-    }
+    if (!("serviceWorker" in navigator)) return;
+
+    // SW kaydet — update_found event'i ile auto-update
+    navigator.serviceWorker.register("/sw.js").then((registration) => {
+      // Yeni SW bulunduğunda — bekle, yükle, otomatik aktif et
+      registration.addEventListener("updatefound", () => {
+        const newWorker = registration.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener("statechange", () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+            // Yeni SW indirildi — hemen aktif et
+            newWorker.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+
+      // Periyodik güncelle kontrolü (her 60 dk)
+      setInterval(() => {
+        registration.update().catch(() => {});
+      }, 60 * 60 * 1000);
+    }).catch(() => {});
+
+    // SW değiştiğinde — sayfayı yenile (kullanıcı güncellemeyi hemen görür)
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+
+    // SW'den mesaj gelirse (SW_UPDATED) — sayfayı yenile
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data?.type === "SW_UPDATED" && !refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
   }, []);
 }
 

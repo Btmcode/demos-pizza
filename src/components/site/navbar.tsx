@@ -93,9 +93,9 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Main header */}
+      {/* Main header — overflow-visible so bigger logo can extend */}
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+        className={`sticky top-0 z-40 w-full transition-all duration-300 overflow-visible ${
           scrolled
             ? "bg-ink/95 backdrop-blur-lg shadow-2xl border-b border-white/10"
             : "bg-ink border-b border-white/5"
@@ -103,12 +103,12 @@ export function Navbar() {
       >
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-[72px] md:h-[88px] gap-4">
-            {/* Logo — bigger, prominent */}
-            <Link href="/" className="flex items-center shrink-0" aria-label="Demos Pizza ana sayfa">
+            {/* Logo — %50 bigger: mobile 90px, desktop 120px (header height unchanged) */}
+            <Link href="/" className="flex items-center shrink-0 -my-2" aria-label="Demos Pizza ana sayfa">
               <img
                 src="/logo.webp"
                 alt={`${BRAND.name}`}
-                className="h-[60px] md:h-[80px] w-auto transition-opacity hover:opacity-90"
+                className="h-[90px] md:h-[120px] w-auto transition-opacity hover:opacity-90"
               />
             </Link>
 
